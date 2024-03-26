@@ -429,6 +429,7 @@ class Attendance_Process_New extends CI_Controller
                             //                            var_dump($OutTime . '_Out Time' . $SHTT . '_Shift End Time -------------------------');
                             $OutTimeSrt = strtotime($OutTime);
                             $SHEndTime = strtotime($SHTT);
+                            
 
                             //                            var_dump('Innnn' . $InTime . 'OUTttt' . $OutTime . 'Shift Out' . $SHTT . 'Shift End Time');
                             //Get Hours
@@ -669,7 +670,8 @@ class Attendance_Process_New extends CI_Controller
                         $OutRecID = $dt_out_Records['dt_out_Records'][0]->EventID;
                         $OutRec = 0;
                         $OutRecords = $dt_out_Records['dt_out_Records'][0]->AttDate;
-
+                        // echo $OutDate;
+                        // echo "<br/>";
 
                         // Out Ekak nethnm check nextday(1st nextDay)
                         if ($OutTime == null) {
@@ -678,7 +680,7 @@ class Attendance_Process_New extends CI_Controller
                             $newDate = date('Y-m-d', strtotime($FromDate . ' +1 day'));
 
                             // Get the CheckOut in the nextDay (before 8am)
-                            $dt_out_Records['dt_out_Records'] = $this->Db_model->getfilteredData("select min(AttTime) as OutTime,Enroll_No,AttDate,EventID from tbl_u_attendancedata where Enroll_No='$EmpNo' and AttDate='$newDate' AND Status='1' AND AttTime <'08:00:00'");
+                            $dt_out_Records['dt_out_Records'] = $this->Db_model->getfilteredData("select min(AttTime) as OutTime,Enroll_No,AttDate,EventID from tbl_u_attendancedata where Enroll_No='$EmpNo' and AttDate='$newDate' AND Status='1' AND AttTime <'09:00:00'");
 
                             //**** Out Date
                             $OutDate = $dt_out_Records['dt_out_Records'][0]->AttDate;
@@ -691,7 +693,7 @@ class Attendance_Process_New extends CI_Controller
                         } else {
 
                             // nextDay Ekak nethnm this day(ema dwsema) ekema rathri 12 sita ude 8 dkwa record ekak thiywda balanwa
-                            $dt_out_Records['dt_out_Records'] = $this->Db_model->getfilteredData("select max(AttTime) as OutTime,Enroll_No,AttDate,EventID from tbl_u_attendancedata where Enroll_No='$EmpNo' and AttDate='" . $FromDate . "' AND Status='1' AND AttTime BETWEEN '00:01:00' AND '08:00:00' ");
+                            $dt_out_Records['dt_out_Records'] = $this->Db_model->getfilteredData("select max(AttTime) as OutTime,Enroll_No,AttDate,EventID from tbl_u_attendancedata where Enroll_No='$EmpNo' and AttDate='" . $FromDate . "' AND Status='1' AND AttTime BETWEEN '00:01:00' AND '09:00:00' ");
 
                             //**** Out Date
                             $OutDate1 = $dt_out_Records['dt_out_Records'][0]->AttDate;
@@ -707,7 +709,7 @@ class Attendance_Process_New extends CI_Controller
                                 $newDate = date('Y-m-d', strtotime($FromDate . ' +1 day'));
 
                                 // aye ee dwse idn thwa nextDay ekak balanwa (2nd nextDay)
-                                $dt_out_Records['dt_out_Records'] = $this->Db_model->getfilteredData("select min(AttTime) as OutTime,Enroll_No,AttDate,EventID from tbl_u_attendancedata where Enroll_No='$EmpNo' and AttDate='$newDate' AND Status='1' AND AttTime <'08:00:00'");
+                                $dt_out_Records['dt_out_Records'] = $this->Db_model->getfilteredData("select min(AttTime) as OutTime,Enroll_No,AttDate,EventID from tbl_u_attendancedata where Enroll_No='$EmpNo' and AttDate='$newDate' AND Status='1' AND AttTime <'09:00:00'");
 
                                 //**** Out Date
                                 $OutDate = $dt_out_Records['dt_out_Records'][0]->AttDate;
@@ -718,6 +720,7 @@ class Attendance_Process_New extends CI_Controller
                                 $OutRecords = $dt_out_Records['dt_out_Records'][0]->AttDate;
 
 
+                                
                                 if ($OutTime == null) {
                                     $OFFDAY['OFF'] = $this->Db_model->getfilteredData("select `ShType` from tbl_individual_roster where FDate = '$FromDate'");
                                     $Day = $OFFDAY['OFF'][0]->ShType;
@@ -725,7 +728,7 @@ class Attendance_Process_New extends CI_Controller
                                     if ($Day != "OFF") {
 
                                         // same day ekma hws thiywda balanwa
-                                        $dt_out_Records['dt_out_Records'] = $this->Db_model->getfilteredData("select max(AttTime) as OutTime,Enroll_No,AttDate,EventID from tbl_u_attendancedata where Enroll_No='$EmpNo' and AttDate='" . $FromDate . "' AND Status='1'AND AttTime >'08:00:00' ");
+                                        $dt_out_Records['dt_out_Records'] = $this->Db_model->getfilteredData("select max(AttTime) as OutTime,Enroll_No,AttDate,EventID from tbl_u_attendancedata where Enroll_No='$EmpNo' and AttDate='" . $FromDate . "' AND Status='1' AND AttTime >'08:00:00' ");
 
                                         //**** Out Date
                                         $OutDate = $dt_out_Records['dt_out_Records'][0]->AttDate;
@@ -857,7 +860,7 @@ class Attendance_Process_New extends CI_Controller
                     /*
                      * Get OT Pattern Details
                      */
-                    $OT['OT'] = $this->Db_model->getfilteredData("SELECT tbl_ot_pattern_dtl.DayCode,tbl_ot_pattern_dtl.OTCode,tbl_empmaster.EmpNo,tbl_ot_pattern_dtl.OTPatternName,tbl_ot_pattern_dtl.DUEX,tbl_ot_pattern_dtl.BeforeShift,tbl_ot_pattern_dtl.MinBS,tbl_ot_pattern_dtl.AfterShift,tbl_ot_pattern_dtl.MinAS,tbl_ot_pattern_dtl.RoundUp,tbl_ot_pattern_dtl.Rate,tbl_ot_pattern_dtl.Deduct_LNC FROM tbl_ot_pattern_dtl RIGHT JOIN tbl_empmaster ON tbl_ot_pattern_dtl.OTCode = tbl_empmaster.OTCode WHERE tbl_ot_pattern_dtl.DayCode ='$Shift_Day' and tbl_ot_pattern_dtl.DUEX='$ShiftType'");
+                    $OT['OT'] = $this->Db_model->getfilteredData("SELECT tbl_ot_pattern_dtl.DayCode,tbl_ot_pattern_dtl.OTCode,tbl_empmaster.EmpNo,tbl_ot_pattern_dtl.OTPatternName,tbl_ot_pattern_dtl.DUEX,tbl_ot_pattern_dtl.BeforeShift,tbl_ot_pattern_dtl.MinBS,tbl_ot_pattern_dtl.AfterShift,tbl_ot_pattern_dtl.MinAS,tbl_ot_pattern_dtl.RoundUp,tbl_ot_pattern_dtl.Rate,tbl_ot_pattern_dtl.Deduct_LNC FROM tbl_ot_pattern_dtl RIGHT JOIN tbl_empmaster ON tbl_ot_pattern_dtl.OTCode = tbl_empmaster.OTCode WHERE tbl_ot_pattern_dtl.DayCode ='$Shift_Day' and tbl_ot_pattern_dtl.DUEX='$ShiftType' and tbl_empmaster.EmpNo='$EmpNo'");
                     $AfterShiftWH = 0;
 
                     $Round = $OT['OT'][0]->RoundUp;
@@ -1206,6 +1209,8 @@ class Attendance_Process_New extends CI_Controller
 
                                 $OutTimeSrt = strtotime($OutTime);
                                 $SHEndTime = strtotime($SHTT);
+                                
+
 
                                 //*******Get Minutes
                                 $iCalcOut = (($OutTimeSrt - $SHEndTime) / 60);
@@ -1254,7 +1259,7 @@ class Attendance_Process_New extends CI_Controller
                                 $totalMinutes = round($interval / 60); // Convert seconds to minutes
 
                                 // Subtract 30 minutes
-                                $totalMinutes -= 30;
+                                $totalMinutes -= 60;
 
                                 // Store the result in $icalData
                                 $icalData = $totalMinutes;

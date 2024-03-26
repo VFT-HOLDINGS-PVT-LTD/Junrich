@@ -1,2 +1,2 @@
-//baseurl="http://localhost/HRMS/";
-baseurl = "https://janrich.vfthris.com/";
+baseurl="http://localhost/Junrich/";
+// baseurl = "https://janrich.vfthris.com/";
