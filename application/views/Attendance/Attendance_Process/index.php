@@ -128,6 +128,15 @@
 
 
                                                                 </form>
+                                                                <br>
+                                                                <form action="<?php echo base_url(); ?>index.php/Attendance/Attendance_Process/emp_attendance_process" class="form-horizontal" id="frmBackup" name="frmBackup" method="POST">
+                                                                <div class="row">
+                                                                        <div class="col-sm-8 col-sm-offset-2">
+                                                                            <button type="submit" class="btn-success btn-lg fa fa-check">&nbsp;&nbsp;ATTENDANCE soyameat PROCESS</button>
+                                                                            <!--<button type="button" id="Cancel" name="Cancel" class="btn btn-danger-alt fa fa-times-circle">&nbsp;&nbsp;CANCEL</button>-->
+                                                                        </div>
+                                                                    </div>
+                                                                </form>
 
                                                                 <hr>
 
