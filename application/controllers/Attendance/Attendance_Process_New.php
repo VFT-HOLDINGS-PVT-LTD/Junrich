@@ -616,7 +616,7 @@ class Attendance_Process_New extends CI_Controller
          * Emp no , EPF No, Roster Type, Roster Pattern Code, Status
          */
         //        $dtEmp['EmpData'] = $this->Db_model->getfilteredData("SELECT EmpNo,Enroll_No, EPFNO,RosterCode, Status  FROM  tbl_empmaster where status=1");
-        $dtEmp['EmpData'] = $this->Db_model->getfilteredData("select * from tbl_individual_roster where Is_processed = 0");
+        $dtEmp['EmpData'] = $this->Db_model->getfilteredData("select * from tbl_individual_roster INNER JOIN tbl_empmaster ON tbl_individual_roster.EmpNo = tbl_empmaster.EmpNo where Is_processed = 0 AND Dep_ID != 3");
         // $dtEmp['EmpData'] = $this->Db_model->getfilteredData("SELECT EmpNo,Enroll_No, EPFNO,RosterCode, Status  FROM  tbl_empmaster where EmpNo=3316");
         // echo "<pre>";
         // echo 'count--------------------------';
