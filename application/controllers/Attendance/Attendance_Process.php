@@ -107,7 +107,7 @@ class Attendance_Process extends CI_Controller
                     // tbl_individual_roster eke OFF dwas ganne 
                     $OFFDAY['OFF'] = $this->Db_model->getfilteredData("select `ShType` from tbl_individual_roster where FDate = '$FromDate'");
                     $Day = $OFFDAY['OFF'][0]->ShType;
-                   
+                
 
                     if ($Day != "OFF") {
 
@@ -133,7 +133,7 @@ class Attendance_Process extends CI_Controller
                             //shift eke details hada gannawa
                             $SH['SH'] = $this->Db_model->getfilteredData("select ID_roster,EmpNo,ShiftCode,ShType,ShiftDay,Day_Type,FDate,FTime,TDate,TTime,ShType,GracePrd from tbl_individual_roster where Is_processed=0 and EmpNo='$EmpNo' and FDate='$FromDate' ");
                             $Shift_Day = $SH['SH'][0]->ShiftDay;
-
+                            
                             //****Shift Type DU| EX
                             $ShiftType = $SH['SH'][0]->ShType;
                             //****Individual Roster ID
@@ -174,6 +174,7 @@ class Attendance_Process extends CI_Controller
                                 //**** Out Time
                                 $OutTime = $dt_out_Records_mo['dt_out_Records'][0]->OutTime;
                             }
+                            
                         } else if ($InRecords == null) {
                             $Manual = $this->Db_model->getfilteredData("select * from tbl_manual_entry where Att_Date='" . $FromDate . "' and Enroll_No='$EmpNo' and Is_Admin_App_ID=1 ");
                             if (!empty($Manual)) {
@@ -277,7 +278,7 @@ class Attendance_Process extends CI_Controller
                         //late
                         $lateM = 0;
                         // Late
-
+                        
                         if ($InTime != '' || $InTime != 0 && $InTime != $OutTime && $Day == 'DU') {
                             $SHStartTime = strtotime($SHFT);
                             $InTimeSrt = strtotime($InmoTime);
@@ -1072,7 +1073,8 @@ class Attendance_Process extends CI_Controller
                         //     //                            var_dump($dataArray);
                         //     // $result = $this->Db_model->insertData("tbl_ot_d", $dataArray);
                         // }
-
+                        
+                       
                         $Holiday = $this->Db_model->getfilteredData("select count(Hdate) as HasRow from tbl_holidays where Hdate = '$FromDate' ");
                         if ($Holiday[0]->HasRow == 1) {
                             $DayStatus = 'HD';
@@ -1092,6 +1094,11 @@ class Attendance_Process extends CI_Controller
                             $SHFT = '08:00:00';
                             $SHTT = '17:00:00'; 
                         }
+                        if($Allnomalotmin<0){
+                            $ED = abs($Allnomalotmin);
+                            $Allnomalotmin = 0;
+                        }
+
                         // echo $FromDate;
                         // echo "<br/>";
                         // echo $ID_Roster;
@@ -1106,7 +1113,11 @@ class Attendance_Process extends CI_Controller
                         // echo "<br/>";
                         // echo $Shift_Day;
                         // echo "<br/>";
+                        // echo $ID_Roster;
+                        // echo "<br/>";
                         // echo "late = " . $lateM;
+                        // echo "<br/>";
+                        // echo "ED = " . $ED;
                         // echo "<br/>";
                         // echo "double ot" . $Alldoubleotmin;
                         // echo "<br/>";
@@ -1117,6 +1128,17 @@ class Attendance_Process extends CI_Controller
                         // echo "<br/>";
                         $data_arr = array("InRec" => 1, "InDate" => $InDate, "InTime" => $InTime,"FTime" => $SHFT,"TTime" => $SHTT, "OutRec" => 1, "OutDate" => $OutDate, "OutTime" => $OutTime, "nopay" => $Nopay, "Is_processed" => 1, "DayStatus" => $DayStatus, "BeforeExH" => 0, "AfterExH" => $Allnomalotmin, "LateSt" => $Late_Status, "LateM" => $lateM, "EarlyDepMin" => $ED, "NetLateM" => $NetLateM, "ApprovedExH" => $ApprovedExH, "nopay_hrs" => $Nopay_Hrs, "Att_Allow" => $Att_Allowance,"DOT" => $Alldoubleotmin);
                         $whereArray = array("ID_roster" => $ID_Roster);
+                        $result = $this->Db_model->updateData("tbl_individual_roster", $data_arr, $whereArray);
+                    }elseif ($Day == "OFF") {
+                        $DayStatus = 'OFF';
+                        $Late_Status = 0;
+                        $Nopay = 0;
+                        $InRecords = $FromDate;
+                        $OutDate = $FromDate;
+                        $InTime = "00:00:00";
+                        $OutTime = "00:00:00";
+                        $data_arr = array("InRec" => 1, "InTime" => $InTime, "OutRec" => 1, "OutDate" => $OutDate, "OutTime" => $OutTime, "nopay" => $Nopay, "Is_processed" => 1, "DayStatus" => $DayStatus, "BeforeExH" => 0, "LateSt" => $Late_Status, "ApprovedExH" => $ApprovedExH);
+                        $whereArray = array("FDate" => $FromDate);
                         $result = $this->Db_model->updateData("tbl_individual_roster", $data_arr, $whereArray);
                     }
                 }

@@ -80,34 +80,45 @@ $html = '
                     <tr style="border-bottom: 1px solid black;"> 
                         <th style="font-size:11px;border-bottom: 1px solid black; width:60px;">EMP NO</th>
                         <th style="font-size:11px;border-bottom: 1px solid black; width:120px;">NAME</th>
-                        <th style="font-size:11px;border-bottom: 1px solid black;">DATE</th>
-                        <th style="font-size:11px;border-bottom: 1px solid black;">FROM TIME</th>
-                        <th style="font-size:11px;border-bottom: 1px solid black;">TO TIME</th>
+                        <th style="font-size:11px;border-bottom: 1px solid black; width:65px;">DEP</th>
+                        <th style="font-size:11px;border-bottom: 1px solid black; width:60px;">IN DATE</th>
                         <th style="font-size:11px;border-bottom: 1px solid black;">IN TIME</th>
+                        <th style="font-size:11px;border-bottom: 1px solid black; width:60px;">OUT DATE</th>
                         <th style="font-size:11px;border-bottom: 1px solid black;">OUT TIME</th>
+                        
                         <th style="font-size:11px;border-bottom: 1px solid black; width:30px;">ST</th>         
                    <th style="font-size:11px;border-bottom: 1px solid black; width:40px;">LATE</th>
-                        <th style="font-size:11px;border-bottom: 1px solid black; width:30px;">OTH</th>      
+                   <th style="font-size:11px;border-bottom: 1px solid black; width:40px;">ED</th>
+                        <th style="font-size:11px;border-bottom: 1px solid black; width:30px;">OTH</th>   
+                        <th style="font-size:11px;border-bottom: 1px solid black; width:40px;">DOTH</th>    
                     </tr>
                 </thead>
              <tbody>';
 
 foreach ($data_set2 as $data) {
-    $Mint = $data->ApprovedExH;
+    $Mint = $data->AfterExH;
     $hours = floor($Mint / 60);
     $min = $Mint - ($hours * 60);
+
+    $dot = $data->DOT;
+    $dhours = floor($dot / 60);
+    $dmin = $dot - ($dhours * 60);
+    
 
     $html .= ' <tr>
                         <td  style="font-size:10px;  width:60px;">' . $data->EmpNo . '</td>
                         <td  style="font-size:10px; width:120px;">' . $data->Emp_Full_Name . '</td>
-                        <td style="font-size:10px;">' . $data->FDate . '</td> 
-                        <td style="font-size:10px;">' . $data->FTime . '</td>    
-                        <td style="font-size:10px;">' . $data->TTime . '</td>
-                        <td style="font-size:10px;">' . $data->InTime . '</td>
+                        <td  style="font-size:10px; width:65px;">' . $data->Dep_Name . '</td>
+                        <td style="font-size:10px; width:60px;">' . $data->InDate . '</td> 
+                        <td style="font-size:10px;">' . $data->InTime . '</td>    
+                        <td style="font-size:10px; width:60px;">' . $data->OutDate . '</td>
                         <td style="font-size:10px;">' . $data->OutTime . '</td>
+                        
                         <td style="font-size:10px;width:30px;">' . $data->DayStatus . '</td>
-                  <td style="font-size:10px;width:40px;">' . $data->NetLateM . '</td>
+                  <td style="font-size:10px;width:40px;">' . $data->LateM . '</td>
+                  <td style="font-size:10px;width:40px;">' . $data->EarlyDepMin . '</td>
                                       <td style="font-size:10px;">' . $hours . ':' . $min . '</td>
+                                      <td style="font-size:10px;">' . $dhours . ':' . $dmin . '</td>
                     </tr>'
 
     ;
