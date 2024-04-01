@@ -1,9 +1,15 @@
 {
-    "packages": [
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+        "This file is @generated automatically"
+    ],
+    "content-hash": "74a5be270190dda50da2e0d539b884a4",
+    "packages": [],
+    "packages-dev": [
         {
             "name": "mikey179/vfsstream",
             "version": "v1.1.0",
-            "version_normalized": "1.1.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/bovigo/vfsStream.git",
@@ -18,9 +24,7 @@
             "require": {
                 "php": ">=5.3.0"
             },
-            "time": "2012-08-25T12:49:29+00:00",
             "type": "library",
-            "installation-source": "dist",
             "autoload": {
                 "psr-0": {
                     "org\\bovigo\\vfs": "src/main/php"
@@ -35,11 +39,17 @@
                 "issues": "https://github.com/bovigo/vfsStream/issues",
                 "source": "https://github.com/bovigo/vfsStream/tree/v1.1.0"
             },
-            "install-path": "../mikey179/vfsstream"
+            "time": "2012-08-25T12:49:29+00:00"
         }
     ],
-    "dev": true,
-    "dev-package-names": [
-        "mikey179/vfsstream"
-    ]
+    "aliases": [],
+    "minimum-stability": "stable",
+    "stability-flags": [],
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": {
+        "php": ">=8.0.11"
+    },
+    "platform-dev": [],
+    "plugin-api-version": "2.6.0"
 }
