@@ -122,11 +122,16 @@ class Report_Attendance_ATT_Sum extends CI_Controller {
                                                                     ir.ShType,
                                                                     ir.FTime,
                                                                     ir.TTime,
+                                                                    ir.InDate,
+                                                                    ir.OutDate,
                                                                     ir.InTime,
                                                                     ir.OutTime,
+                                                                    ir.LateM,
+                                                                    ir.EarlyDepMin,
                                                                     ir.DayStatus,
-                                                                    ir.ApprovedExH,
+                                                                    ir.AfterExH,
                                                                      ir.NetLateM,
+                                                                     ir.DOT,
                                                                     br.B_name
                                                                 FROM
                                                                     tbl_individual_roster ir
@@ -140,7 +145,7 @@ class Report_Attendance_ATT_Sum extends CI_Controller {
                                                                     tbl_branches br on Emp.B_id = br.B_id
 
         
-                                                                    {$filter}  order by ir.FDate,ir.InTime;");
+                                                                    {$filter} GROUP BY ir.FDate , Emp.EmpNo order by Emp.Emp_Full_Name,ir.FDate;");
 
 //        var_dump($data);die;
 

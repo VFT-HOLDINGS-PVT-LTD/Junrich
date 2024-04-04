@@ -1144,15 +1144,15 @@ class Attendance_Process extends CI_Controller
                 }
             }
             
-            $this->session->set_flashdata('success_message', 'Attendance Process successfully');
-            redirect('/Attendance/Attendance_Process_New');
+            // $this->session->set_flashdata('success_message', 'Attendance Process successfully');
+            // redirect('/Attendance/Attendance_Process_New');
 
         } else {
-            $this->session->set_flashdata('success_message', 'Attendance Process successfully');
-            redirect('/Attendance/Attendance_Process_New');
+            // $this->session->set_flashdata('success_message', 'Attendance Process successfully');
+            // redirect('/Attendance/Attendance_Process_New');
 
         }
-        $this->session->set_flashdata('success_message', 'Attendance Process successfully');
-        redirect('/Attendance/Attendance_Process_New');
+        // $this->session->set_flashdata('success_message', 'Attendance Process successfully');
+        // redirect('/Attendance/Attendance_Process_New');
     }
 }

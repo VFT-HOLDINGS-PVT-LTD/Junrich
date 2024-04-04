@@ -95,7 +95,7 @@ $html = '
 $emtnocheck = "";
 $datenocheck = "";
 foreach ($data_set2 as $data) {
-    $Mint = $data->ApprovedExH;
+    $Mint = $data->AfterExH;
     $hours = floor($Mint / 60);
     $min = $Mint - ($hours * 60);
 
