@@ -931,31 +931,31 @@ class Attendance_Process_New extends CI_Controller
                         $Att_Allowance = 0;
                     }
                     
-                    // echo $FromDate;
-                    //     echo "<br/>";
-                    //     echo $ID_Roster;
-                    //     echo "<br/>";
-                    //     echo $EmpNo . "  " . $InTime . " " . $InDate;
-                    //     echo "<br/>";
-                    //     echo $EmpNo . "  " . $SHFT . " " . $SHTT;
-                    //     echo "<br/>";
-                    //     echo $EmpNo . "  " . $OutTime . " " . $OutDate;
-                    //     echo "<br/>";
-                    //     echo $DayStatus;
-                    //     echo "<br/>";
-                    //     echo $Shift_Day;
-                    //     echo "<br/>";
-                    //     echo $ID_Roster;
-                    //     echo "<br/>";
-                    //     echo "late = " . $lateM;
-                    //     echo "<br/>";
-                    //     // echo "double ot" . $Alldoubleotmin;
-                    //     // echo "<br/>";
-                    //     echo "ottime" . $AfterShiftWH;
-                    //     echo "<br/>";
-                    //     echo "<br/>";
-                    //     echo "<br/>";
-                    //     echo "<br/>";
+                    echo $FromDate;
+                        echo "<br/>";
+                        echo $ID_Roster;
+                        echo "<br/>";
+                        echo $EmpNo . "  " . $InTime . " " . $InDate;
+                        echo "<br/>";
+                        echo $EmpNo . "  " . $SHFT . " " . $SHTT;
+                        echo "<br/>";
+                        echo $EmpNo . "  " . $OutTime . " " . $OutDate;
+                        echo "<br/>";
+                        echo $DayStatus;
+                        echo "<br/>";
+                        echo $Shift_Day;
+                        echo "<br/>";
+                        echo $ID_Roster;
+                        echo "<br/>";
+                        echo "late = " . $lateM;
+                        echo "<br/>";
+                        // echo "double ot" . $Alldoubleotmin;
+                        // echo "<br/>";
+                        echo "ottime" . $AfterShiftWH;
+                        echo "<br/>";
+                        echo "<br/>";
+                        echo "<br/>";
+                        echo "<br/>";
                     
                     $data_arr = array("InRec" => 1, "InDate" => $FromDate, "InTime" => $InTime, "OutRec" => 1, "OutDate" => $OutDate, "OutTime" => $OutTime, "nopay" => $Nopay, "Is_processed" => 1, "DayStatus" => $DayStatus, "BeforeExH" => $BeforeShift, "AfterExH" => $AfterShiftWH, "LateSt" => $Late_Status, "LateM" => $lateM, "EarlyDepMin" => $ED, "NetLateM" => $NetLateM, "ApprovedExH" => $ApprovedExH, "nopay_hrs" => $Nopay_Hrs, "Att_Allow" => $Att_Allowance);
                     $whereArray = array("ID_roster" => $ID_Roster);
@@ -964,15 +964,15 @@ class Attendance_Process_New extends CI_Controller
                 }
             }
             // }
-            $this->session->set_flashdata('success_message', 'Attendance Process successfully');
-            redirect('/Attendance/Attendance_Process_New');
+            // $this->session->set_flashdata('success_message', 'Attendance Process successfully');
+            // redirect('/Attendance/Attendance_Process_New');
 
         } else {
-            $this->session->set_flashdata('success_message', 'Attendance Process successfully');
-            redirect('/Attendance/Attendance_Process_New');
+            // $this->session->set_flashdata('success_message', 'Attendance Process successfully');
+            // redirect('/Attendance/Attendance_Process_New');
 
         }
-        $this->session->set_flashdata('success_message', 'Attendance Process successfully');
-        redirect('/Attendance/Attendance_Process_New');
+        // $this->session->set_flashdata('success_message', 'Attendance Process successfully');
+        // redirect('/Attendance/Attendance_Process_New');
     }
 }
