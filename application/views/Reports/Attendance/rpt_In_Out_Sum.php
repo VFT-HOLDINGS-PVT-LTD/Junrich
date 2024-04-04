@@ -83,9 +83,7 @@ $html = '
                         <th style="font-size:11px;border-bottom: 1px solid black; width:30px;">DAY</th> 
                         <th style="font-size:11px;border-bottom: 1px solid black; width:60px;">IN DATE</th>
                         <th style="font-size:11px;border-bottom: 1px solid black;">IN TIME</th>
-                        <th style="font-size:11px;border-bottom: 1px solid black; width:60px;">OUT DATE</th>
                         <th style="font-size:11px;border-bottom: 1px solid black;">OUT TIME</th>
-                        
                         <th style="font-size:11px;border-bottom: 1px solid black; width:30px;">ST</th>         
                    <th style="font-size:11px;border-bottom: 1px solid black; width:40px;">LATE</th>
                    <th style="font-size:11px;border-bottom: 1px solid black; width:30px;">ED</th>
@@ -97,7 +95,7 @@ $html = '
 $emtnocheck = "";
 $datenocheck = "";
 foreach ($data_set2 as $data) {
-    $Mint = $data->AfterExH;
+    $Mint = $data->ApprovedExH;
     $hours = floor($Mint / 60);
     $min = $Mint - ($hours * 60);
 
