@@ -938,7 +938,7 @@ class Attendance_Process_New extends CI_Controller
                         //****Individual Roster ID
                         $ID_Roster = $SH['SH'][0]->ID_roster;
                         $dt_in_Records['dt_in_Records'] = $this->Db_model->getfilteredData("select min(AttTime) as INTime,Enroll_No,AttDate,EventID from tbl_u_attendancedata where Enroll_No='$EmpNo' and AttDate='" . $FromDate . "' and AttTime BETWEEN '06:00:00' AND '13:00:00' ");
-                        $dt_in_Records['dt_out_Records'] = $this->Db_model->getfilteredData("select max(AttTime) as OUTTime,Enroll_No,AttDate,EventID from tbl_u_attendancedata where Enroll_No='$EmpNo' and AttDate='" . $FromDate . "' and AttTime BETWEEN '13:00:00' AND '22:00:00' ");
+                        $dt_in_Records['dt_out_Records'] = $this->Db_model->getfilteredData("select max(AttTime) as OUTTime,Enroll_No,AttDate,EventID from tbl_u_attendancedata where Enroll_No='$EmpNo' and AttDate='" . $FromDate . "' and AttTime BETWEEN '13:00:00' AND '23:59:59' ");
                         $InsunIN = $dt_in_Records['dt_in_Records'][0]->INTime;
                         $OutsunOUT = $dt_in_Records['dt_out_Records'][0]->OUTTime;
                         if (!empty($OutsunOUT)) {
@@ -951,10 +951,7 @@ class Attendance_Process_New extends CI_Controller
                             $iCalcOut = round(($OutTimeSrt - $SHEndTime) / 60);
                             $Alldoubleotmin = $iCalcOut;
                             $DayStatus = 'EX';
-                            $InTime = $InsunIN;
-                            $OutTime = $OutsunOUT;
-                            $InDate = $FromDate;
-                            $OutDate = $FromDate;
+                          
                         }
                     }
 

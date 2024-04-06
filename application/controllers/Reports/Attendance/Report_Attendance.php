@@ -166,7 +166,8 @@ class Report_Attendance extends CI_Controller
             $sheet->setCellValue('B' . $x, $row->Emp_Full_Name);
             $wrokhours = $this->Db_model->getfilteredData("SELECT SUM(Day_Type) AS TotalTimeDifferenceInDays 
             FROM tbl_individual_roster  
-            WHERE tbl_individual_roster.ShiftDay != 'SUN' AND tbl_individual_roster.EmpNo = '$row->EmpNo' AND tbl_individual_roster.DayStatus = 'PR'");
+            WHERE tbl_individual_roster.ShiftDay != 'SUN' AND tbl_individual_roster.EmpNo = '$row->EmpNo' AND (tbl_individual_roster.DayStatus = 'PR' 
+				OR tbl_individual_roster.DayStatus = 'EX') ");
 
             $sheet->setCellValue('C' . $x, $wrokhours[0]->TotalTimeDifferenceInDays);
             $sundayhours = $this->Db_model->getfilteredData("SELECT SUM(CASE WHEN Day_Type > 0 THEN Day_Type ELSE 0 END) AS TotalTimeDifferenceInDayss 
