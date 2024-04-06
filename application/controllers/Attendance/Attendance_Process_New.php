@@ -680,7 +680,7 @@ class Attendance_Process_New extends CI_Controller
 
                                 //*******Get Minutes
                                 $iCalcOut = (($OutTimeSrt - $SHEndTime) / 60);
-                                $icalData = $iCalcOut - $MinAS;//windi 30kin pase OT hedenne(tbl_ot_pattern_dtl eken balanna)
+                                $icalData = $iCalcOut - 30;//windi 30kin pase OT hedenne(tbl_ot_pattern_dtl eken balanna)
 
                             } else if ($AfterShift == 0) {
 
@@ -725,7 +725,7 @@ class Attendance_Process_New extends CI_Controller
                                 $totalMinutes = round($interval / 60); // Convert seconds to minutes
 
                                 // Subtract 30 minutes
-                                $totalMinutes -= 60;
+                                $totalMinutes -= 90;
 
                                 // Store the result in $icalData
                                 $icalData = $totalMinutes;
@@ -872,15 +872,7 @@ class Attendance_Process_New extends CI_Controller
                         $OutTime = "00:00:00";
                     }
 
-                    if ($Day == "OFF") {
-                        $DayStatus = 'OFF';
-                        $Late_Status = 0;
-                        $Nopay = 0;
-                        $InRecords = $FromDate;
-                        $OutDate = $FromDate;
-                        $InTime = "00:00:00";
-                        $OutTime = "00:00:00";
-                    }
+                    
 
                     // $SH_EX_OT = 0;
                     // $NetLateM = 0;
@@ -926,11 +918,52 @@ class Attendance_Process_New extends CI_Controller
                         $Nopay_Hrs = 0;
                         $Att_Allowance = 0;
                     }
+                    $Alldoubleotmin = 0;
+                    if ($Day == "OFF"||$Day == "EX") {
+                        $OutTime = 0;
+                        $OutDate = 0;
+                        $SHFT = 0;
+                        $SHTT = 0;
+                        $InTime = 0;
+                        $ID_Roster = 0;
+                        $Shift_Day = 0;
+                        $Alldoubleotmin = 0;
+                        $Allnomalotmin = 0;
+                        $DayStatus = 'OFF';
+                        $SH['SH'] = $this->Db_model->getfilteredData("select ID_roster,EmpNo,ShiftCode,ShType,ShiftDay,Day_Type,FDate,FTime,TDate,TTime,ShType,GracePrd from tbl_individual_roster where Is_processed=0 and EmpNo='$EmpNo' and FDate='$FromDate' ");
+                        $Shift_Day = $SH['SH'][0]->ShiftDay;
 
-                    
-                    $data_arr = array("InRec" => 1, "InDate" => $FromDate, "InTime" => $InTime, "OutRec" => 1, "OutDate" => $OutDate, "OutTime" => $OutTime, "nopay" => $Nopay, "Is_processed" => 1, "DayStatus" => $DayStatus, "AfterExH" => $AfterShiftWH, "LateSt" => $Late_Status, "LateM" => $lateM, "EarlyDepMin" => $ED, "NetLateM" => $NetLateM, "ApprovedExH" => $ApprovedExH, "nopay_hrs" => $Nopay_Hrs, "Att_Allow" => $Att_Allowance);
-                    $whereArray = array("ID_roster" => $ID_Roster);
-                    $result = $this->Db_model->updateData("tbl_individual_roster", $data_arr, $whereArray);
+                        //****Shift Type DU| EX
+                        $ShiftType = $SH['SH'][0]->ShType;
+                        //****Individual Roster ID
+                        $ID_Roster = $SH['SH'][0]->ID_roster;
+                        $dt_in_Records['dt_in_Records'] = $this->Db_model->getfilteredData("select min(AttTime) as INTime,Enroll_No,AttDate,EventID from tbl_u_attendancedata where Enroll_No='$EmpNo' and AttDate='" . $FromDate . "' and AttTime BETWEEN '06:00:00' AND '13:00:00' ");
+                        $dt_in_Records['dt_out_Records'] = $this->Db_model->getfilteredData("select max(AttTime) as OUTTime,Enroll_No,AttDate,EventID from tbl_u_attendancedata where Enroll_No='$EmpNo' and AttDate='" . $FromDate . "' and AttTime BETWEEN '13:00:00' AND '22:00:00' ");
+                        $InsunIN = $dt_in_Records['dt_in_Records'][0]->INTime;
+                        $OutsunOUT = $dt_in_Records['dt_out_Records'][0]->OUTTime;
+                        if (!empty($OutsunOUT)) {
+                            if (empty($InsunIN)) {
+                                $InsunIN = '08:00:00';
+                                // $DaysunOUT = date('Y-m-d', strtotime($FromDate . ' +1 day'));
+                            }
+                            $OutTimeSrt = strtotime($OutsunOUT);
+                            $SHEndTime = strtotime($InsunIN);
+                            $iCalcOut = round(($OutTimeSrt - $SHEndTime) / 60);
+                            $Alldoubleotmin = $iCalcOut;
+                            $DayStatus = 'EX';
+                            $InTime = $InsunIN;
+                            $OutTime = $OutsunOUT;
+                            $InDate = $FromDate;
+                            $OutDate = $FromDate;
+                        }
+                    }
+
+                    $data_arr = array("InRec" => 1, "InDate" => $InDate, "InTime" => $InTime,"FTime" => $SHFT,"TTime" => $SHTT, "OutRec" => 1, "OutDate" => $OutDate, "OutTime" => $OutTime, "nopay" => $Nopay, "Is_processed" => 1, "DayStatus" => $DayStatus, "BeforeExH" => 0, "AfterExH" => $AfterShiftWH, "LateSt" => $Late_Status, "LateM" => $lateM, "EarlyDepMin" => $ED, "NetLateM" => $NetLateM, "ApprovedExH" => $ApprovedExH, "nopay_hrs" => $Nopay_Hrs, "Att_Allow" => $Att_Allowance,"DOT" => $Alldoubleotmin);
+                        $whereArray = array("ID_roster" => $ID_Roster);
+                        $result = $this->Db_model->updateData("tbl_individual_roster", $data_arr, $whereArray);
+                    // $data_arr = array("InRec" => 1, "InDate" => $FromDate, "InTime" => $InTime, "OutRec" => 1, "OutDate" => $OutDate, "OutTime" => $OutTime, "nopay" => $Nopay, "Is_processed" => 1, "DayStatus" => $DayStatus, "AfterExH" => $AfterShiftWH, "LateSt" => $Late_Status, "LateM" => $lateM, "EarlyDepMin" => $ED, "NetLateM" => $NetLateM, "ApprovedExH" => $ApprovedExH, "nopay_hrs" => $Nopay_Hrs, "Att_Allow" => $Att_Allowance);
+                    // $whereArray = array("ID_roster" => $ID_Roster);
+                    // $result = $this->Db_model->updateData("tbl_individual_roster", $data_arr, $whereArray);
 
                 }
             }

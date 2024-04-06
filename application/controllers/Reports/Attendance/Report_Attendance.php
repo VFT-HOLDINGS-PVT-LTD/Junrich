@@ -171,21 +171,32 @@ class Report_Attendance extends CI_Controller
             $sheet->setCellValue('C' . $x, $wrokhours[0]->TotalTimeDifferenceInDays);
             $sundayhours = $this->Db_model->getfilteredData("SELECT SUM(CASE WHEN Day_Type > 0 THEN Day_Type ELSE 0 END) AS TotalTimeDifferenceInDayss 
             FROM tbl_individual_roster  
-            WHERE tbl_individual_roster.ShiftDay = 'SUN' AND tbl_individual_roster.EmpNo = '$row->EmpNo' AND tbl_individual_roster.DayStatus = 'PR'");
+            WHERE tbl_individual_roster.ShiftDay = 'SUN' AND tbl_individual_roster.EmpNo = '$row->EmpNo' AND (tbl_individual_roster.DayStatus = 'EX' 
+				OR tbl_individual_roster.DayStatus = 'HD')");
             $swork = "0";
-            if(!empty($sundayhours[0]->TotalTimeDifferenceInDayss)){
+            if (!empty($sundayhours[0]->TotalTimeDifferenceInDayss)) {
                 $swork = $sundayhours[0]->TotalTimeDifferenceInDayss;
             }
-            $sheet->setCellValue('D' . $x,$swork );
-            $leave = $this->Db_model->getfilteredData("SELECT SUM(Is_Leave) AS `leave` FROM tbl_individual_roster ir WHERE ir.EmpNo = '$row->EmpNo'");
+            $sheet->setCellValue('D' . $x, $swork);
+            $leave = $this->Db_model->getfilteredData("SELECT SUM(nopay) AS `leave` FROM tbl_individual_roster ir WHERE ir.EmpNo = '$row->EmpNo'");
 
             $sheet->setCellValue('E' . $x, $leave[0]->leave);
             $not = $this->Db_model->getfilteredData("SELECT SUM(CASE WHEN AfterExH > 0 THEN AfterExH ELSE 0 END) AS TotalAfterExH FROM tbl_individual_roster WHERE tbl_individual_roster.ShType = 'DU' AND tbl_individual_roster.EmpNo = '$row->EmpNo'");
+            $Mint1 = $not[0]->TotalAfterExH;
+            $hours1 = floor($Mint1 / 60);
+            $min1 = $Mint1 - ($hours1 * 60);
+            $nnot = $hours1 . '.' . $min1;
 
-            $sheet->setCellValue('F' . $x, (round($not[0]->TotalAfterExH / 60, 2)));
-            $dot = $this->Db_model->getfilteredData("SELECT SUM(DOT) AS TotalAfterExH FROM tbl_individual_roster ir WHERE ir.ShiftDay = 'SUN' AND ir.EmpNo = '$row->EmpNo'");
-            $sheet->setCellValue('G' . $x, $dot[0]->TotalAfterExH);
+            $sheet->setCellValue('F' . $x, $nnot);
             
+
+            $dot1 = $this->Db_model->getfilteredData("SELECT SUM(DOT) AS TotalAfterExH FROM tbl_individual_roster ir WHERE ir.EmpNo = '$row->EmpNo'");
+            $dot = $dot1[0]->TotalAfterExH;
+            $dhours = floor($dot / 60);
+            $dmin = $dot - ($dhours * 60);
+            $ddot = $dhours . '.' . $dmin;
+            $sheet->setCellValue('G' . $x, $ddot);
+
             $x++;
         }
         $writer = new Xlsx($spreadsheet);

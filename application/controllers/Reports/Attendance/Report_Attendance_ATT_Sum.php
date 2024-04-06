@@ -145,10 +145,29 @@ class Report_Attendance_ATT_Sum extends CI_Controller {
                                                                     tbl_branches br on Emp.B_id = br.B_id
 
         
-                                                                    {$filter} GROUP BY ir.FDate , Emp.EmpNo order by Emp.Emp_Full_Name,ir.FDate;");
+                                                                    {$filter} order by Emp.Emp_Full_Name,ir.FDate;");
 
 //        var_dump($data);die;
-
+// foreach ($data['data_set2'] as $data) {
+//     echo $data->EmpNo;
+//     echo "<br>";
+//     echo $data->Emp_Full_Name;
+//     echo "<br>";
+//     echo $data->Emp_Full_Name;
+//     echo "<br>";
+//     echo $data->ShiftDay;
+//     echo "<br>";
+//     echo $data->InTime;
+//     echo "<br>";
+//     echo $data->OutDate;
+//     echo "<br>";
+//     echo $data->OutTime;
+//     echo "<br>";
+//     echo $data->LateM;
+//     echo "<br>";
+//     echo $data->InDate;
+//     echo "<br>";echo "<br>";echo "<br>";echo "<br>";
+// }
         $this->load->view('Reports/Attendance/rpt_In_Out_Sum', $data);
     }
 
