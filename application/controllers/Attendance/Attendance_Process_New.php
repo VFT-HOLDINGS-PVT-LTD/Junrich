@@ -746,7 +746,7 @@ class Attendance_Process_New extends CI_Controller
                                 // $icalData = $iCalcOut - $MinAS;//windi 30kin pase OT hedenne(tbl_ot_pattern_dtl eken balanna)
 
                             } else if ($AfterShift == 0) {//30m gap ekak nethnm
-// check
+                                // check
                                 // Define the two dates
                                 $date1 = new DateTime($SHTT);
                                 $date2 = new DateTime($OutTime);
@@ -953,6 +953,12 @@ class Attendance_Process_New extends CI_Controller
                             $DayStatus = 'EX';
                           
                         }
+                        
+                        
+                    }
+                    if ($dtEmp['EmpData'][$x]->Dep_ID==1) {
+                        $Alldoubleotmin = 0;
+                        $AfterShiftWH = 0;
                     }
 
                     $data_arr = array("InRec" => 1, "InDate" => $InDate, "InTime" => $InTime,"FTime" => $SHFT,"TTime" => $SHTT, "OutRec" => 1, "OutDate" => $OutDate, "OutTime" => $OutTime, "nopay" => $Nopay, "Is_processed" => 1, "DayStatus" => $DayStatus, "BeforeExH" => 0, "AfterExH" => $AfterShiftWH, "LateSt" => $Late_Status, "LateM" => $lateM, "EarlyDepMin" => $ED, "NetLateM" => $NetLateM, "ApprovedExH" => $ApprovedExH, "nopay_hrs" => $Nopay_Hrs, "Att_Allow" => $Att_Allowance,"DOT" => $Alldoubleotmin);
