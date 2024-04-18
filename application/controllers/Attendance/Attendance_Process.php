@@ -251,6 +251,7 @@ class Attendance_Process extends CI_Controller
                             } else if (!empty($dt_in_Records_ni_sh['dt_Records'][0]->INTime) && !empty($InmoTime)) {
                                 $OutTime = '08:00:00';
                                 $OutDate = $fromnewdate;
+                                // echo $OutDate;
                             }
                         }
 
@@ -262,12 +263,15 @@ class Attendance_Process extends CI_Controller
 
                             $OutTimeSrt = strtotime($OutTime);
                             $SHEndTime = strtotime($SHTT);
-                            $GraseP = "00:30:00";
-                            $GrasePNew =  strtotime($GraseP);
+                            // $GraseP = "00:30:00";
+                            // $GrasePNew =  strtotime($GraseP);
 
                             //*******Get Minutes
                             $iCalcOut = round(($OutTimeSrt - $SHEndTime) / 60);
-                            $Allnomalotmin = $iCalcOut-30;
+                            $Allnomalotmin = $iCalcOut - 30;
+                            if ($Allnomalotmin < 0) {
+                                $Allnomalotmin = 0;
+                            }
                         }
                         //morning shift eka ilaga dawase thibboth thibboth ot
                         if (!empty($InmoTime) && !empty($OutDate) && $OutDate > $FromDate) {
@@ -286,6 +290,9 @@ class Attendance_Process extends CI_Controller
 
                             // Store the result in $icalData
                             $Allnomalotmin = $totalMinutes;
+                            if ($Allnomalotmin < 0) {
+                                $Allnomalotmin = 0;
+                            }
                         }
 
 
@@ -309,6 +316,9 @@ class Attendance_Process extends CI_Controller
                                 $lateM = 0;
                             }
                         }
+
+
+
                         //shift eka athule podi welawak wada kaloth
                         $InTimeSrt = strtotime($InmoTime);
                         $OutTimeSrt = strtotime($OutTime);
@@ -320,6 +330,44 @@ class Attendance_Process extends CI_Controller
                             $ED = 0;
                         }
                         //shift eka athule podi welawak wada kaloth
+                        //ED
+                        $ED = 0;
+                        // ED
+                        // $modatecheck = strtotime($InmoDate);
+                        // $mooutdatecheck = strtotime($OutDate);
+                        // if ($OutTime != '' || $OutTime != 0 && $InTime != $OutTime && $modatecheck == $mooutdatecheck && $Day == 'DU') {
+                        //     $SHStartTime = strtotime($SHTT);
+                        //     $InTimeSrt = strtotime($OutTime);
+                        //     $iCalc = ($SHStartTime - $InTimeSrt) / 60;
+                        //     $ED = $iCalc;
+                        //     if ($ED < 0) {
+                        //         $ED = 0;
+                        //     }
+                        //     echo $EmpNo;
+                        //     echo "<br/>";
+                        //     echo $InmoDate;
+                        //     echo "<br/>";
+                        //     echo $OutTime;
+                        //     echo "<br/>";
+                        //     echo $OutDate;
+                        //     echo "<br/>";
+                        //     echo $SHTT;
+                        //     echo "<br/>";
+                        //     echo $ED;
+                        //     echo "<br/>";
+                        //     echo "<br/>";
+                        //     echo "<br/>";
+                        //     echo "<br/>";
+
+                        //     // $satnightincheck = strtotime('13:30:00');
+                        //     // $satniintimeckeck['dt_Records'] = $this->Db_model->getfilteredData("select min(AttTime) as InTime,Enroll_No,AttDate,EventID from tbl_u_attendancedata where Enroll_No='$EmpNo' and AttDate='" . $FromDate . "' AND Status='1' and AttTime BETWEEN '06:00:00' AND '15:00:00' ");
+                        //     // $satintime = $satniintimeckeck['dt_Records'][0]->InTime;
+                        //     // if (!empty($satintime) && $InTimeSrt > $satnightincheck) {
+                        //     //     $lateM = 0;
+                        //     // }
+                        // }
+
+
                         // Get the CheckIN night shift /////////////////////////////////////////////////////
                         $dt_in_Records_ni_sh['dt_Records'] = $this->Db_model->getfilteredData("select min(AttTime) as INTime,Enroll_No,AttDate,EventID from tbl_u_attendancedata where Enroll_No='$EmpNo' and AttDate='" . $FromDate . "' AND Status='0' and AttTime BETWEEN '15:00:00' AND '22:00:00'  ");
                         $InRecords = $dt_in_Records_ni_sh['dt_Records'][0]->AttDate;
@@ -393,8 +441,7 @@ class Attendance_Process extends CI_Controller
                                     //****Shift to time
                                     $SHTT = '02:00:00';
                                 }
-                            }else if (empty($Manual)) {
-
+                            } else if (empty($Manual)) {
                             }
                         }
                         if (empty($OutDate) || $OutDate == 0) {
@@ -405,10 +452,10 @@ class Attendance_Process extends CI_Controller
                             if (!empty($dt_in_Records_mo_sh['dt_Records'][0]->INTime) && !empty($InTime)) {
                                 $OutTime = $dt_in_Records_mo_sh['dt_Records'][0]->INTime;
                                 $OutDate = $fromnewdate;
-                            }else if(empty($dt_in_Records_mo_sh['dt_Records'][0]->INTime)){
+                            } else if (empty($dt_in_Records_mo_sh['dt_Records'][0]->INTime)) {
                                 $OutTime = '08:00:00';
                                 $OutDate = $fromnewdate;
-                            } 
+                            }
                         }
 
 
@@ -432,11 +479,14 @@ class Attendance_Process extends CI_Controller
                         if (!empty($InTime) && !empty($OutDate) && $OutDate > $FromDate) {
                             $OutTimeSrt = strtotime($OutTime);
                             $SHEndTime = strtotime($SHTT);
-                           
+
 
                             //*******Get Minutes
                             $iCalcOut = round(($OutTimeSrt - $SHEndTime) / 60);
-                            $Allnomalotmin = $iCalcOut-30;
+                            $Allnomalotmin = $iCalcOut - 30;
+                            if ($Allnomalotmin < 0) {
+                                $Allnomalotmin = 0;
+                            }
                         }
                         //shift eka athule podi welawak wada kaloth
                         $InTimeSrt = strtotime($InTime);
@@ -456,7 +506,40 @@ class Attendance_Process extends CI_Controller
                             $InTime = $InmoTime;
                             $InDate = $InmoDate;
                         }
+                        // //ED
+                        $ED = 0;
+                        // // ED
 
+                        // if ($OutTime != '' || $OutTime != 0 && $InTime != $OutTime && $Day == 'DU') {
+                        //     $SHStartTime = strtotime($SHTT);
+                        //     $InTimeSrt = strtotime($OutTime);
+                        //     $iCalc = ($SHStartTime - $InTimeSrt) / 60;
+                        //     $ED = $iCalc;
+                        //     if ($ED < 0) {
+                        //         $ED = 0;
+                        //     }
+                        //     echo $EmpNo;
+                        //     echo "<br/>";
+                        //     echo $InmoDate;
+                        //     echo "<br/>";
+                        //     echo $OutTime;
+                        //     echo "<br/>";
+                        //     echo $OutDate;
+                        //     echo "<br/>";
+                        //     echo $SHTT;
+                        //     echo "<br/>";
+                        //     echo $ED;
+                        //     echo "<br/>";
+                        //     echo "<br/>";
+                        //     echo "<br/>";
+                        //     echo "<br/>";
+                        //     // $satnightincheck = strtotime('13:30:00');
+                        //     // $satniintimeckeck['dt_Records'] = $this->Db_model->getfilteredData("select min(AttTime) as InTime,Enroll_No,AttDate,EventID from tbl_u_attendancedata where Enroll_No='$EmpNo' and AttDate='" . $FromDate . "' AND Status='1' and AttTime BETWEEN '06:00:00' AND '15:00:00' ");
+                        //     // $satintime = $satniintimeckeck['dt_Records'][0]->InTime;
+                        //     // if (!empty($satintime) && $InTimeSrt > $satnightincheck) {
+                        //     //     $lateM = 0;
+                        //     // }
+                        // }
                         if ($InTime == $OutTime || $OutTime == null || $OutTime == '') {
                             $DayStatus = 'MS';
                             $Late_Status = 0;
@@ -1142,10 +1225,10 @@ class Attendance_Process extends CI_Controller
                             $SHFT = '08:00:00';
                             $SHTT = '17:00:00';
                         }
-                        if ($Allnomalotmin < 0) {
-                            $ED = abs($Allnomalotmin);
-                            $Allnomalotmin = 0;
-                        }
+                        // if ($Allnomalotmin < -30) {
+                        //     $ED = abs($Allnomalotmin);
+                        //     $Allnomalotmin = 0;
+                        // }
                     }
                     if ($Day == "OFF" || $Day == "EX") {
                         $OutTime = 0;
