@@ -145,7 +145,7 @@ class Report_Attendance_ATT_Sum extends CI_Controller {
                                                                     tbl_branches br on Emp.B_id = br.B_id
 
         
-                                                                    {$filter} order by Emp.Emp_Full_Name,ir.FDate;");
+                                                                    {$filter} order by Emp.EmpNo,ir.FDate;");
 
 //        var_dump($data);die;
 // foreach ($data['data_set2'] as $data) {

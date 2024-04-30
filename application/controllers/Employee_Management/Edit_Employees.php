@@ -138,6 +138,15 @@ class Edit_Employees extends CI_Controller {
 
         $Is_Allow = $this->input->post('Is_Allow');
 
+        $satus = $this->input->post('employee_status');
+        // echo $satus;
+        $st = '';
+        if($satus== 'Active'){
+            $st = "1";
+        }else{
+            $st = "0";
+        }
+
 //        var_dump($Is_Allow);
 //        die;
 //        if ($Is_Allow == null) {
@@ -192,7 +201,7 @@ class Edit_Employees extends CI_Controller {
             'Emp_Name_Int' => $this->input->post('txt_emp_name_init'),
             'Image' => $Image . ".jpg",
             'Gender' => $this->input->post('cmb_gender'),
-            'Status' => 1,
+            'Status' => $st,
             'Dep_ID' => $this->input->post('cmb_dep'),
             'Des_ID' => $this->input->post('cmb_desig'),
             'Grp_ID' => $this->input->post('cmb_group'),
@@ -236,7 +245,7 @@ class Edit_Employees extends CI_Controller {
         $result = $this->Db_model->updateData("tbl_empmaster", $data, $whereArr);
 
 
-        $this->session->set_flashdata('success_message', 'Update Employee has been added successfully');
+        $this->session->set_flashdata('success_message', 'Update Employee has been updated successfully');
 
 
         redirect('/Employee_Management/View_Employees/');
