@@ -95,7 +95,8 @@ class Attendance_Process_New extends CI_Controller
 
             for ($x = 0; $x < count($dtEmp['EmpData']); $x++) {
                 $EmpNo = $dtEmp['EmpData'][$x]->EmpNo;
-
+                $depId = $dtEmp['EmpData'][$x]->Dep_ID;
+                $hrshdaycheck = $dtEmp['EmpData'][$x]->ShiftDay;
 
                 $FromDate = $dtEmp['EmpData'][$x]->FDate;
                 $ToDate = $dtEmp['EmpData'][$x]->TDate;
@@ -121,6 +122,7 @@ class Attendance_Process_New extends CI_Controller
                     // tbl_individual_roster eke OFF dwas ganne 
                     $OFFDAY['OFF'] = $this->Db_model->getfilteredData("select `ShType` from tbl_individual_roster where FDate = '$FromDate'");
                     $Day = $OFFDAY['OFF'][0]->ShType;
+                    
 
                     if ($Day != "OFF") {
 
@@ -880,6 +882,11 @@ class Attendance_Process_New extends CI_Controller
                         //     //                            var_dump($dataArray);
                         //     $result = $this->Db_model->insertData("tbl_ot_d", $dataArray);
                         // }
+                        if ($depId == 1 && $hrshdaycheck == 'SAT') {
+                            $Alldoubleotmin = 0;
+                            $AfterShiftWH = 0;
+                            $DayStatus = 'OFF';
+                        }
 
                     }
                     // die;
@@ -939,19 +946,46 @@ class Attendance_Process_New extends CI_Controller
                             $OutTime = $OutsunOUT;
                             $InTime = $InsunIN;
                         }
-                        if ($dtEmp['EmpData'][$x]->Dep_ID == 1) {
+                        if ($depId == 1 && $hrshdaycheck == 'SAT') {
                             $Alldoubleotmin = 0;
                             $AfterShiftWH = 0;
                             $DayStatus = 'OFF';
                         }
                         
                     }
-                    if ($dtEmp['EmpData'][$x]->Dep_ID == 1 && $Day == "OFF"  ) {
+                    if ($depId == 1 && $Day == "OFF"  ) {
                         $Alldoubleotmin = 0;
                         $AfterShiftWH = 0;
                         $DayStatus = 'OFF';
                     }
 
+                    // echo $FromDate;
+                    // echo "<br/>";
+                    // echo $ID_Roster;
+                    // echo "<br/>";
+                    // echo $EmpNo . "  " . $InTime . " " . $InDate;
+                    // echo "<br/>";
+                    // echo $EmpNo . "  " . $SHFT . " " . $SHTT;
+                    // echo "<br/>";
+                    // echo $EmpNo . "  " . $OutTime . " " . $OutDate;
+                    // echo "<br/>";
+                    // echo $DayStatus;
+                    // echo "<br/>";
+                    // echo $Shift_Day;
+                    // echo "<br/>";
+                    // echo $ID_Roster;
+                    // echo "<br/>";
+                    // echo "late = " . $lateM;
+                    // echo "<br/>";
+                    // echo "ED = " . $ED;
+                    // echo "<br/>";
+                    // echo "double ot" . $Alldoubleotmin;
+                    // echo "<br/>";
+                    // echo "ottime" . $AfterShiftWH;
+                    // echo "<br/>";
+                    // echo "<br/>";
+                    // echo "<br/>";
+                    // echo "<br/>";
                     $data_arr = array("InRec" => 1, "InDate" => $InDate, "InTime" => $InTime, "FTime" => $SHFT, "TTime" => $SHTT, "OutRec" => 1, "OutDate" => $OutDate, "OutTime" => $OutTime, "nopay" => $Nopay, "Is_processed" => 1, "DayStatus" => $DayStatus, "BeforeExH" => 0, "AfterExH" => $AfterShiftWH, "LateSt" => $Late_Status, "LateM" => $lateM, "EarlyDepMin" => $ED, "NetLateM" => $NetLateM, "ApprovedExH" => $ApprovedExH, "nopay_hrs" => $Nopay_Hrs, "Att_Allow" => $Att_Allowance, "DOT" => $Alldoubleotmin);
                     $whereArray = array("ID_roster" => $ID_Roster);
                     $result = $this->Db_model->updateData("tbl_individual_roster", $data_arr, $whereArray);
