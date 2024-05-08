@@ -67,9 +67,9 @@ class Report_Leave_summery extends CI_Controller {
         
         if (($this->input->post("txt_emp"))) {
             if ($filter == null) {
-                $filter = " where tbl_empmaster.EmpNo, =$emp";
+                $filter = " where tbl_empmaster.EmpNo, =$emp and Emp.`Status` = 1 ";
             } else {
-                $filter .= " AND tbl_empmaster.EmpNo, =$emp";
+                $filter .= " AND tbl_empmaster.EmpNo, =$emp and Emp.`Status` = 1 ";
             }
         }
 

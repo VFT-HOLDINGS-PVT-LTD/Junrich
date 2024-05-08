@@ -75,9 +75,9 @@ class Report_Attendance extends CI_Controller
 
         if (($this->input->post("txt_from_date")) && ($this->input->post("txt_to_date"))) {
             if ($filter == '') {
-                $filter = " where  ir.FDate between '$from_date' and '$to_date'";
+                $filter = " where  ir.FDate between '$from_date' and '$to_date' and Emp.`Status` = 1 ";
             } else {
-                $filter .= " AND  ir.FDate between '$from_date' and '$to_date'";
+                $filter .= " AND  ir.FDate between '$from_date' and '$to_date' and Emp.`Status` = 1 ";
             }
         }
         if (($this->input->post("txt_emp"))) {

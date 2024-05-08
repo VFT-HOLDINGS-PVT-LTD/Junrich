@@ -238,7 +238,7 @@ class Shift_Allocation extends CI_Controller {
                 $EmpGrp = $EmpData[$i]->EmpNo;
 
 
-                $Group_Data = $this->Db_model->getfilteredData("SELECT Grp_ID from tbl_empmaster where EmpNo = $EmpGrp");
+                $Group_Data = $this->Db_model->getfilteredData("SELECT Grp_ID from tbl_empmaster where EmpNo = $EmpGrp and Status = 1");
                 $GroupID = $Group_Data[0]->Grp_ID;
 
 
