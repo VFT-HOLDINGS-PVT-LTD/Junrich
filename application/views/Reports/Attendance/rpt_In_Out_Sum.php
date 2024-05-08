@@ -117,7 +117,7 @@ foreach ($data_set2 as $data) {
                         <td  style="font-size:10px;border-top: 1px solid black;  width:60px;">' . $data->EmpNo . '</td>
                         <td  style="font-size:10px;border-top: 1px solid black; width:120px;">' . $data->Emp_Full_Name . '</td>
                         <td style="font-size:10px;width:30px;border-top: 1px solid black;">' . $data->ShiftDay . '</td>
-                        <td style="font-size:10px;border-top: 1px solid black; width:60px;">' . $data->InDate . '</td> 
+                        <td style="font-size:10px;border-top: 1px solid black; width:60px;">' . $data->FDate . '</td> 
                         <td style="font-size:10px;border-top: 1px solid black;">' . $data->InTime . '</td>    
                         <td style="font-size:10px;border-top: 1px solid black; width:60px;">' . $data->OutDate . '</td>
                         <td style="font-size:10px;border-top: 1px solid black;">' . $data->OutTime . '</td>
@@ -135,7 +135,7 @@ foreach ($data_set2 as $data) {
         <td  style="font-size:10px;  width:60px;"></td>
         <td  style="font-size:10px; width:120px;"></td>
         <td style="font-size:10px;width:30px;">' . $data->ShiftDay . '</td>
-        <td style="font-size:10px; width:60px;">' . $data->InDate . '</td> 
+        <td style="font-size:10px; width:60px;">' . $data->FDate . '</td> 
         <td style="font-size:10px;">' . $data->InTime . '</td>    
         <td style="font-size:10px; width:60px;">' . $data->OutDate . '</td>
         <td style="font-size:10px;">' . $data->OutTime . '</td>
