@@ -110,6 +110,7 @@ foreach ($data_set2 as $data) {
     $dhours = floor($dot / 60);
     $dmin = $dot - ($dhours * 60);
 
+    
 
     if ($emtnocheck != $data->EmpNo) {
         $html .= ' <tr>

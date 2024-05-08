@@ -122,7 +122,7 @@ class Leave_Entry extends CI_Controller {
 //        $IsBalance = $this->Db_model->getfilteredData("select count(Balance) as Balance_lv from tbl_leave_allocation where EmpNo= $Emp and Balance >=$DaysInc");
         $IsBalance = $this->Db_model->getfilteredData("select Balance from tbl_leave_allocation where EmpNo= $Emp and Lv_T_ID=$leave_type and Balance >=$DaysInc");
 
-        var_dump($Emp, $leave_type, $DaysInc);
+        // var_dump($Emp, $leave_type, $DaysInc);
 //        echo 'ssssss';
 //        var_dump($IsBalance);die;
 
@@ -131,8 +131,8 @@ class Leave_Entry extends CI_Controller {
          */
         $Roster_ID_S = $this->Db_model->getfilteredData("select count(ID_Roster) as ShftCount from tbl_individual_roster where FDate between '$from_date' and '$to_date' and EmpNo=$Emp");
 
-        echo '<pre>' . var_export($Roster_ID_S, true) . '</pre>';
-        var_dump($from_date, $to_date, $Emp);
+        // echo '<pre>' . var_export($Roster_ID_S, true) . '</pre>';
+        // var_dump($from_date, $to_date, $Emp);
 
 
 //        var_dump($Roster_ID_S);
@@ -178,8 +178,8 @@ class Leave_Entry extends CI_Controller {
                         'Year' => $year,
                         'Month' => $month,
                         'Reason' => $reason,
-                        'Trans_time' => $timestamp
-//                        'ID_Roster' => $Roster_ID[0]->ID_Roster
+                        'Trans_time' => $timestamp,
+                       'ID_Roster' => $Roster_ID[0]->ID_Roster
                 ));
 
                 $HasR = $this->Db_model->getfilteredData("select count(EmpNo) as HasRow from tbl_leave_entry where EmpNo = '$Emp' and Leave_Date = '$from_date' ");

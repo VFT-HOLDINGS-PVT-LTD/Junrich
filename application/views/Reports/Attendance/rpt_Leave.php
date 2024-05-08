@@ -73,7 +73,7 @@ $html = '
             <table cellpadding="3">
                 <thead style="border-bottom: #000 solid 1px;">
                     <tr style="border-bottom: 1px solid black;"> 
-                        <th style="font-size:11px;border-bottom: 1px solid black; width:60px;">EMP NO</th>
+                        <th style="font-size:11px;border-bottom: 1px solid black; width:80px;">EMP NO</th>
                         <th style="font-size:11px;border-bottom: 1px solid black; width:120px;">NAME</th>
                         <th style="font-size:11px;border-bottom: 1px solid black;">LEAVE TYPE</th>
                         <th style="font-size:11px;border-bottom: 1px solid black;">LEAVE DATE</th>
@@ -89,7 +89,7 @@ foreach ($data_set as $data) {
 
 
     $html .= ' <tr>
-                        <td  style="font-size:10px;  width:60px;">' . $data->EmpNo . '</td>
+                        <td  style="font-size:10px;  width:80px;">' . $data->EmpNo . '</td>
                         <td  style="font-size:10px; width:120px;">' . $data->Emp_Full_Name . '</td>
                         <td style="font-size:10px;">' . $data->leave_name . '</td> 
                         <td style="font-size:10px;">' . $data->Leave_Date . '</td>    

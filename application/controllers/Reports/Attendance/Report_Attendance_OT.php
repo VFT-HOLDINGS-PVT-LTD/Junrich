@@ -121,7 +121,8 @@ class Report_Attendance_OT extends CI_Controller {
                                                                     ir.InTime,
                                                                     ir.OutTime,
                                                                     ir.DayStatus,
-                                                                    ir.ApprovedExH,
+                                                                    ir.AfterExH,
+                                                                    ir.DOT,
                                                                     br.B_name
                                                                 FROM
                                                                     tbl_individual_roster ir
@@ -135,7 +136,7 @@ class Report_Attendance_OT extends CI_Controller {
                                                                     tbl_branches br on Emp.B_id = br.B_id
 
         
-                                                                    {$filter}");
+                                                                    {$filter}order by Emp.EmpNo,ir.FDate;");
 
 //        var_dump($data);die;
 

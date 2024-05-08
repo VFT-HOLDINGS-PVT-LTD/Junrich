@@ -30,8 +30,8 @@ $pdf->SetHeaderData($PDF_HEADER_LOGO, $PDF_HEADER_LOGO_WIDTH, $PDF_HEADER_TITLE 
 $pdf->setFooterData(array(0, 64, 0), array(0, 64, 128));
 
 // set header and footer fonts
-$pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
-$pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
+$pdf->setHeaderFont(array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
+$pdf->setFooterFont(array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
 
 // set default monospaced font
 $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
@@ -81,36 +81,43 @@ $html = '
                         <th style="font-size:11px;border-bottom: 1px solid black; width:60px;">EMP NO</th>
                         <th style="font-size:11px;border-bottom: 1px solid black; width:120px;">NAME</th>
                         <th style="font-size:11px;border-bottom: 1px solid black;">DATE</th>
+                        <th style="font-size:11px;border-bottom: 1px solid black;">DAY</th>
                         <th style="font-size:11px;border-bottom: 1px solid black;">FROM TIME</th>
                         <th style="font-size:11px;border-bottom: 1px solid black;">TO TIME</th>
                         <th style="font-size:11px;border-bottom: 1px solid black;">IN TIME</th>
                         <th style="font-size:11px;border-bottom: 1px solid black;">OUT TIME</th>
-                        <th style="font-size:11px;border-bottom: 1px solid black;">OT MIN</th>
-                        <th style="font-size:11px;border-bottom: 1px solid black;">OT HRS</th>
+                        <th style="font-size:11px;border-bottom: 1px solid black;">OT</th>
+                        <th style="font-size:11px;border-bottom: 1px solid black;">DOT</th>
 
                     </tr>
                 </thead>
              <tbody>';
 
+$emtnocheck = "";
+$datenocheck = "";
+
 foreach ($data_set as $data) {
-$Mint =   $data->ApprovedExH; 
-$hours = floor($Mint / 60);
-$min = $Mint - ($hours * 60); 
+    $Mint =   $data->AfterExH;
+    $hours = floor($Mint / 60);
+    $min = $Mint - ($hours * 60);
+
+    $dot = $data->DOT;
+    $dhours = floor($dot / 60);
+    $dmin = $dot - ($dhours * 60);
 
     $html .= ' <tr>
                         <td  style="font-size:10px;  width:60px;">' . $data->EmpNo . '</td>
                         <td  style="font-size:10px; width:120px;">' . $data->Emp_Full_Name . '</td>
-                        <td style="font-size:10px;">' . $data->FDate . '</td> 
+                        <td style="font-size:10px;">' . $data->FDate . '</td>
+                        <td style="font-size:10px;">' . $data->ShiftDay . '</td> 
                         <td style="font-size:10px;">' . $data->FTime . '</td>    
                         <td style="font-size:10px;">' . $data->TTime . '</td>
                         <td style="font-size:10px;">' . $data->InTime . '</td>
                         <td style="font-size:10px;">' . $data->OutTime . '</td>
-                            <td style="font-size:10px;">' . $data->ApprovedExH . '</td>
-                                <td style="font-size:10px;">' .$hours .':' . $min .  '</td>
+                            <td style="font-size:10px;">' . $hours . ':' . $min . '</td>
+                                <td style="font-size:10px;">' . $dhours . ':' . $dmin .  '</td>
 
-                    </tr>'
-
-    ;
+                    </tr>';
 }
 $html .= '</tbody>
                   
@@ -133,4 +140,3 @@ $pdf->Output('IN OUT Report' . $f_date . ' to ' . $t_date . '.pdf', 'I');
 //============================================================+
     // END OF FILE
     //============================================================+
-    
