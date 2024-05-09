@@ -662,7 +662,7 @@ class Attendance_Process_New extends CI_Controller
 
                                     //*******Get Minutes
                                     $iCalcOut = (($OutTimeSrt - $SHEndTime) / 60);
-                                    $icalData = $iCalcOut - 30; //windi 30kin pase OT hedenne(tbl_ot_pattern_dtl eken balanna)
+                                    $icalData = $iCalcOut - 15; //windi 30kin pase OT hedenne(tbl_ot_pattern_dtl eken balanna)
 
                                 } else if ($AfterShift == 0) {
 
@@ -740,7 +740,7 @@ class Attendance_Process_New extends CI_Controller
                                     $totalMinutes = round($interval / 60); // Convert seconds to minutes
 
                                     // Subtract 30 minutes
-                                    $totalMinutes -= 30;
+                                    $totalMinutes -= 15;
 
                                     // Store the result in $icalData
                                     $icalData = $totalMinutes;

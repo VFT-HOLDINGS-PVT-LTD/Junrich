@@ -268,7 +268,7 @@ class Attendance_Process extends CI_Controller
 
                             //*******Get Minutes
                             $iCalcOut = round(($OutTimeSrt - $SHEndTime) / 60);
-                            $Allnomalotmin = $iCalcOut - 30;
+                            $Allnomalotmin = $iCalcOut - 15;
                             if ($Allnomalotmin < 0) {
                                 $Allnomalotmin = 0;
                             }
@@ -483,7 +483,7 @@ class Attendance_Process extends CI_Controller
 
                             //*******Get Minutes
                             $iCalcOut = round(($OutTimeSrt - $SHEndTime) / 60);
-                            $Allnomalotmin = $iCalcOut - 30;
+                            $Allnomalotmin = $iCalcOut - 15;
                             if ($Allnomalotmin < 0) {
                                 $Allnomalotmin = 0;
                             }
