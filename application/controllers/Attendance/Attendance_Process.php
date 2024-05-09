@@ -140,11 +140,11 @@ class Attendance_Process extends CI_Controller
                             $ID_Roster = $SH['SH'][0]->ID_roster;
 
                             //****Shift from time
-                            $SHFT = '08:00:00';
+                            $SHFT = '08:05:00';
                             //****Shift to time
                             $SHTT = '17:00:00';
                             if ($Shift_Day == 'SAT') {
-                                $SHFT = '08:00:00';
+                                $SHFT = '08:05:00';
                                 //****Shift to time
                                 $SHTT = '13:30:00';
                             }
@@ -192,11 +192,11 @@ class Attendance_Process extends CI_Controller
                                 //****Individual Roster ID
                                 $ID_Roster = $SH['SH'][0]->ID_roster;
                                 //****Shift from time
-                                $SHFT = '08:00:00';
+                                $SHFT = '08:05:00';
                                 //****Shift to time
                                 $SHTT = '17:00:00';
                                 if ($Shift_Day == 'SAT') {
-                                    $SHFT = '08:00:00';
+                                    $SHFT = '08:05:00';
                                     //****Shift to time
                                     $SHTT = '13:30:00';
                                 }
@@ -222,11 +222,11 @@ class Attendance_Process extends CI_Controller
                                     //****Individual Roster ID
                                     $ID_Roster = $SH['SH'][0]->ID_roster;
                                     //****Shift from time
-                                    $SHFT = '08:00:00';
+                                    $SHFT = '08:05:00';
                                     //****Shift to time
                                     $SHTT = '17:00:00';
                                     if ($Shift_Day == 'SAT') {
-                                        $SHFT = '08:00:00';
+                                        $SHFT = '08:05:00';
                                         //****Shift to time
                                         $SHTT = '13:30:00';
                                     }
@@ -402,12 +402,12 @@ class Attendance_Process extends CI_Controller
 
                             //****Shift from time
                             if ($Shift_Day == 'SAT') {
-                                $SHFT = '08:00:00';
+                                $SHFT = '08:05:00';
                                 //****Shift to time
                                 $SHTT = '13:30:00';
                             } else {
                                 //****Shift from time
-                                $SHFT = '17:00:00';
+                                $SHFT = '17:05:00';
                                 //****Shift to time
                                 $SHTT = '02:00:00';
                             }
@@ -432,12 +432,12 @@ class Attendance_Process extends CI_Controller
                                 $ID_Roster = $SH['SH'][0]->ID_roster;
 
                                 if ($Shift_Day == 'SAT') {
-                                    $SHFT = '08:00:00';
+                                    $SHFT = '08:05:00';
                                     //****Shift to time
                                     $SHTT = '13:30:00';
                                 } else {
                                     //****Shift from time
-                                    $SHFT = '17:00:00';
+                                    $SHFT = '17:05:00';
                                     //****Shift to time
                                     $SHTT = '02:00:00';
                                 }
