@@ -43,9 +43,6 @@ class Payroll_Process extends CI_Controller
 
         $date = date_create();
         $timestamp = date_format($date, 'Y-m-d H:i:s');
-
-        $from_date = $this->input->post('txt_from_date');
-        $to_date = $this->input->post('txt_to_date');
         
 
         $dtEmp['EmpData'] = $this->Db_model->getfilteredData("SELECT EmpNo,EMP_ST_ID,Enroll_No, EPFNO,Dep_ID,Des_ID,RosterCode, Status  FROM  tbl_empmaster where status=1 and Active_process=1");
@@ -85,7 +82,7 @@ class Payroll_Process extends CI_Controller
                 $NopayDays = $Nopay[0]->nopay;
                 $Nopay_Hrs = $Nopay[0]->nopay_hrs;
 
-                var_dump($NopayDays . '------------');
+                // var_dump($NopayDays . '------------');
 
                 if ($NopayDays == 0) {
                     $NopayDays = 0;
@@ -1040,7 +1037,7 @@ class Payroll_Process extends CI_Controller
                 $OT_Rate = ((($BasicSal + $Fixed_Allowance) / 240) * 1.5);
                 $N_OT_Amount = $OT_Rate * ($N_OT_Hours / 60);
 
-                var_dump($D_OT_Hours . '_Emp' . $EmpNo);
+                
 
                 $OT_Rate_2 = ((($BasicSal + $Fixed_Allowance) / 240) * 2);
                 $D_OT_Amount = $OT_Rate_2 * ($D_OT_Hours / 60);

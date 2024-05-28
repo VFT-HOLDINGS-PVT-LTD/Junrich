@@ -706,7 +706,7 @@ class Attendance_Process_New extends CI_Controller
                                     $totalMinutes = round($interval / 60); // Convert seconds to minutes
 
                                     // Subtract 30 minutes
-                                    $totalMinutes -= 90;
+                                    $totalMinutes -= 15;
 
                                     // Store the result in $icalData
                                     $icalData = $totalMinutes;
@@ -911,6 +911,7 @@ class Attendance_Process_New extends CI_Controller
                     }
                     $Alldoubleotmin = 0;
                     if ($Day == "OFF" || $Day == "EX") {
+                        $Nopay = 0;
                         $OutTime = 0;
                         // $OutDate = 0;
                         $SHFT = 0;
@@ -974,6 +975,8 @@ class Attendance_Process_New extends CI_Controller
                     // echo $Shift_Day;
                     // echo "<br/>";
                     // echo $ID_Roster;
+                    // echo "<br/>";
+                    // echo $Nopay;
                     // echo "<br/>";
                     // echo "late = " . $lateM;
                     // echo "<br/>";

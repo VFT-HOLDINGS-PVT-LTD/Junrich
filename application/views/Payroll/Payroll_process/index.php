@@ -119,22 +119,27 @@
                                                                         </div>
 
                                                                     </div> -->
-                                                                <div class="form-group col-md-12">
                                                                     <div class="form-group col-sm-6">
-                                                                        <label for="focusedinput" class="col-sm-4 control-label">From Date</label>
+                                                                        <label for="focusedinput" class="col-sm-4 control-label">Month</label>
                                                                         <div class="col-sm-8">
-                                                                            <input type="text" class="form-control" required="" id="dpd1" name="txt_from_date">
+                                                                            <select required="" class="form-control" id="cmb_month" name="cmb_month">
+                                                                                <option value="">--Select--</option>
+                                                                                <option value="1">January</option>
+                                                                                <option value="2">February</option>
+                                                                                <option value="3">March</option>
+                                                                                <option value="4">April</option>
+                                                                                <option value="5">May</option>
+                                                                                <option value="6">June</option>
+                                                                                <option value="7">July</option>
+                                                                                <option value="8">August</option>
+                                                                                <option value="9">September</option>
+                                                                                <option value="10">October</option>
+                                                                                <option value="11">November</option>
+                                                                                <option value="12">December</option>
+                                                                            </select>
                                                                         </div>
 
                                                                     </div>
-
-                                                                    <div class="form-group col-sm-6">
-                                                                        <label for="focusedinput" class="col-sm-4 control-label">To Date</label>
-                                                                        <div class="col-sm-8">
-                                                                            <input type="text" class="form-control" required="" id="dpd2" name="txt_to_date">
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
 
 
                                                                 <br>

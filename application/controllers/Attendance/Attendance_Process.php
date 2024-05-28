@@ -286,7 +286,7 @@ class Attendance_Process extends CI_Controller
                             $totalMinutes = round($interval / 60); // Convert seconds to minutes
 
                             // Subtract 30 minutes
-                            $totalMinutes -= 60;
+                            $totalMinutes -= 15;
 
                             // Store the result in $icalData
                             $Allnomalotmin = $totalMinutes;
@@ -402,9 +402,9 @@ class Attendance_Process extends CI_Controller
 
                             //****Shift from time
                             if ($Shift_Day == 'SAT') {
-                                $SHFT = '08:05:00';
+                                $SHFT = '17:05:00';
                                 //****Shift to time
-                                $SHTT = '13:30:00';
+                                $SHTT = '22:30:00';
                             } else {
                                 //****Shift from time
                                 $SHFT = '17:05:00';
@@ -432,9 +432,9 @@ class Attendance_Process extends CI_Controller
                                 $ID_Roster = $SH['SH'][0]->ID_roster;
 
                                 if ($Shift_Day == 'SAT') {
-                                    $SHFT = '08:05:00';
+                                    $SHFT = '17:05:00';
                                     //****Shift to time
-                                    $SHTT = '13:30:00';
+                                    $SHTT = '22:30:00';
                                 } else {
                                     //****Shift from time
                                     $SHFT = '17:05:00';
@@ -478,12 +478,21 @@ class Attendance_Process extends CI_Controller
                         //night shift eka ot thibboth
                         if (!empty($InTime) && !empty($OutDate) && $OutDate > $FromDate) {
                             $OutTimeSrt = strtotime($OutTime);
+                            $nxtchecksat = strtotime('23:59:59');
                             $SHEndTime = strtotime($SHTT);
 
-
+                            
                             //*******Get Minutes
                             $iCalcOut = round(($OutTimeSrt - $SHEndTime) / 60);
                             $Allnomalotmin = $iCalcOut - 15;
+                            $dayconcattoday = $OutDate." ".$OutTime;
+                            $dayconcatprday = $FromDate." ".$SHTT;
+                            $dayconcattodaystrtotime = strtotime($dayconcattoday);
+                            $dayconcatprdaystrtotime = strtotime($dayconcatprday);
+                            if ($Shift_Day == 'SAT'&&$OutTimeSrt<$nxtchecksat) {
+                                $iCalc = round(($dayconcattodaystrtotime - $dayconcatprdaystrtotime) / 60);
+                                $Allnomalotmin = $iCalc - 15;
+                            }
                             if ($Allnomalotmin < 0) {
                                 $Allnomalotmin = 0;
                             }
@@ -1231,6 +1240,7 @@ class Attendance_Process extends CI_Controller
                         // }
                     }
                     if ($Day == "OFF" || $Day == "EX") {
+                        $Nopay = 0;
                         $OutTime = 0;
                         $OutDate = 0;
                         $SHFT = 0;
@@ -1284,6 +1294,8 @@ class Attendance_Process extends CI_Controller
                     // echo $Shift_Day;
                     // echo "<br/>";
                     // echo $ID_Roster;
+                    // echo "<br/>";
+                    // echo $Nopay;
                     // echo "<br/>";
                     // echo "late = " . $lateM;
                     // echo "<br/>";

@@ -239,6 +239,9 @@ $User_Name = $currentUser[0]->Emp_Full_Name;
                                 <?php if ($currentUser[0]->salary_advance == 1): ?>
                                     <li><a href="<?php echo base_url(); ?>Pay/Salary_Advance">SALARY ADVANCE</a></li>
                                 <?php endif; ?>
+                                <?php if ($currentUser[0]->allowance == 1): ?>
+                                    <li><a href="<?php echo base_url(); ?>Pay/Budget_Relevance">BUDGET RELEVANCE</a></li>
+                                <?php endif; ?>
 
                                 <?php if ($currentUser[0]->request_advance == 1): ?>
                                     <li><a href="<?php echo base_url(); ?>Pay/Salary_Advance_req">REQUEST SALARY ADVANCE</a></li>
