@@ -40,7 +40,7 @@
                             <ol class="breadcrumb">
 
                                 <li class=""><a href="">HOME</a></li>
-                                <li class="active"><a href="">PAY SHEET REPORT</a></li>
+                                <li class="active"><a href="">EPF REPORT</a></li>
 
                             </ol>
 
@@ -54,32 +54,46 @@
                                             <div class="col-xs-12">
 
 
-                                                <div class="row">
+                                                <div class="row" style="margin-bottom: 2px">
                                                     <div class="col-md-12">
                                                         <div class="panel panel-primary">
-                                                            <div class="panel-heading"><h2>PAY SHEET REPORT</h2></div>
+                                                            <div class="panel-heading"><h2>ETF REPORT</h2></div>
 
                                                             <div class="panel-body">
                                                                 <div style="font-size: 15px; font-weight: bold;" class="bg-bright">REPORT BY CATEGORIES</div>
-                                                                <form action="<?php echo base_url(); ?>Reports/Payroll/Paysheet/Pay_sheet_Report_By_Cat" class="form-horizontal" id="frm_in_out_rpt" name="frm_in_out_rpt" method="POST">
-
+                                                                <form action="<?php echo base_url(); ?>Reports/Payroll/ETF_Report/ETF_Report_Report_By_Cat" class="form-horizontal" id="frm_in_out_rpt" name="frm_in_out_rpt" method="POST">
 
 
 
                                                                     <div class="form-group col-sm-12">
                                                                         <div class="col-sm-6">
-                                                                            <img class="imagecss" src="<?php echo base_url(); ?>assets/images/paysheet.png" >
+                                                                            <img class="imagecss" src="<?php echo base_url(); ?>assets/images/epfImage.png" >
                                                                         </div>
 
                                                                     </div>
 
 
                                                                     <div class="form-group col-sm-3">
+                                                                        <label for="focusedinput" class="col-sm-4 control-label">Emp Name</label>
+                                                                        <div class="col-sm-8">
+                                                                            <input type="text" class="form-control" name="txt_emp_name" id="txt_emp_name" placeholder="Ex: Ashan">
+                                                                        </div>
+
+                                                                    </div>
+
+
+                                                                   <div class="form-group col-sm-3">
                                                                         <label for="focusedinput" class="col-sm-4 control-label">Year</label>
                                                                         <div class="col-sm-8">
                                                                             <select required="" class="form-control" id="cmb_year" name="cmb_year">
                                                                                 <option value="" default>-- Select --</option>
-                                                                                
+                                                                                <!-- <option value="2016">2016</option>
+                                                                                <option value="2017">2017</option>
+                                                                                <option value="2016">2018</option>
+                                                                                <option value="2017">2019</option> -->
+                                                                                <option value="2020">2020</option>
+                                                                                <option value="2021">2021</option>
+                                                                                <option value="2022">2022</option>
                                                                                 <option value="2023">2023</option>
                                                                                 <option value="2024">2024</option>
                                                                                 <option value="2025">2025</option>
@@ -87,7 +101,11 @@
                                                                                 <option value="2027">2027</option>
                                                                                 <option value="2028">2028</option>
                                                                                 <option value="2029">2029</option>
-                                                                                <option value="2030">2030</option>
+                                                                                <option value="2030">2031</option>
+                                                                                <option value="2030">2032</option>
+                                                                                <option value="2030">2033</option>
+                                                                                <option value="2030">2034</option>
+                                                                                <option value="2030">2035</option>
 
                                                                             </select>
                                                                         </div>
@@ -97,7 +115,7 @@
                                                                     <div class="form-group col-sm-3">
                                                                         <label for="focusedinput" class="col-sm-4 control-label">Month</label>
                                                                         <div class="col-sm-8">
-                                                                            <select required="" class="form-control" id="cmb_month" name="cmb_month">
+                                                                            <select class="form-control" id="cmb_month" name="cmb_month">
                                                                                 <option value="">--Select--</option>
                                                                                 <option value="1">January</option>
                                                                                 <option value="2">February</option>
@@ -117,47 +135,8 @@
                                                                     </div>
 
 
-
-                                                                    <div class="form-group col-sm-3">
-                                                                        <label for="focusedinput" class="col-sm-4 control-label">Branch</label>
-                                                                        <div class="col-sm-8">
-                                                                            <select class="form-control" id="cmb_branch" name="cmb_branch" >
-
-
-                                                                                <option value="" default>-- Select --</option>
-                                                                                <?php foreach ($data_branch as $t_data) { ?>
-                                                                                    <option value="<?php echo $t_data->B_id; ?>" ><?php echo $t_data->B_name; ?></option>
-
-                                                                                <?php }
-                                                                                ?>
-
-                                                                            </select>
-                                                                        </div>
-
-                                                                    </div>
-
-                                                                    <div class="form-group col-sm-3">
-                                                                        <label for="focusedinput" class="col-sm-4 control-label">Departments</label>
-                                                                        <div class="col-sm-8">
-                                                                            <select class="form-control" id="cmb_departments" name="cmb_departments" >
-
-
-                                                                                <option value="" default>-- Select --</option>
-                                                                                <?php foreach ($data_dep as $t_data) { ?>
-                                                                                    <option value="<?php echo $t_data->Dep_ID; ?>" ><?php echo $t_data->Dep_Name; ?></option>
-
-                                                                                <?php }
-                                                                                ?>
-
-                                                                            </select>
-                                                                        </div>
-
-                                                                    </div>
-
-
-
                                                                     <div class="col-sm-6">
-                                                                        <input  type="submit"  id="search" name="search" formtarget="_new" class="btn-green btn fa fa-check" value="&nbsp;&nbsp;VIEW&nbsp; REPORT" >
+                                                                        <input  type="submit"  id="search" name="search" formtarget="_new" class="btn-green btn fa fa-check" value="&nbsp;&nbsp;VIEW&nbsp; PAY SLIP" >
                                                                         <input type="button"  id="cancel" name="cancel" class="btn-danger-alt btn fa fa-check" value="&nbsp;&nbsp;CLEAR" >    
                                                                     </div>
                                                                 </form>
@@ -207,7 +186,7 @@
                 $("#cmb_comp").val("");
                 $("#txt_nic").val("");
                 $("#cmb_gender").val("");
-                $("#cmb_status").val("");
+                $("#cmb_month").val("");
 
 
             });

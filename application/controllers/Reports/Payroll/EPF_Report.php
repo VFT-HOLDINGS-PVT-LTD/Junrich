@@ -2,7 +2,7 @@
 
 defined('BASEPATH') or exit('No direct script access allowed');
 
-class Paysheet extends CI_Controller
+class EPF_Report extends CI_Controller
 {
 
     public function __construct()
@@ -26,13 +26,13 @@ class Paysheet extends CI_Controller
     public function index()
     {
 
-        $data['title'] = "Pay Sheet | HRM System";
+        $data['title'] = "EPF_Report | HRM System";
         $data['data_dep'] = $this->Db_model->getData('Dep_ID,Dep_Name', 'tbl_departments');
         $data['data_desig'] = $this->Db_model->getData('Des_ID,Desig_Name', 'tbl_designations');
         $data['data_cmp'] = $this->Db_model->getData('Cmp_ID,Company_Name', 'tbl_companyprofile');
         $data['data_branch'] = $this->Db_model->getData('B_id,B_name', 'tbl_branches');
         // $data['data_dep'] = $this->Db_model->getData('Dep_ID,Dep_Name', 'tbl_departments');
-        $this->load->view('Reports/Payroll/Paysheet_report', $data);
+        $this->load->view('Reports/Payroll/EPF_Report', $data);
     }
 
     /*
@@ -47,23 +47,24 @@ class Paysheet extends CI_Controller
         $this->load->view('Reports/Master/rpt_Departments', $Data);
     }
 
-    public function Pay_sheet_Report_By_Cat()
+    public function EPF_Report_Report_By_Cat()
     {
 
 
         $data['data_cmp'] = $this->Db_model->getData('Cmp_ID,Company_Name', 'tbl_companyprofile');
         date_default_timezone_set('Asia/Colombo');
-        $year = date("Y");
+        // $year = date("Y");
 
         $emp = $this->input->post("txt_emp");
         $emp_name = $this->input->post("txt_emp_name");
         $desig = $this->input->post("cmb_desig");
-        $year1 = $this->input->post("cmb_year");
+        $year = $this->input->post("cmb_year");
         $Month = $this->input->post("cmb_month");
         $to_date = $this->input->post("txt_to_date");
-        $branch = $this->input->post("cmb_branch");
-        $departments = $this->input->post("cmb_departments");
+        // $branch = $this->input->post("cmb_branch");
+        // $departments = $this->input->post("cmb_departments");
 
+        $data['year'] = $year;
 
         //        $data['f_date'] = $from_date;
 //        $data['t_date'] = $to_date;
@@ -78,19 +79,27 @@ class Paysheet extends CI_Controller
 //            }
 //        }
 
-        if (($this->input->post("cmb_year"))) {
+        if (($this->input->post("txt_emp_name"))) {
             if ($filter == null) {
-                $filter = " where tbl_salary.Month = '$Month' and tbl_salary.Year ='$year1'";
+                $filter = " where Emp_Full_Name like '$emp_name%'";
             } else {
-                $filter .= " where tbl_salary.Month = '$Month' and tbl_salary.Year ='$year1'";
+                $filter .= " AND Emp_Full_Name like '$emp_name%'";
             }
         }
 
-        if (($this->input->post("cmb_departments"))) {
+        if (($this->input->post("cmb_year"))) {
             if ($filter == null) {
-                $filter = " where tbl_departments.Dep_ID = '$departments'";
+                $filter = "where tbl_salary.Year ='$year'";
             } else {
-                $filter .= " AND tbl_departments.Dep_ID = '$departments'";
+                $filter .= "AND tbl_salary.Year ='$year'";
+            }
+        }
+
+        if (($this->input->post("cmb_month"))) {
+            if ($filter == null) {
+                $filter = " where tbl_salary.Month = '$Month'";
+            } else {
+                $filter .= " AND tbl_salary.Month = '$Month'";
             }
         }
 
@@ -104,20 +113,12 @@ class Paysheet extends CI_Controller
                                                                     (tbl_salary.Incentive) as Incentive,
                                                                  
                                                                     tbl_empmaster.Fixed_Allowance,
+                                                                    tbl_empmaster.NIC,
+                                                                    
                                                                     tbl_salary.EPFNO,
-                                                                    tbl_salary.Att_Allowance,
-                                                                    tbl_salary.Festivel_Advance,
-                                                                    tbl_salary.Br_pay,
-                                                                    tbl_salary.Fixed,
-                                                                    tbl_salary.Prod_inc1,
-                                                                    tbl_salary.Prod_inc2,
-                                                                    tbl_salary.Spc_inc1,
-                                                                    tbl_salary.Spc_inc2,
-                                                                    tbl_salary.Total_F_Epf,
                                                                     tbl_salary.Month,
                                                                     tbl_salary.Year,
                                                                     tbl_salary.Basic_sal,
-                                                                    tbl_salary.Payee_amount,
                                                                     tbl_salary.Basic_pay,
                                                                     tbl_salary.Late_deduction,
                                                                     tbl_salary.Late_min,
@@ -137,12 +138,11 @@ class Paysheet extends CI_Controller
                                                                     tbl_salary.Loan_Instalment,
                                                                     tbl_salary.Wellfare,
                                                                     tbl_salary.Gross_sal,
-                                                                    tbl_salary.Gross_pay,
                                                                     tbl_salary.Salary_advance,
                                                                     tbl_salary.tot_deduction,
                                                                     tbl_salary.days_worked,
+                                                                    tbl_salary.EPF_Worker_Rate,
                                                                     (Allowance_1+Allowance_2+Allowance_3) as Allowances,
-                                                                    (tbl_salary.Spc_inc1+tbl_salary.Prod_inc2) as spc_all,
                                                                     (Deduct_1+Deduct_2+Deduct_3) as Deductions,
                                                                     tbl_salary.D_Salary,
                                                                     tbl_salary.Net_salary
@@ -163,11 +163,11 @@ class Paysheet extends CI_Controller
 
 
         $data['data_month'] = $Month;
-        $data['data_year'] = $year1;
+        // $data['data_year'] = $year1;
 
         //        var_dump($data);die;
 
-        $this->load->view('Reports/Payroll/rpt_paysheet', $data);
+        $this->load->view('Reports/Payroll/rpt_epf', $data);
     }
 
     function get_auto_emp_name()

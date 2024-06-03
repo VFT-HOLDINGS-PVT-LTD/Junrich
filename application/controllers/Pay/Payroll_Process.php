@@ -43,7 +43,7 @@ class Payroll_Process extends CI_Controller
 
         $date = date_create();
         $timestamp = date_format($date, 'Y-m-d H:i:s');
-        
+
 
         $dtEmp['EmpData'] = $this->Db_model->getfilteredData("SELECT EmpNo,EMP_ST_ID,Enroll_No, EPFNO,Dep_ID,Des_ID,RosterCode, Status  FROM  tbl_empmaster where status=1 and Active_process=1");
         //        $dtEmp['EmpData'] = $this->Db_model->getfilteredData("SELECT EmpNo,Enroll_No, EPFNO,Dep_ID,Des_ID,RosterCode, Status  FROM  tbl_empmaster where EmpNo=3316");
@@ -80,6 +80,7 @@ class Payroll_Process extends CI_Controller
                 //Get Nopay days in Individual Roster table
                 $Nopay = $this->Db_model->getfilteredData("select sum(nopay) as nopay, sum(nopay_hrs) nopay_hrs,sum(Att_Allow) as Att_Allow from tbl_individual_roster where EmpNo=$EmpNo and EXTRACT(MONTH FROM FDate)=$month and EXTRACT(YEAR FROM FDate)=$year");
                 $NopayDays = $Nopay[0]->nopay;
+
                 $Nopay_Hrs = $Nopay[0]->nopay_hrs;
 
                 // var_dump($NopayDays . '------------');
@@ -95,7 +96,7 @@ class Payroll_Process extends CI_Controller
                 $days = cal_days_in_month(CAL_GREGORIAN, $month, $year);
 
 
-                var_dump($days . $Nopay[0]->Att_Allow);
+                // var_dump($days . $Nopay[0]->Att_Allow);
 
                 $Att_Allowance = 0;
                 if ($Nopay[0]->Att_Allow == $days) {
@@ -116,19 +117,21 @@ class Payroll_Process extends CI_Controller
                 //                die;
 
 
-                if ($is_no_pay == 0) {
+                if ($is_no_pay == 1) {
                     $NopayDays = 0;
                 }
 
+
                 $Nopay_Deduction = $NopayRate * $NopayDays;
+
 
                 //**** Get Allowance Details
                 $budget_relevance = $this->Db_model->getfilteredData("select Br_ID, Amount from tbl_varialble_br where EmpNo=$EmpNo and Month=$month and Year=$year");
 
-                var_dump($Nopay_Deduction . 'no pay days' . $NopayDays);
+                // var_dump($Nopay_Deduction . 'no pay days' . $NopayDays);
 
                 //Get Variable Allowances details
-                $Allowances = $this->Db_model->getfilteredData("select Alw_ID, Amount from tbl_varialble_allowance where EmpNo=$EmpNo and Month=$month and Year=$year");
+                $Allowances = $this->Db_model->getfilteredData("select Alw_ID, Amount from tbl_varialble_allowance where EmpNo=$EmpNo and Month=$month and Year=$year ORDER BY tbl_varialble_allowance.Alw_ID");
                 $tbattendencebonus = 0;
                 $tbprodinc1 = 0;
                 $tbprodinc2 = 0;
@@ -139,64 +142,66 @@ class Payroll_Process extends CI_Controller
                  * Allowence special types
                  */
 
-                if ($Allowances[0]->Alw_ID == 1) {
-                    $tbattendencebonus = $Allowances[0]->Amount;
-                } else if ($Allowances[0]->Alw_ID == 2) {
-                    $tbprodinc1 = $Allowances[0]->Amount;
-                } else if ($Allowances[0]->Alw_ID == 3) {
-                    $tbprodinc2 = $Allowances[0]->Amount;
-                } else if ($Allowances[0]->Alw_ID == 4) {
-                    $tbspc1 = $Allowances[0]->Amount;
-                } else if ($Allowances[0]->Alw_ID == 5) {
-                    $tbspc2 = $Allowances[0]->Amount;
-                }
+                if (!empty($Allowances)) {
+                    if ($Allowances[0]->Alw_ID == 1) {
+                        $tbattendencebonus = $Allowances[0]->Amount;
+                    } else if ($Allowances[0]->Alw_ID == 2) {
+                        $tbprodinc1 = $Allowances[0]->Amount;
+                    } else if ($Allowances[0]->Alw_ID == 3) {
+                        $tbprodinc2 = $Allowances[0]->Amount;
+                    } else if ($Allowances[0]->Alw_ID == 4) {
+                        $tbspc1 = $Allowances[0]->Amount;
+                    } else if ($Allowances[0]->Alw_ID == 5) {
+                        $tbspc2 = $Allowances[0]->Amount;
+                    }
 
-                if ($Allowances[1]->Alw_ID == 1) {
-                    $tbattendencebonus = $Allowances[1]->Amount;
-                } else if ($Allowances[1]->Alw_ID == 2) {
-                    $tbprodinc1 = $Allowances[1]->Amount;
-                } else if ($Allowances[1]->Alw_ID == 3) {
-                    $tbprodinc2 = $Allowances[1]->Amount;
-                } else if ($Allowances[1]->Alw_ID == 4) {
-                    $tbspc1 = $Allowances[1]->Amount;
-                } else if ($Allowances[1]->Alw_ID == 5) {
-                    $tbspc2 = $Allowances[1]->Amount;
-                }
+                    if ($Allowances[1]->Alw_ID == 1) {
+                        $tbattendencebonus = $Allowances[1]->Amount;
+                    } else if ($Allowances[1]->Alw_ID == 2) {
+                        $tbprodinc1 = $Allowances[1]->Amount;
+                    } else if ($Allowances[1]->Alw_ID == 3) {
+                        $tbprodinc2 = $Allowances[1]->Amount;
+                    } else if ($Allowances[1]->Alw_ID == 4) {
+                        $tbspc1 = $Allowances[1]->Amount;
+                    } else if ($Allowances[1]->Alw_ID == 5) {
+                        $tbspc2 = $Allowances[1]->Amount;
+                    }
 
-                if ($Allowances[2]->Alw_ID == 1) {
-                    $tbattendencebonus = $Allowances[2]->Amount;
-                } else if ($Allowances[2]->Alw_ID == 2) {
-                    $tbprodinc1 = $Allowances[2]->Amount;
-                } else if ($Allowances[2]->Alw_ID == 3) {
-                    $tbprodinc2 = $Allowances[2]->Amount;
-                } else if ($Allowances[2]->Alw_ID == 4) {
-                    $tbspc1 = $Allowances[2]->Amount;
-                } else if ($Allowances[2]->Alw_ID == 5) {
-                    $tbspc2 = $Allowances[2]->Amount;
-                }
+                    if ($Allowances[2]->Alw_ID == 1) {
+                        $tbattendencebonus = $Allowances[2]->Amount;
+                    } else if ($Allowances[2]->Alw_ID == 2) {
+                        $tbprodinc1 = $Allowances[2]->Amount;
+                    } else if ($Allowances[2]->Alw_ID == 3) {
+                        $tbprodinc2 = $Allowances[2]->Amount;
+                    } else if ($Allowances[2]->Alw_ID == 4) {
+                        $tbspc1 = $Allowances[2]->Amount;
+                    } else if ($Allowances[2]->Alw_ID == 5) {
+                        $tbspc2 = $Allowances[2]->Amount;
+                    }
 
-                if ($Allowances[3]->Alw_ID == 1) {
-                    $tbattendencebonus = $Allowances[3]->Amount;
-                } else if ($Allowances[3]->Alw_ID == 2) {
-                    $tbprodinc1 = $Allowances[3]->Amount;
-                } else if ($Allowances[3]->Alw_ID == 3) {
-                    $tbprodinc2 = $Allowances[3]->Amount;
-                } else if ($Allowances[3]->Alw_ID == 4) {
-                    $tbspc1 = $Allowances[3]->Amount;
-                } else if ($Allowances[3]->Alw_ID == 5) {
-                    $tbspc2 = $Allowances[3]->Amount;
-                }
+                    if ($Allowances[3]->Alw_ID == 1) {
+                        $tbattendencebonus = $Allowances[3]->Amount;
+                    } else if ($Allowances[3]->Alw_ID == 2) {
+                        $tbprodinc1 = $Allowances[3]->Amount;
+                    } else if ($Allowances[3]->Alw_ID == 3) {
+                        $tbprodinc2 = $Allowances[3]->Amount;
+                    } else if ($Allowances[3]->Alw_ID == 4) {
+                        $tbspc1 = $Allowances[3]->Amount;
+                    } else if ($Allowances[3]->Alw_ID == 5) {
+                        $tbspc2 = $Allowances[3]->Amount;
+                    }
 
-                if ($Allowances[4]->Alw_ID == 1) {
-                    $tbattendencebonus = $Allowances[4]->Amount;
-                } else if ($Allowances[4]->Alw_ID == 2) {
-                    $tbprodinc1 = $Allowances[4]->Amount;
-                } else if ($Allowances[4]->Alw_ID == 3) {
-                    $tbprodinc2 = $Allowances[4]->Amount;
-                } else if ($Allowances[4]->Alw_ID == 4) {
-                    $tbspc1 = $Allowances[4]->Amount;
-                } else if ($Allowances[4]->Alw_ID == 5) {
-                    $tbspc2 = $Allowances[4]->Amount;
+                    if ($Allowances[4]->Alw_ID == 1) {
+                        $tbattendencebonus = $Allowances[4]->Amount;
+                    } else if ($Allowances[4]->Alw_ID == 2) {
+                        $tbprodinc1 = $Allowances[4]->Amount;
+                    } else if ($Allowances[4]->Alw_ID == 3) {
+                        $tbprodinc2 = $Allowances[4]->Amount;
+                    } else if ($Allowances[4]->Alw_ID == 4) {
+                        $tbspc1 = $Allowances[4]->Amount;
+                    } else if ($Allowances[4]->Alw_ID == 5) {
+                        $tbspc2 = $Allowances[4]->Amount;
+                    }
                 }
 
                 //Get Variable Deductions details
@@ -381,15 +386,15 @@ class Payroll_Process extends CI_Controller
 
 
 
-                //Get Overtime details
-                $Overtime = $this->Db_model->getfilteredData("select sum(ApprovedExH) as OT from tbl_individual_roster where EmpNo=$EmpNo and EXTRACT(MONTH FROM FDate)=$month and RYear=$year");
-                // ---------Normal OT Calculation
-                $Overtime = $this->Db_model->getfilteredData("select sum(OT_Min) as N_OT from tbl_ot_d where EmpNo='$EmpNo' and RateCode = 1.5 and EXTRACT(MONTH FROM OTDate)=$month and  EXTRACT(YEAR FROM OTDate) =$year");
+                // //Get Overtime details
+                // $Overtime = $this->Db_model->getfilteredData("select sum(ApprovedExH) as OT from tbl_individual_roster where EmpNo=$EmpNo and EXTRACT(MONTH FROM FDate)=$month and RYear=$year");
+                // // ---------Normal OT Calculation
+                // $Overtime = $this->Db_model->getfilteredData("select sum(OT_Min) as N_OT from tbl_ot_d where EmpNo='$EmpNo' and RateCode = 1.5 and EXTRACT(MONTH FROM OTDate)=$month and  EXTRACT(YEAR FROM OTDate) =$year");
 
-                $N_OT_Hours = $Overtime[0]->N_OT;
+                // $N_OT_Hours = $Overtime[0]->N_OT;
 
-                $Overtime_DB = $this->Db_model->getfilteredData("select sum(OT_Min) as D_OT from tbl_ot_d where EmpNo='$EmpNo' and RateCode = 2 and EXTRACT(MONTH FROM OTDate)=$month and  EXTRACT(YEAR FROM OTDate) =$year");
-                $Overtime = $this->Db_model->getfilteredData("select sum(OT_Min) as N_OT from tbl_ot_d where EmpNo='$EmpNo' and RateCode = 1.5 and EXTRACT(MONTH FROM OTDate)=$month and  EXTRACT(YEAR FROM OTDate) =$year");
+                $Overtime_DB = $this->Db_model->getfilteredData("select sum(DOT) as D_OT from tbl_individual_roster where EmpNo='$EmpNo' and EXTRACT(MONTH FROM FDate)=$month and  EXTRACT(YEAR FROM FDate) =$year");
+                $Overtime = $this->Db_model->getfilteredData("select sum(AfterExH) as N_OT from tbl_individual_roster where EmpNo='$EmpNo' and EXTRACT(MONTH FROM FDate)=$month and  EXTRACT(YEAR FROM FDate) =$year");
 
                 $N_OT_Hours = $Overtime[0]->N_OT;
 
@@ -398,7 +403,7 @@ class Payroll_Process extends CI_Controller
                 $OT_Rate = ((($BasicSal + $Fixed_Allowance) / 240) * 1.5);
                 $N_OT_Amount = $OT_Rate * ($N_OT_Hours / 60);
 
-                var_dump($D_OT_Hours . '_Emp' . $EmpNo);
+                // var_dump($D_OT_Hours . '_Emp' . $EmpNo);
 
                 $OT_Rate_2 = ((($BasicSal + $Fixed_Allowance) / 240) * 2);
                 $D_OT_Amount = $OT_Rate_2 * ($D_OT_Hours / 60);
@@ -588,38 +593,38 @@ class Payroll_Process extends CI_Controller
                     // 'Late_deduction' => 0,
                     'Late_deduction' => $Late_Amount,
                     'Alw_ID_1' => $Allowance_ID_1,
-                        'Allowance_1' => $Allowance_1,
-                        'Alw_ID_2' => $Allowance_ID_2,
-                        'Allowance_2' => $Allowance_2,
-                        'Alw_ID_3' => $Allowance_ID_3,
-                        'Allowance_3' => $Allowance_3,
-                        'Alw_ID_4' => $Allowance_ID_4,
-                        'Allowance_4' => $Allowance_4,
-                        'Alw_ID_5' => $Allowance_ID_5,
-                        'Allowance_5' => $Allowance_5,
-                        'Att_Allowance' => $Att_Allowance,
-                        'Fixed' => $tbattendencebonus,
-                        'Prod_inc1' => $tbprodinc1,
-                        'Prod_inc2' => $tbprodinc2,
-                        'Spc_inc1' => $tbspc1,
-                        'Spc_inc2' => $tbspc2,
-                        'Normal_OT_Hrs' => ($N_OT_Hours / 60),
-                        'Normal_OT_Pay' => $N_OT_Amount,
-                        'Double_OT_Hrs' => ($D_OT_Hours / 60),
-                        'Double_OT_Pay' => $D_OT_Amount,
-                        'Ded_ID_1' => $Deduction_ID_1,
-                        'Deduct_1' => $Deduction_1,
-                        'Ded_ID_2' => $Deduction_ID_2,
-                        'Deduct_2' => $Deduction_2,
-                        'Ded_ID_3' => $Deduction_ID_3,
-                        'Deduct_3' => $Deduction_3,
-                        'Wellfare' => 0,
-                        'Payee_amount' => $payee_now_amount,
-                        'tot_deduction' => $Tot_deductions,
-                        'Gross_pay' => $grosspay,
-                        'Gross_sal' => $Gross_sal,
-                        'D_Salary' => $D_Salary,
-                        'Net_salary' => $netSal
+                    'Allowance_1' => $Allowance_1,
+                    'Alw_ID_2' => $Allowance_ID_2,
+                    'Allowance_2' => $Allowance_2,
+                    'Alw_ID_3' => $Allowance_ID_3,
+                    'Allowance_3' => $Allowance_3,
+                    'Alw_ID_4' => $Allowance_ID_4,
+                    'Allowance_4' => $Allowance_4,
+                    'Alw_ID_5' => $Allowance_ID_5,
+                    'Allowance_5' => $Allowance_5,
+                    'Att_Allowance' => $Att_Allowance,
+                    'Fixed' => $tbattendencebonus,
+                    'Prod_inc1' => $tbprodinc1,
+                    'Prod_inc2' => $tbprodinc2,
+                    'Spc_inc1' => $tbspc1,
+                    'Spc_inc2' => $tbspc2,
+                    'Normal_OT_Hrs' => ($N_OT_Hours / 60),
+                    'Normal_OT_Pay' => $N_OT_Amount,
+                    'Double_OT_Hrs' => ($D_OT_Hours / 60),
+                    'Double_OT_Pay' => $D_OT_Amount,
+                    'Ded_ID_1' => $Deduction_ID_1,
+                    'Deduct_1' => $Deduction_1,
+                    'Ded_ID_2' => $Deduction_ID_2,
+                    'Deduct_2' => $Deduction_2,
+                    'Ded_ID_3' => $Deduction_ID_3,
+                    'Deduct_3' => $Deduction_3,
+                    'Wellfare' => 0,
+                    'Payee_amount' => $payee_now_amount,
+                    'tot_deduction' => $Tot_deductions,
+                    'Gross_pay' => $grosspay,
+                    'Gross_sal' => $Gross_sal,
+                    'D_Salary' => $D_Salary,
+                    'Net_salary' => $netSal
                 );
 
 
@@ -712,7 +717,7 @@ class Payroll_Process extends CI_Controller
                 $Nopay = $this->Db_model->getfilteredData("select sum(nopay) as nopay, sum(nopay_hrs) nopay_hrs,sum(Att_Allow) as Att_Allow from tbl_individual_roster where EmpNo=$EmpNo and EXTRACT(MONTH FROM FDate)=$month and EXTRACT(YEAR FROM FDate)=$year");
                 $NopayDays = $Nopay[0]->nopay;
 
-                var_dump($NopayDays);
+                // var_dump($NopayDays);
 
 
                 if ($NopayDays == 0) {
@@ -726,7 +731,7 @@ class Payroll_Process extends CI_Controller
                 $days = cal_days_in_month(CAL_GREGORIAN, $month, $year);
 
 
-                var_dump($days . $Nopay[0]->Att_Allow);
+                // var_dump($days . $Nopay[0]->Att_Allow);
 
                 $Att_Allowance = 0;
                 if ($Nopay[0]->Att_Allow == $days) {
@@ -744,7 +749,7 @@ class Payroll_Process extends CI_Controller
                 $NopayRate = ($BasicSal + $Incentive) / 30;
 
 
-                if ($is_no_pay == 0) {
+                if ($is_no_pay == 1) {
                     $NopayDays = 0;
                 }
 
@@ -769,7 +774,7 @@ class Payroll_Process extends CI_Controller
                  * Allowence special types
                  */
 
-                 if(!empty($Allowances)){
+                if (!empty($Allowances)) {
                     if ($Allowances[0]->Alw_ID == 1) {
                         $tbattendencebonus = $Allowances[0]->Amount;
                     } else if ($Allowances[0]->Alw_ID == 2) {
@@ -781,7 +786,7 @@ class Payroll_Process extends CI_Controller
                     } else if ($Allowances[0]->Alw_ID == 5) {
                         $tbspc2 = $Allowances[0]->Amount;
                     }
-    
+
                     if ($Allowances[1]->Alw_ID == 1) {
                         $tbattendencebonus = $Allowances[1]->Amount;
                     } else if ($Allowances[1]->Alw_ID == 2) {
@@ -793,7 +798,7 @@ class Payroll_Process extends CI_Controller
                     } else if ($Allowances[1]->Alw_ID == 5) {
                         $tbspc2 = $Allowances[1]->Amount;
                     }
-    
+
                     if ($Allowances[2]->Alw_ID == 1) {
                         $tbattendencebonus = $Allowances[2]->Amount;
                     } else if ($Allowances[2]->Alw_ID == 2) {
@@ -805,7 +810,7 @@ class Payroll_Process extends CI_Controller
                     } else if ($Allowances[2]->Alw_ID == 5) {
                         $tbspc2 = $Allowances[2]->Amount;
                     }
-    
+
                     if ($Allowances[3]->Alw_ID == 1) {
                         $tbattendencebonus = $Allowances[3]->Amount;
                     } else if ($Allowances[3]->Alw_ID == 2) {
@@ -817,7 +822,7 @@ class Payroll_Process extends CI_Controller
                     } else if ($Allowances[3]->Alw_ID == 5) {
                         $tbspc2 = $Allowances[3]->Amount;
                     }
-    
+
                     if ($Allowances[4]->Alw_ID == 1) {
                         $tbattendencebonus = $Allowances[4]->Amount;
                     } else if ($Allowances[4]->Alw_ID == 2) {
@@ -829,8 +834,8 @@ class Payroll_Process extends CI_Controller
                     } else if ($Allowances[4]->Alw_ID == 5) {
                         $tbspc2 = $Allowances[4]->Amount;
                     }
-                 }
-                
+                }
+
 
 
                 // for($x = 0; $x < $Allowancescount[0]->HasRow; $x++){
@@ -1027,8 +1032,8 @@ class Payroll_Process extends CI_Controller
                 }
 
                 //Get Overtime details
-                $Overtime_DB = $this->Db_model->getfilteredData("select sum(OT_Min) as D_OT from tbl_ot_d where EmpNo='$EmpNo' and RateCode = 2 and EXTRACT(MONTH FROM OTDate)=$month and  EXTRACT(YEAR FROM OTDate) =$year");
-                $Overtime = $this->Db_model->getfilteredData("select sum(OT_Min) as N_OT from tbl_ot_d where EmpNo='$EmpNo' and RateCode = 1.5 and EXTRACT(MONTH FROM OTDate)=$month and  EXTRACT(YEAR FROM OTDate) =$year");
+                $Overtime_DB = $this->Db_model->getfilteredData("select sum(DOT) as D_OT from tbl_individual_roster where EmpNo='$EmpNo' and EXTRACT(MONTH FROM FDate)=$month and  EXTRACT(YEAR FROM FDate) =$year");
+                $Overtime = $this->Db_model->getfilteredData("select sum(AfterExH) as N_OT from tbl_individual_roster where EmpNo='$EmpNo' and EXTRACT(MONTH FROM FDate)=$month and  EXTRACT(YEAR FROM FDate) =$year");
 
                 $N_OT_Hours = $Overtime[0]->N_OT;
 
@@ -1037,7 +1042,7 @@ class Payroll_Process extends CI_Controller
                 $OT_Rate = ((($BasicSal + $Fixed_Allowance) / 240) * 1.5);
                 $N_OT_Amount = $OT_Rate * ($N_OT_Hours / 60);
 
-                
+
 
                 $OT_Rate_2 = ((($BasicSal + $Fixed_Allowance) / 240) * 2);
                 $D_OT_Amount = $OT_Rate_2 * ($D_OT_Hours / 60);
@@ -1091,16 +1096,19 @@ class Payroll_Process extends CI_Controller
                 //Calculate Gross salary
                 $Gross_sal = ($BasicSal + $Fixed_Allowance + $Incentive + $budgetrelevances);
 
+
                 /*
                 *payee tax calculate start
                 */
                 $st_gross_Pay = $Gross_sal * 12;
+
 
                 $free_rate = 100000;
                 $anual_freee_rate = $free_rate * 12;
                 $payee_now_amount = 0;
 
                 $calculate_gross_pay = $st_gross_Pay - $anual_freee_rate;
+
 
                 if (0 > $calculate_gross_pay) {
                     $payee_now_amount = 0;

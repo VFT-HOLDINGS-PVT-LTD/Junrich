@@ -78,7 +78,7 @@ $pdf->AddPage('P', 'A6');
 //$pdf->reFormat("custom", $orientation);  
 
 
-$pdf->SetMargins(15, 15, 15, 10, true);
+$pdf->SetMargins(0, 0, 15, -10, true);
 
 $pdf->SetAutoPageBreak(TRUE, 0);
 
