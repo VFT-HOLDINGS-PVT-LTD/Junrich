@@ -82,9 +82,9 @@ class Report_Attendance extends CI_Controller
         }
         if (($this->input->post("txt_emp"))) {
             if ($filter == null) {
-                $filter = " where ir.EmpNo =$emp";
+                $filter = " where ir.EmpNo ='$emp'";
             } else {
-                $filter .= " AND ir.EmpNo =$emp";
+                $filter .= " AND ir.EmpNo ='$emp'";
             }
         }
 
@@ -166,23 +166,23 @@ class Report_Attendance extends CI_Controller
             $sheet->setCellValue('B' . $x, $row->Emp_Full_Name);
             $wrokhours = $this->Db_model->getfilteredData("SELECT SUM(Day_Type) AS TotalTimeDifferenceInDays 
             FROM tbl_individual_roster  
-            WHERE tbl_individual_roster.ShiftDay != 'SUN' AND tbl_individual_roster.EmpNo = '$row->EmpNo' AND (tbl_individual_roster.DayStatus = 'PR' 
+            WHERE tbl_individual_roster.FDate between '$from_date' and '$to_date' and tbl_individual_roster.ShiftDay != 'SUN' AND tbl_individual_roster.EmpNo = '$row->EmpNo' AND (tbl_individual_roster.DayStatus = 'PR' 
 				OR tbl_individual_roster.DayStatus = 'EX') ");
 
             $sheet->setCellValue('C' . $x, $wrokhours[0]->TotalTimeDifferenceInDays);
             $sundayhours = $this->Db_model->getfilteredData("SELECT SUM(CASE WHEN Day_Type > 0 THEN Day_Type ELSE 0 END) AS TotalTimeDifferenceInDayss 
             FROM tbl_individual_roster  
-            WHERE tbl_individual_roster.ShiftDay = 'SUN' AND tbl_individual_roster.EmpNo = '$row->EmpNo' AND (tbl_individual_roster.DayStatus = 'EX' 
+            WHERE tbl_individual_roster.FDate between '$from_date' and '$to_date' and tbl_individual_roster.ShiftDay = 'SUN' AND tbl_individual_roster.EmpNo = '$row->EmpNo' AND (tbl_individual_roster.DayStatus = 'EX' 
 				OR tbl_individual_roster.DayStatus = 'HD')");
             $swork = "0";
             if (!empty($sundayhours[0]->TotalTimeDifferenceInDayss)) {
                 $swork = $sundayhours[0]->TotalTimeDifferenceInDayss;
             }
             $sheet->setCellValue('D' . $x, $swork);
-            $leave = $this->Db_model->getfilteredData("SELECT SUM(nopay) AS `leave` FROM tbl_individual_roster ir WHERE ir.EmpNo = '$row->EmpNo'");
+            $leave = $this->Db_model->getfilteredData("SELECT SUM(nopay) AS `leave` FROM tbl_individual_roster ir WHERE ir.FDate between '$from_date' and '$to_date' and ir.EmpNo = '$row->EmpNo'");
 
             $sheet->setCellValue('E' . $x, $leave[0]->leave);
-            $not = $this->Db_model->getfilteredData("SELECT SUM(CASE WHEN AfterExH > 0 THEN AfterExH ELSE 0 END) AS TotalAfterExH FROM tbl_individual_roster WHERE tbl_individual_roster.ShType = 'DU' AND tbl_individual_roster.EmpNo = '$row->EmpNo'");
+            $not = $this->Db_model->getfilteredData("SELECT SUM(CASE WHEN AfterExH > 0 THEN AfterExH ELSE 0 END) AS TotalAfterExH FROM tbl_individual_roster WHERE tbl_individual_roster.FDate between '$from_date' and '$to_date' and tbl_individual_roster.ShType = 'DU' AND tbl_individual_roster.EmpNo = '$row->EmpNo'");
             $Mint1 = $not[0]->TotalAfterExH;
             $hours1 = floor($Mint1 / 60);
             $min1 = $Mint1 - ($hours1 * 60);
@@ -191,7 +191,7 @@ class Report_Attendance extends CI_Controller
             $sheet->setCellValue('F' . $x, $nnot);
             
 
-            $dot1 = $this->Db_model->getfilteredData("SELECT SUM(DOT) AS TotalAfterExH FROM tbl_individual_roster ir WHERE ir.EmpNo = '$row->EmpNo'");
+            $dot1 = $this->Db_model->getfilteredData("SELECT SUM(DOT) AS TotalAfterExH FROM tbl_individual_roster ir WHERE ir.FDate between '$from_date' and '$to_date' and ir.EmpNo = '$row->EmpNo'");
             $dot = $dot1[0]->TotalAfterExH;
             $dhours = floor($dot / 60);
             $dmin = $dot - ($dhours * 60);

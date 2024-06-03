@@ -72,9 +72,9 @@ class Report_Attendance_In_Out extends CI_Controller {
         }
         if (($this->input->post("txt_emp"))) {
             if ($filter == null) {
-                $filter = " where ir.EmpNo =$emp";
+                $filter = " where ir.EmpNo ='$emp'";
             } else {
-                $filter .= " AND ir.EmpNo =$emp";
+                $filter .= " AND ir.EmpNo ='$emp'";
             }
         }
 

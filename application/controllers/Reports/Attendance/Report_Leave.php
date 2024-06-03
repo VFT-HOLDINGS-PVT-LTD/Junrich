@@ -70,9 +70,9 @@ class Report_Leave extends CI_Controller {
         }
         if (($this->input->post("txt_emp"))) {
             if ($filter == null) {
-                $filter = " where tbl_empmaster.EmpNo, =$emp";
+                $filter = " where tbl_empmaster.EmpNo, ='$emp'";
             } else {
-                $filter .= " AND tbl_empmaster.EmpNo, =$emp";
+                $filter .= " AND tbl_empmaster.EmpNo, ='$emp'";
             }
         }
 

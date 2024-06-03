@@ -444,19 +444,19 @@ class Attendance_Process extends CI_Controller
                             } else if (empty($Manual)) {
                             }
                         }
-                        if (empty($OutDate) || $OutDate == 0) {
-                            //day status eka ganna widiya
-                            $fromnewdate = date('Y-m-d', strtotime($FromDate . ' +1 day'));
-                            $dt_in_Records_mo_sh['dt_Records'] = $this->Db_model->getfilteredData("select min(AttTime) as INTime,Enroll_No,AttDate,EventID from tbl_u_attendancedata where Enroll_No='$EmpNo' and AttDate='" . $fromnewdate . "' AND Status='0' and AttTime BETWEEN '06:00:00' AND '15:00:00'  ");
-                            $dt_in_Records_ni_sh['dt_Records'] = $this->Db_model->getfilteredData("select min(AttTime) as INTime,Enroll_No,AttDate,EventID from tbl_u_attendancedata where Enroll_No='$EmpNo' and AttDate='" . $fromnewdate . "' AND Status='0' and AttTime BETWEEN '15:00:00' AND '22:00:00'  ");
-                            if (!empty($dt_in_Records_mo_sh['dt_Records'][0]->INTime) && !empty($InTime)) {
-                                $OutTime = $dt_in_Records_mo_sh['dt_Records'][0]->INTime;
-                                $OutDate = $fromnewdate;
-                            } else if (empty($dt_in_Records_mo_sh['dt_Records'][0]->INTime)) {
-                                $OutTime = '08:00:00';
-                                $OutDate = $fromnewdate;
-                            }
-                        }
+                        // if (empty($OutDate) || $OutDate == 0) {
+                        //     //day status eka ganna widiya
+                        //     $fromnewdate = date('Y-m-d', strtotime($FromDate . ' +1 day'));
+                        //     $dt_in_Records_mo_sh['dt_Records'] = $this->Db_model->getfilteredData("select min(AttTime) as INTime,Enroll_No,AttDate,EventID from tbl_u_attendancedata where Enroll_No='$EmpNo' and AttDate='" . $fromnewdate . "' AND Status='0' and AttTime BETWEEN '06:00:00' AND '15:00:00'  ");
+                        //     $dt_in_Records_ni_sh['dt_Records'] = $this->Db_model->getfilteredData("select min(AttTime) as INTime,Enroll_No,AttDate,EventID from tbl_u_attendancedata where Enroll_No='$EmpNo' and AttDate='" . $fromnewdate . "' AND Status='0' and AttTime BETWEEN '15:00:00' AND '22:00:00'  ");
+                        //     if (!empty($dt_in_Records_mo_sh['dt_Records'][0]->INTime) && !empty($InTime)) {
+                        //         $OutTime = $dt_in_Records_mo_sh['dt_Records'][0]->INTime;
+                        //         $OutDate = $fromnewdate;
+                        //     } else if (empty($dt_in_Records_mo_sh['dt_Records'][0]->INTime)) {
+                        //         $OutTime = '08:00:00';
+                        //         $OutDate = $fromnewdate;
+                        //     }
+                        // }
 
 
                         if ($InTime != '' || $InTime != 0 && $InTime != $OutTime && $Day == 'DU') {
