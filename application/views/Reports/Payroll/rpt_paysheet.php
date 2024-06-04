@@ -77,115 +77,137 @@ $pdf->setTextShadow(array('enabled' => true, 'depth_w' => 0.0, 'depth_h' => 0.0,
 
 // Set some content to print
 $html = '
-            <h6 style="margin-left:0px; text-align:center; ">PAY SHEET </h6>
-            <div style="font-size: 11px; float: left; border-bottom: solid #000 1px;">Year : ' . $data_year . ' &nbsp;  Month : ' . date('F', mktime(0, 0, 0, $data_month)) . '</div></font><br>
-            <table cellpadding="3">
-                <thead style="border-bottom: #000 solid 1px;">
-                    <tr style="border-bottom: 1px solid black; font-weight:bold"> 
-                        <th style="font-size:8px;border-bottom: 1px dashed  black;border-TOP: 1px solid black; width:60px;">EMP NO</th>                      
-                        <th style="font-size:8px;border-bottom: 1px dashed  black;border-TOP: 1px solid black; width:100px;">NAME</th>                       
-                        <th style="font-size:8px;border-bottom: 1px dashed  black;border-TOP: 1px solid black;width:50px;">BASIC SALARY</th>
-                        <th style="font-size:8px;border-bottom: 1px dashed  black;border-TOP: 1px solid black;width:40px;">BR</th>
-                        <th style="font-size:8px;border-bottom: 1px dashed  black;border-TOP: 1px solid black;width:50px;">TOTAL FOR EPF</th>
-                        <th style="font-size:8px;border-bottom: 1px dashed  black;border-TOP: 1px solid black;width:60px;">OT 15</th>
-                        <th style="font-size:8px;border-bottom: 1px dashed  black;border-TOP: 1px solid black;width:60px;">FIXED</th>
-                        <th style="font-size:8px;border-bottom: 1px dashed  black;border-TOP: 1px solid black;width:55px;">PROD INC I</th>
-                        <th style="font-size:8px;border-bottom: 1px dashed  black;border-TOP: 1px solid black;width:50px;">PROD INC II</th>
-                        <th style="font-size:8px;border-bottom: 1px dashed  black;border-TOP: 1px solid black;width:40px;">SPC.ALL</th>
-                        <th style="font-size:8px;border-bottom: 1px dashed  black;width:55px;border-TOP: 1px solid black;">GROSS PAY</th>
-                        <th style="font-size:8px;border-bottom: 1px dashed  black;width:55px;border-TOP: 1px solid black;">EPF 8%</th>
-                        <th style="font-size:8px;border-bottom: 1px dashed  black;width:60px;border-TOP: 1px solid black;">ADV.PAID</th>
-                        <th style="font-size:8px;border-bottom: 1px dashed  black;width:55px;border-TOP: 1px solid black;">OTHER</th>                       
-                        <th style="font-size:8px;border-bottom: 1px dashed  black;width:70px;border-TOP: 1px solid black;">P.A.Y.E</th>
-                        <th style="font-size:8px;border-bottom: 1px dashed  black;width:70px;border-TOP: 1px solid black;">WELFAIR</th>
-                        <th style="font-size:8px;border-bottom: 1px dashed  black;width:50px;border-TOP: 1px solid black;">TOTAL DEDUCTION</th>
-                        <th style="font-size:8px;border-bottom: 1px dashed  black;width:50px;border-TOP: 1px solid black;">NET SALARY</th>                        
-                        <th style="font-size:8px;border-bottom: 1px dashed  black;width:50px;border-TOP: 1px solid black;">EPF 12%</th>
-                        <th style="font-size:8px;border-bottom: 1px dashed  black;width:50px;border-TOP: 1px solid black;">BALANCE</th>                                                                                                                                                                                                            
-                    </tr>
-                    <tr style="border-bottom: 1px solid black; font-weight:bold"> 
-                        <th style="font-size:8px; width:60px;"></th>                      
-                        <th style="font-size:8px; width:100px;"></th>                      
-                        <th style="font-size:8px;width:50px;">SAL ARREAS</th>
-                        <th style="font-size:8px;width:40px;">NO PAY</th>
-                        <th style="font-size:8px;width:50px;">SUNDAY OT</th>
-                        <th style="font-size:8px;width:60px;">OT 20</th>
-                        <th style="font-size:8px;width:60px;">ATTBON</th>
-                        <th style="font-size:8px;width:55px;">SPC INC</th>
-                        <th style="font-size:8px;width:50px;">OTHER ALLOW</th>
-                        <th style="font-size:8px;width:40px;"></th>
-                        <th style="font-size:8px;width:55px;"></th>
-                        <th style="font-size:8px;width:55px;"></th>
-                        <th style="font-size:8px;width:60px;">FEST ADV</th>
-                        <th style="font-size:8px;width:55px;">UNIFORM</th>                      
-                        <th style="font-size:8px;width:70px;">STAMP</th>
-                        <th style="font-size:8px;width:70px;">LOAN</th>
-                        <th style="font-size:8px;width:50px;"></th>
-                        <th style="font-size:8px;width:50px;">STAMP</th>                       
-                        <th style="font-size:8px;width:50px;">ETF 3%</th>
-                        <th style="font-size:8px;width:50px;"></th>                                                                                                                                                                                                                      
-                    </tr>
-                </thead>
-             <tbody>';
+<style>
+    @media print {
+        .page-break {
+            page-break-before: always;
+        }
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    th, td {
+        border-bottom: 1px dashed black;
+        font-size: 8px;
+        padding: 3px;
+    }
+    th {
+        font-weight: bold;
+        border-top: 1px solid black;
+    }
+</style>
 
-foreach ($data_set as $data) {
+<h6 style="margin-left:0px; text-align:center;">PAY SHEET</h6>
+<div style="font-size: 11px; float: left; border-bottom: solid #000 1px;">Year: ' . $data_year . ' &nbsp; Month: ' . date('F', mktime(0, 0, 0, $data_month)) . '</div><br>';
 
+$chunks = array_chunk($data_set, 13);
 
-    $html .= ' <tr>
-    <th style="font-size:8px;border-bottom: 1px dashed black;border-TOP: 1px solid black; width:60px;">' . $data->EmpNo . '</th>                      
-    <th style="font-size:8px;border-bottom: 1px dashed black;border-TOP: 1px solid black; width:100px;">' . $data->Emp_Full_Name . '</th>                       
-    <th style="font-size:8px;border-bottom: 1px dashed  black;border-TOP: 1px solid black;width:50px;">' . number_format($data->Basic_sal, 2, '.', ',')  . '</th>
-    <th style="font-size:8px;border-bottom: 1px dashed  black;border-TOP: 1px solid black;width:40px;">' . number_format($data->Br_pay, 2, '.', ',')  . '</th>
-    <th style="font-size:8px;border-bottom: 1px dashed  black;border-TOP: 1px solid black;width:50px;">' . number_format($data->Total_F_Epf, 2, '.', ',') . '</th>
-    <th style="font-size:8px;border-bottom: 1px dashed  black;border-TOP: 1px solid black;width:60px;">' . number_format($data->Normal_OT_Pay, 2, '.', ',') . '</th>
-    <th style="font-size:8px;border-bottom: 1px dashed  black;border-TOP: 1px solid black;width:60px;">' . number_format($data->Fixed, 2, '.', ',') . '</th>
-    <th style="font-size:8px;border-bottom: 1px dashed  black;border-TOP: 1px solid black;width:55px;">' . number_format($data->Prod_inc1, 2, '.', ',') . '</th>
-    <th style="font-size:8px;border-bottom: 1px dashed  black;border-TOP: 1px solid black;width:50px;">' . number_format($data->Prod_inc2, 2, '.', ',') . '</th>
-    <th style="font-size:8px;border-bottom: 1px dashed  black;border-TOP: 1px solid black;width:40px;">' . number_format($data->spc_all, 2, '.', ',') . '</th>
-    <th style="font-size:8px;border-bottom: 1px dashed  black;width:55px;border-TOP: 1px solid black;">' .  number_format($data->Gross_pay, 2, '.', ',') . '</th>
-    <th style="font-size:8px;border-bottom: 1px dashed  black;width:55px;border-TOP: 1px solid black;">' . number_format($data->EPF_Worker_Amount, 2, '.', ',') . '</th>
-    <th style="font-size:8px;border-bottom: 1px dashed  black;width:60px;border-TOP: 1px solid black;">' . number_format($data->Salary_advance, 2, '.', ',')  . '</th>
-    <th style="font-size:8px;border-bottom: 1px dashed  black;width:55px;border-TOP: 1px solid black;">' . number_format($data->Deductions, 2, '.', ',') . '</th>                       
-    <th style="font-size:8px;border-bottom: 1px dashed  black;width:70px;border-TOP: 1px solid black;">' . number_format($data->Payee_amount, 2, '.', ',') . '</th>
-    <th style="font-size:8px;border-bottom: 1px dashed  black;width:70px;border-TOP: 1px solid black;">' . number_format($data->Wellfare, 2, '.', ',') . '</th>
-    <th style="font-size:8px;border-bottom: 1px dashed  black;width:50px;border-TOP: 1px solid black;">' . number_format($data->tot_deduction, 2, '.', ',') . '</th>
-    <th style="font-size:8px;border-bottom: 1px dashed  black;width:50px;border-TOP: 1px solid black;">' . number_format($data->D_Salary, 2, '.', ',') . '</th>                        
-    <th style="font-size:8px;border-bottom: 1px dashed  black;width:50px;border-TOP: 1px solid black;">' . number_format($data->EPF_Employee_Amount, 2, '.', ',') . '</th>
-    <th style="font-size:8px;border-bottom: 1px dashed  black;width:50px;border-TOP: 1px solid black;">' . number_format($data->Net_salary, 2, '.', ',') . '</th>                                                     
-                </tr>
-                <tr>
-                        <td  style="font-size:8px;  width:60px;"></td>                       
-                        <td style="font-size:8px;width:100px;"></td>                          
-                        <td style="font-size:8px;width:50px;">' . number_format(0, 2, '.', ',')  . '</td>
-                        <td style="font-size:8px;width:40px;">' . number_format($data->no_pay_deduction, 2, '.', ',') . '</td>
-                        <td style="font-size:8px;width:50px;">' . number_format($data->Double_OT_Pay, 2, '.', ',')  . '</td>
-                        <td style="font-size:8px;width:60px;">' . number_format($data->Double_OT_Pay, 2, '.', ',') . '</td>
-                        <td style="font-size:8px;width:60px;">' . number_format($data->Att_Allowance, 2, '.', ',') . '</td>
-                        <td style="font-size:8px;width:55px;">' . number_format($data->Spc_inc1, 2, '.', ',') . '</td>
-                        <td style="font-size:8px;width:50px;">' . number_format($data->Allowances, 2, '.', ',') . '</td>
-                        <td style="font-size:8px;width:40px;"></td>
-                        <td style="font-size:8px;width:55px;"></td>
-                        <td style="font-size:8px;width:55px;"></td>
-                        <td style="font-size:8px;width:60px;">' . number_format($data->Festivel_Advance, 2, '.', ',') . '</td>
-                        <td style="font-size:8px;width:55px;">' . number_format(0, 2, '.', ',')  . '</td>                           
-                        <td style="font-size:8px;width:70px;">' . number_format(0, 2, '.', ',') . '</td>                               
-                        <td style="font-size:8px;width:70px;">' . number_format($data->Loan_Instalment, 2, '.', ',') . '</td>                       
-                        <td style="font-size:8px;width:50px;"></td>
-                        <td style="font-size:8px;width:50px;">' . number_format(0, 2, '.', ',') . '</td>
-                        <td style="font-size:8px;width:50px;">' . number_format($data->ETF_Amount, 2, '.', ',') . '</td>
-                        <td style="font-size:8px;width:50px;"></td>                        
-                                                                              
-                </tr>';
+foreach ($chunks as $index => $chunk) {
+    $html .= '<table cellpadding="3">
+        <thead style="border-bottom: #000 solid 1px;">
+            <tr style="border-bottom: 1px solid black; font-weight:bold"> 
+                <th style="width:60px;">EMP NO</th>                      
+                <th style="width:100px;">NAME</th>                       
+                <th style="width:50px;">BASIC SALARY</th>
+                <th style="width:40px;">BR</th>
+                <th style="width:50px;">TOTAL FOR EPF</th>
+                <th style="width:60px;">OT 15</th>
+                <th style="width:60px;">FIXED</th>
+                <th style="width:55px;">PROD INC I</th>
+                <th style="width:50px;">PROD INC II</th>
+                <th style="width:40px;">SPC.ALL</th>
+                <th style="width:55px;">GROSS PAY</th>
+                <th style="width:55px;">EPF 8%</th>
+                <th style="width:60px;">ADV.PAID</th>
+                <th style="width:55px;">OTHER</th>                       
+                <th style="width:70px;">P.A.Y.E</th>
+                <th style="width:70px;">WELFAIR</th>
+                <th style="width:50px;">TOTAL DEDUCTION</th>
+                <th style="width:50px;">NET SALARY</th>                        
+                <th style="width:50px;">EPF 12%</th>
+                <th style="width:50px;">BALANCE</th>                                                                                                                                                                                                            
+            </tr>
+            <tr style="border-bottom: 1px solid black; font-weight:bold"> 
+                <th style="width:60px; border-bottom: 1px solid black;"></th>                      
+                <th style="width:100px; border-bottom: 1px solid black;"></th>                      
+                <th style="width:50px; border-bottom: 1px solid black;">SAL ARREAS</th>
+                <th style="width:40px; border-bottom: 1px solid black;">NO PAY</th>
+                <th style="width:50px; border-bottom: 1px solid black;">SUNDAY OT</th>
+                <th style="width:60px; border-bottom: 1px solid black;">OT 20</th>
+                <th style="width:60px; border-bottom: 1px solid black;">ATTBON</th>
+                <th style="width:55px; border-bottom: 1px solid black;">SPC INC</th>
+                <th style="width:50px; border-bottom: 1px solid black;">OTHER ALLOW</th>
+                <th style="width:40px; border-bottom: 1px solid black;"></th>
+                <th style="width:55px; border-bottom: 1px solid black;"></th>
+                <th style="width:55px; border-bottom: 1px solid black;"></th>
+                <th style="width:60px; border-bottom: 1px solid black;">FEST ADV</th>
+                <th style="width:55px; border-bottom: 1px solid black;">UNIFORM</th>                      
+                <th style="width:70px; border-bottom: 1px solid black;">STAMP</th>
+                <th style="width:70px; border-bottom: 1px solid black;">LOAN</th>
+                <th style="width:50px; border-bottom: 1px solid black;"></th>
+                <th style="width:50px; border-bottom: 1px solid black;">STAMP</th>                       
+                <th style="width:50px; border-bottom: 1px solid black;">ETF 3%</th>
+                <th style="width:50px; border-bottom: 1px solid black;"></th>                                                                                                                                                                                                                      
+            </tr>
+        </thead>
+        <tbody>';
+
+    foreach ($chunk as $data) {
+        $html .= '<tr>
+            <td style="width:60px;">' . $data->EmpNo . '</td>                      
+            <td style="width:100px;">' . $data->Emp_Full_Name . '</td>                       
+            <td style="width:50px;">' . number_format($data->Basic_sal, 2, '.', ',')  . '</td>
+            <td style="width:40px;">' . number_format($data->Br_pay, 2, '.', ',')  . '</td>
+            <td style="width:50px;">' . number_format($data->Total_F_Epf, 2, '.', ',') . '</td>
+            <td style="width:60px;">' . number_format($data->Normal_OT_Pay, 2, '.', ',') . '</td>
+            <td style="width:60px;">' . number_format($data->Fixed, 2, '.', ',') . '</td>
+            <td style="width:55px;">' . number_format($data->Prod_inc1, 2, '.', ',') . '</td>
+            <td style="width:50px;">' . number_format($data->Prod_inc2, 2, '.', ',') . '</td>
+            <td style="width:40px;">' . number_format($data->spc_all, 2, '.', ',') . '</td>
+            <td style="width:55px;">' .  number_format($data->Gross_pay, 2, '.', ',') . '</td>
+            <td style="width:55px;">' . number_format($data->EPF_Worker_Amount, 2, '.', ',') . '</td>
+            <td style="width:60px;">' . number_format($data->Salary_advance, 2, '.', ',')  . '</td>
+            <td style="width:55px;">' . number_format($data->Deductions, 2, '.', ',') . '</td>                       
+            <td style="width:70px;">' . number_format($data->Payee_amount, 2, '.', ',') . '</td>
+            <td style="width:70px;">' . number_format($data->Wellfare, 2, '.', ',') . '</td>
+            <td style="width:50px;">' . number_format($data->tot_deduction, 2, '.', ',') . '</td>
+            <td style="width:50px;">' . number_format($data->D_Salary, 2, '.', ',') . '</td>                        
+            <td style="width:50px;">' . number_format($data->EPF_Employee_Amount, 2, '.', ',') . '</td>
+            <td style="width:50px;">' . number_format($data->Net_salary, 2, '.', ',') . '</td>                                                     
+        </tr>
+        <tr>
+            <td style="width:60px; border-bottom: 1px solid black;"></td>                       
+            <td style="width:100px; border-bottom: 1px solid black;"></td>                          
+            <td style="width:50px; border-bottom: 1px solid black;">' . number_format(0, 2, '.', ',')  . '</td>
+            <td style="width:40px; border-bottom: 1px solid black;">' . number_format($data->no_pay_deduction, 2, '.', ',') . '</td>
+            <td style="width:50px; border-bottom: 1px solid black;">' . number_format($data->Double_OT_Pay, 2, '.', ',')  . '</td>
+            <td style="width:60px; border-bottom: 1px solid black;">' . number_format($data->Double_OT_Pay, 2, '.', ',') . '</td>
+            <td style="width:60px; border-bottom: 1px solid black;">' . number_format($data->Att_Allowance, 2, '.', ',') . '</td>
+            <td style="width:55px; border-bottom: 1px solid black;">' . number_format($data->Spc_inc1, 2, '.', ',') . '</td>
+            <td style="width:50px; border-bottom: 1px solid black;">' . number_format($data->Allowances, 2, '.', ',') . '</td>
+            <td style="width:40px; border-bottom: 1px solid black;"></td>
+            <td style="width:55px; border-bottom: 1px solid black;"></td>
+            <td style="width:55px; border-bottom: 1px solid black;"></td>
+            <td style="width:60px; border-bottom: 1px solid black;">' . number_format($data->Festivel_Advance, 2, '.', ',') . '</td>
+            <td style="width:55px; border-bottom: 1px solid black;">' . number_format(0, 2, '.', ',')  . '</td>                           
+            <td style="width:70px; border-bottom: 1px solid black;">' . number_format(0, 2, '.', ',') . '</td>                               
+            <td style="width:70px; border-bottom: 1px solid black;">' . number_format($data->Loan_Instalment, 2, '.', ',') . '</td>                       
+            <td style="width:50px; border-bottom: 1px solid black;"></td>
+            <td style="width:50px; border-bottom: 1px solid black;">' . number_format(0, 2, '.', ',') . '</td>
+            <td style="width:50px; border-bottom: 1px solid black;">' . number_format($data->ETF_Amount, 2, '.', ',') . '</td>
+            <td style="width:50px; border-bottom: 1px solid black;"></td>                        
+        </tr>';
+    }
+    $html .= '</tbody></table>';
+
+    if ($index < count($chunks) - 1) {
+        $html .= '<div class="page-break"></div>';
+    }
 }
-$html .= '</tbody>
-                  
-          </table>
-        <br>
 
+$html .= '</div>';
 
-
-
-';
 
 // Print text using writeHTMLCell()
 $pdf->writeHTMLCell(0, 0, '', '', $html, 0, 1, 0, true, '', true);

@@ -30,8 +30,8 @@ $pdf->SetHeaderData($PDF_HEADER_LOGO, $PDF_HEADER_LOGO_WIDTH, $PDF_HEADER_TITLE 
 $pdf->setFooterData(array(0, 64, 0), array(0, 64, 128));
 
 // set header and footer fonts
-$pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
-$pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
+$pdf->setHeaderFont(array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
+$pdf->setFooterFont(array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
 
 // set default monospaced font
 $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
@@ -73,92 +73,51 @@ $pdf->setTextShadow(array('enabled' => true, 'depth_w' => 0.0, 'depth_h' => 0.0,
 
 // Set some content to print
 $html = '
-<style>
-    @media print {
-        .page-break {
-            page-break-before: always;
-        }
-    }
-    
-</style>
-        <div style="margin-left:200px; text-align:center; font-size:13px;">ATTENDENCE SUMMARY REPORT</div>
+        <div style="margin-left:200px; text-align:center; font-size:13px;">OT REPORT</div>
             <div style="font-size: 11px; float: left; border-bottom: solid #000 1px;">From Date:' . $f_date . ' &nbsp;- To Date : ' . $t_date . '</div></font><br>
             <table cellpadding="3">
                 <thead style="border-bottom: #000 solid 1px;">
                     <tr style="border-bottom: 1px solid black;"> 
                         <th style="font-size:11px;border-bottom: 1px solid black; width:60px;">EMP NO</th>
                         <th style="font-size:11px;border-bottom: 1px solid black; width:120px;">NAME</th>
-                        <th style="font-size:11px;border-bottom: 1px solid black;width:30px;">DAY</th>
-                        <th style="font-size:11px;border-bottom: 1px solid black;width:60px;">IN DATE</th>
+                        <th style="font-size:11px;border-bottom: 1px solid black;">DATE</th>
+                        <th style="font-size:11px;border-bottom: 1px solid black;">DAY</th>
+                        <th style="font-size:11px;border-bottom: 1px solid black;">FROM TIME</th>
+                        <th style="font-size:11px;border-bottom: 1px solid black;">TO TIME</th>
                         <th style="font-size:11px;border-bottom: 1px solid black;">IN TIME</th>
-                        <th style="font-size:11px;border-bottom: 1px solid black;width:60px;">OUT DATE</th>
                         <th style="font-size:11px;border-bottom: 1px solid black;">OUT TIME</th>
-                        <th style="font-size:11px;border-bottom: 1px solid black; width:30px;">ST</th>         
-                        <th style="font-size:11px;border-bottom: 1px solid black; width:40px;">LATE(M)</th>
-                        <th style="font-size:11px;border-bottom: 1px solid black; width:30px;">ED(H:M)</th>   
-                        <th style="font-size:11px;border-bottom: 1px solid black; width:40px;">OT(H:M)</th>      
-                        <th style="font-size:11px;border-bottom: 1px solid black; width:40px;">DOT(H:M)</th>      
+                        <th style="font-size:11px;border-bottom: 1px solid black;">OT</th>
+                        <th style="font-size:11px;border-bottom: 1px solid black;">DOT</th>
+
                     </tr>
                 </thead>
              <tbody>';
-             
+
 $emtnocheck = "";
 $datenocheck = "";
 
-foreach ($data_set2 as $data) {
-    $Mint1 = $data->AfterExH;
-    $hours1 = floor($Mint1 / 60);
-    $min1 = $Mint1 - ($hours1 * 60);
+foreach ($data_set as $data) {
+    $Mint =   $data->AfterExH;
+    $hours = floor($Mint / 60);
+    $min = $Mint - ($hours * 60);
 
-    $EDMint = $data->EarlyDepMin;
-    $EDhours = floor($EDMint / 60);
-    $EDmin = $EDMint - ($EDhours * 60);
-   
     $dot = $data->DOT;
     $dhours = floor($dot / 60);
     $dmin = $dot - ($dhours * 60);
 
-    
-
-    if ($emtnocheck != $data->EmpNo) {
-        $html .= '<div class="page-break"></div>';
-        $html .= ' <tr>
+    $html .= ' <tr>
                         <td  style="font-size:10px;  width:60px;">' . $data->EmpNo . '</td>
                         <td  style="font-size:10px; width:120px;">' . $data->Emp_Full_Name . '</td>
-                        <td style="font-size:10px;width:30px;">' . $data->ShiftDay . '</td>
-                        <td style="font-size:10px; width:60px;">' . $data->FDate . '</td> 
-                        <td style="font-size:10px;">' . $data->InTime . '</td>    
-                        <td style="font-size:10px; width:60px;">' . $data->OutDate . '</td>
+                        <td style="font-size:10px;">' . $data->FDate . '</td>
+                        <td style="font-size:10px;">' . $data->ShiftDay . '</td> 
+                        <td style="font-size:10px;">' . $data->FTime . '</td>    
+                        <td style="font-size:10px;">' . $data->TTime . '</td>
+                        <td style="font-size:10px;">' . $data->InTime . '</td>
                         <td style="font-size:10px;">' . $data->OutTime . '</td>
-                        
-                        <td style="font-size:10px;width:30px;">' . $data->DayStatus . '</td>
-                        <td style="font-size:10px;width:40px;">' . $data->LateM . '</td>
-                        <td style="font-size:10px;width:30px;">' . $data->EarlyDepMin . '</td>
-                        <td style="font-size:10px;width:40px;">' . $hours1 . ':' . $min1 . '</td>
-                        <td style="font-size:10px;width:40px;">' . $dhours . ':' . $dmin . '</td>
+                            <td style="font-size:10px;">' . $hours . ':' . $min . '</td>
+                                <td style="font-size:10px;">' . $dhours . ':' . $dmin .  '</td>
+
                     </tr>';
-                    
-        $emtnocheck = $data->EmpNo;
-        $datenocheck = $data->InDate;
-    } else {
-        $html .= ' <tr>
-        <td  style="font-size:10px;  width:60px;"></td>
-        <td  style="font-size:10px; width:120px;"></td>
-        <td style="font-size:10px;width:30px;">' . $data->ShiftDay . '</td>
-        <td style="font-size:10px; width:60px;">' . $data->FDate . '</td> 
-        <td style="font-size:10px;">' . $data->InTime . '</td>    
-        <td style="font-size:10px; width:60px;">' . $data->OutDate . '</td>
-        <td style="font-size:10px;">' . $data->OutTime . '</td>
-        
-        <td style="font-size:10px;width:30px;">' . $data->DayStatus . '</td>
-        <td style="font-size:10px;width:40px;">' . $data->LateM . '</td>
-        <td style="font-size:10px;width:30px;">' . $data->EarlyDepMin . '</td>
-        <td style="font-size:10px;width:40px;">' . $hours1 . ':' . $min1 . '</td>
-        <td style="font-size:10px;width:40px;">' . $dhours . ':' . $dmin . '</td>
-    </tr>';
-        $emtnocheck = $data->EmpNo;
-        $datenocheck = $data->InDate;
-    }
 }
 $html .= '</tbody>
                   
@@ -181,4 +140,3 @@ $pdf->Output('IN OUT Report' . $f_date . ' to ' . $t_date . '.pdf', 'I');
 //============================================================+
     // END OF FILE
     //============================================================+
-    

@@ -130,7 +130,7 @@ FROM
     tbl_branches br ON Emp.B_id = br.B_id
 
         
-                                                                    {$filter}  GROUP BY ir.EventID,Emp.EmpNo,dsg.Des_ID,dep.Dep_id,Emp.B_id order by ir.AttDate,ir.AttTime");
+                                                                    {$filter}  GROUP BY ir.EventID,Emp.EmpNo,dsg.Des_ID,dep.Dep_id,Emp.B_id order by ir.AttDate,ir.AttTime,Emp.EmpNo");
 
 //        var_dump($data);die;
 
