@@ -70,17 +70,17 @@ class Report_Leave extends CI_Controller {
         }
         if (($this->input->post("txt_emp"))) {
             if ($filter == null) {
-                $filter = " where tbl_empmaster.EmpNo, ='$emp'";
+                $filter = " where tbl_empmaster.EmpNo ='$emp'";
             } else {
-                $filter .= " AND tbl_empmaster.EmpNo, ='$emp'";
+                $filter .= " AND tbl_empmaster.EmpNo ='$emp'";
             }
         }
 
         if (($this->input->post("txt_emp_name"))) {
             if ($filter == null) {
-                $filter = " where tbl_empmaster.Emp_Full_Name, ='$emp_name'";
+                $filter = " where tbl_empmaster.Emp_Full_Name ='$emp_name'";
             } else {
-                $filter .= " AND tbl_empmaster.Emp_Full_Name, ='$emp_name'";
+                $filter .= " AND tbl_empmaster.Emp_Full_Name ='$emp_name'";
             }
         }
         if (($this->input->post("cmb_desig"))) {

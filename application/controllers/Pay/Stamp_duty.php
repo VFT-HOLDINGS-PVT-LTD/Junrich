@@ -2,7 +2,7 @@
 
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Budget_Relevance extends CI_Controller {
+class Stamp_duty extends CI_Controller {
 
     public function __construct() {
         parent::__construct();
@@ -26,8 +26,8 @@ class Budget_Relevance extends CI_Controller {
         $data['data_desig'] = $this->Db_model->getData('Des_ID,Desig_Name', 'tbl_designations');
         $data['data_cmp'] = $this->Db_model->getData('Cmp_ID,Company_Name', 'tbl_companyprofile');
         $data['data_emp'] = $this->Db_model->getData('EmpNo,Emp_Full_Name', 'tbl_empmaster');
-        $data['data_alw'] = $this->Db_model->getData('ID,Br_name', 'tbl_br_types');
-        $this->load->view('Payroll/Budget_Relevance/index', $data);
+        $data['data_alw'] = $this->Db_model->getData('ID,Name', 'tbl_stamp_duty');
+        $this->load->view('Payroll/Stamp_duty/index', $data);
     }
 
     public function dropdown() {
@@ -115,23 +115,23 @@ class Budget_Relevance extends CI_Controller {
         $Count = count($EmpData);
         $Emp = $EmpData[0]->EmpNo;
 
-        $IsAllowance = $this->Db_model->getfilteredData("select count(EmpNo) HasRow from tbl_varialble_br where EmpNo ='$Emp' and Br_ID='$allowance' and month='$month' and Year = '$year' ");
+        $IsAllowance = $this->Db_model->getfilteredData("select count(EmpNo) HasRow from tbl_variable_stamp where EmpNo ='$Emp' and Stamp_Id='$allowance' and month='$month' and Year = '$year' ");
 
         if ($IsAllowance[0]->HasRow > 0) {
-            $this->session->set_flashdata('error_message', 'Already Added This Allovance Type for This Employee');
+            $this->session->set_flashdata('error_message', 'Already Added This Stamp Duty for This Employee');
         } else {
             for ($i = 0; $i < $Count; $i++) {
                 $data = array(
                     array(
                         'EmpNo' => $EmpData[$i]->EmpNo,
-                        'Br_ID' => $allowance,
+                        'Stamp_Id' => $allowance,
                         'Amount' => $amount,
                         'Year' => $year,
                         'Month' => $month,
                 ));
                 
-                $this->db->insert_batch('tbl_varialble_br', $data);
-                $this->session->set_flashdata('success_message', 'Budget Relevance added successfully');
+                $this->db->insert_batch('tbl_variable_stamp', $data);
+                $this->session->set_flashdata('success_message', 'Stamp Duty added successfully');
             }
         }
         
@@ -214,16 +214,16 @@ class Budget_Relevance extends CI_Controller {
         $data['data_set'] = $this->Db_model->getfilteredData("SELECT 
                                                                     v_alw.ID,
                                                                     v_alw.EmpNo,
-                                                                    v_alw.Br_ID,
+                                                                    v_alw.Stamp_Id,
                                                                     v_alw.Amount,
                                                                     v_alw.Year,
                                                                     v_alw.Month,
                                                                     Emp.Emp_Full_Name,
                                                                     dsg.Desig_Name,
                                                                     dep.Dep_Name,
-                                                                    alw_typ.Br_name
+                                                                    alw_typ.Name
                                                                 FROM
-                                                                tbl_varialble_br v_alw
+                                                                tbl_variable_stamp v_alw
                                                                         INNER JOIN
                                                                     tbl_empmaster Emp ON Emp.EmpNo = v_alw.EmpNo
                                                                         LEFT JOIN
@@ -231,12 +231,12 @@ class Budget_Relevance extends CI_Controller {
                                                                         LEFT JOIN
                                                                     tbl_departments dep ON dep.Dep_id = Emp.Dep_id
                                                                         LEFT JOIN
-                                                                        tbl_br_types alw_typ ON alw_typ.ID = v_alw.Br_ID
+                                                                        tbl_stamp_duty alw_typ ON alw_typ.ID = v_alw.Stamp_Id
                                                                     {$filter}");
 
 
 
-        $this->load->view('Payroll/Budget_Relevance/search_data', $data);
+        $this->load->view('Payroll/Stamp_duty/search_data', $data);
     }
 
     /*
@@ -249,7 +249,7 @@ class Budget_Relevance extends CI_Controller {
         $dataObject = $this->Db_model->getfilteredData("SELECT 
                                                                     v_alw.ID,
                                                                     v_alw.EmpNo,
-                                                                    v_alw.Br_ID,
+                                                                    v_alw.Stamp_Id,
                                                                     v_alw.Amount,
                                                                     v_alw.Year,
                                                                     v_alw.Month,
@@ -258,7 +258,7 @@ class Budget_Relevance extends CI_Controller {
                                                                     dep.Dep_Name,
                                                                     alw_typ.Allowance_name
                                                                 FROM
-                                                                tbl_varialble_br v_alw
+                                                                tbl_variable_stamp v_alw
                                                                         INNER JOIN
                                                                     tbl_empmaster Emp ON Emp.EmpNo = v_alw.EmpNo
                                                                         LEFT JOIN
@@ -285,7 +285,7 @@ class Budget_Relevance extends CI_Controller {
 
         $data = array("Amount" => $amount);
         $whereArr = array("ID" => $ID);
-        $result = $this->Db_model->updateData("tbl_varialble_br", $data, $whereArr);
+        $result = $this->Db_model->updateData("tbl_varialble_allowance", $data, $whereArr);
         
         $this->session->set_flashdata('success_message', 'Allowance edit successfully');
         
@@ -297,7 +297,7 @@ class Budget_Relevance extends CI_Controller {
      */
 
     public function ajax_delete($id) {
-        $table = "tbl_varialble_br";
+        $table = "tbl_varialble_allowance";
         $where = 'ID';
         $this->Db_model->delete_by_id($id, $where, $table);
         echo json_encode(array("status" => TRUE));

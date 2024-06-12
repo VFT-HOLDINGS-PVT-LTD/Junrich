@@ -173,12 +173,14 @@ class Attendance_Process extends CI_Controller
                                 $OutDate = $dt_out_Records_mo['dt_out_Records'][0]->AttDate;
                                 //**** Out Time
                                 $OutTime = $dt_out_Records_mo['dt_out_Records'][0]->OutTime;
+                                $dt_out_edata_ude_awilla['dt_out_Records'] = $this->Db_model->getfilteredData("select min(AttTime) as OutTime,Enroll_No,AttDate,EventID from tbl_u_attendancedata where Enroll_No='$EmpNo' and AttDate='$newDate' AND Status='0'");
+                                $edata_ude_apu_welawa = $dt_out_edata_ude_awilla['dt_out_Records'][0]->OutTime;
 
-                                $autochoutch1 = strtotime('12:00:00');
+                                $autochoutch1 = strtotime($edata_ude_apu_welawa);
                                 $autochoutch2 = strtotime($OutTime);
-                                if ($autochoutch2 > $autochoutch1) {
-                                    $OutTime = '08:00:00';
-                                    $OutDate = date('Y-m-d', strtotime($FromDate . ' +1 day'));
+                                if (!empty($edata_ude_apu_welawa) && $autochoutch2 > $autochoutch1) {
+                                    $OutTime = null;
+                                    $OutDate = null;
                                 }
                             }
                         } else if ($InRecords == null) {
@@ -241,19 +243,19 @@ class Attendance_Process extends CI_Controller
                                 }
                             }
                         }
-                        if (empty($OutDate) || $OutDate == 0) {
-                            //day status eka ganna widiya
-                            $fromnewdate = date('Y-m-d', strtotime($FromDate . ' +1 day'));
-                            $dt_in_Records_mo_sh['dt_Records'] = $this->Db_model->getfilteredData("select min(AttTime) as INTime,Enroll_No,AttDate,EventID from tbl_u_attendancedata where Enroll_No='$EmpNo' and AttDate='" . $fromnewdate . "' AND Status='0' and AttTime BETWEEN '06:00:00' AND '15:00:00'  ");
-                            $dt_in_Records_ni_sh['dt_Records'] = $this->Db_model->getfilteredData("select min(AttTime) as INTime,Enroll_No,AttDate,EventID from tbl_u_attendancedata where Enroll_No='$EmpNo' and AttDate='" . $fromnewdate . "' AND Status='0' and AttTime BETWEEN '15:00:00' AND '22:00:00'  ");
-                            if (!empty($dt_in_Records_mo_sh['dt_Records'][0]->INTime) && !empty($InmoTime)) {
-                                $DayStatus = 'MS';
-                            } else if (!empty($dt_in_Records_ni_sh['dt_Records'][0]->INTime) && !empty($InmoTime)) {
-                                $OutTime = '08:00:00';
-                                $OutDate = $fromnewdate;
-                                // echo $OutDate;
-                            }
-                        }
+                        // if (empty($OutDate) || $OutDate == 0) {
+                        //     //day status eka ganna widiya
+                        //     $fromnewdate = date('Y-m-d', strtotime($FromDate . ' +1 day'));
+                        //     $dt_in_Records_mo_sh['dt_Records'] = $this->Db_model->getfilteredData("select min(AttTime) as INTime,Enroll_No,AttDate,EventID from tbl_u_attendancedata where Enroll_No='$EmpNo' and AttDate='" . $fromnewdate . "' AND Status='0' and AttTime BETWEEN '06:00:00' AND '15:00:00'  ");
+                        //     $dt_in_Records_ni_sh['dt_Records'] = $this->Db_model->getfilteredData("select min(AttTime) as INTime,Enroll_No,AttDate,EventID from tbl_u_attendancedata where Enroll_No='$EmpNo' and AttDate='" . $fromnewdate . "' AND Status='0' and AttTime BETWEEN '15:00:00' AND '22:00:00'  ");
+                        //     if (!empty($dt_in_Records_mo_sh['dt_Records'][0]->INTime) && !empty($InmoTime)) {
+                        //         $DayStatus = 'MS';
+                        //     } else if (!empty($dt_in_Records_ni_sh['dt_Records'][0]->INTime) && !empty($InmoTime)) {
+                        //         $OutTime = '08:00:00';
+                        //         $OutDate = $fromnewdate;
+                        //         // echo $OutDate;
+                        //     }
+                        // }
 
 
                         $Allnomalotmin = 0;
@@ -554,6 +556,8 @@ class Attendance_Process extends CI_Controller
                             $Late_Status = 0;
                             $Nopay = 0;
                             $Nopay_Hrs = 0;
+                            $Allnomalotmin = 0;
+                            $Alldoubleotmin = 0;
                         }
 
                         /*
@@ -564,6 +568,8 @@ class Attendance_Process extends CI_Controller
                             $Late_Status = 0;
                             $Nopay = 0;
                             $Nopay_Hrs = 0;
+                            $Allnomalotmin = 0;
+                            $Alldoubleotmin = 0;
                         }
 
                         // If Out Available & In Missing
@@ -572,6 +578,8 @@ class Attendance_Process extends CI_Controller
                             $Late_Status = 0;
                             $Nopay = 0;
                             $Nopay_Hrs = 0;
+                            $Allnomalotmin = 0;
+                            $Alldoubleotmin = 0;
                         }
 
                         // If In Available & Out Missing
@@ -580,6 +588,8 @@ class Attendance_Process extends CI_Controller
                             $Late_Status = 0;
                             $Nopay = 0;
                             $Nopay_Hrs = 0;
+                            $Allnomalotmin = 0;
+                            $Alldoubleotmin = 0;
                         }
 
                         // If Out Available & In Missing
@@ -588,6 +598,8 @@ class Attendance_Process extends CI_Controller
                             $Late_Status = 0;
                             $Nopay = 0;
                             $Nopay_Hrs = 0;
+                            $Allnomalotmin = 0;
+                            $Alldoubleotmin = 0;
                         }
                         // **************************************************************************************//
 
@@ -600,6 +612,7 @@ class Attendance_Process extends CI_Controller
                             $DayStatus = 'AB';
                             $Nopay = 1;
                             $Nopay_Hrs = (((strtotime($SHTT) - strtotime($SHFT))) / 60);
+                            $Allnomalotmin = 0;
 
                             // if ($DayType == 0.5) {
                             //     $Nopay = 0.5;

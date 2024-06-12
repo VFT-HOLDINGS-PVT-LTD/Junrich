@@ -15,7 +15,7 @@
                         <th>NAME</th>
                         <th>DESIGNATION</th>
                         <th>DEPARTMENT</th>
-                        <th>BUDGET RELEVANCE</th>
+                        <th>STAMP DUTY</th>
                         <th>AMOUNT</th>
                         <th>MONTH</th>
 
@@ -37,7 +37,7 @@
                         echo "<td width='100'>" . $data->Emp_Full_Name . "</td>";
                         echo "<td width='100'>" . $data->Desig_Name . "</td>";
                         echo "<td width='100'>" . $data->Dep_Name . "</td>";
-                        echo "<td width='100'>" . $data->Br_name . "</td>";
+                        echo "<td width='100'>" . $data->Name . "</td>";
                         echo "<td width='100'>" . $data->Amount . "</td>";
                         echo "<td width='100'>" . $data->Month . "</td>";
 
@@ -68,35 +68,35 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h2 class="modal-title">EDIT BUDGET RELEVANCE</h2>
+                <h2 class="modal-title">EDIT ALLOWANCE</h2>
             </div>
             <div class="modal-body">
-                <form class="form-horizontal" action="<?php echo base_url(); ?>Pay/Budget_Relevance/edit" method="post">
+                <form class="form-horizontal" action="<?php echo base_url(); ?>Pay/Allowance/edit" method="post">
                     <div class="form-group col-sm-12">
                         <label for="focusedinput" class="col-sm-4 control-label">ID</label>
                         <div class="col-sm-8">
-                            <input value="<?php echo $data->ID; ?>" type="text" class="form-control" readonly="readonly" name="id" id="id" class="m-wrap span3" >
+                            <input value="" type="text" class="form-control" readonly="readonly" name="id" id="id" class="m-wrap span3" >
                         </div>
                     </div>
 
                     <div class="form-group col-sm-12">
                         <label for="focusedinput" class="col-sm-4 control-label">NAME</label>
                         <div class="col-sm-8">
-                            <input value="<?php echo $data->Emp_Full_Name; ?>" type="text" name="Name" id="Name"  class="form-control m-wrap span6"><br>
+                            <input value="" type="text" name="Name" id="Name"  class="form-control m-wrap span6"><br>
                         </div>
                     </div>
 
                     <div class="form-group col-sm-12">
                         <label for="focusedinput" class="col-sm-4 control-label">ALLOWANCE NAME</label>
                         <div class="col-sm-8">
-                            <input value="<?php echo $data->Br_name; ?>" type="text" name="allowance" id="allowance"  class="form-control m-wrap span6"><br>
+                            <input value="" type="text" name="allowance" id="allowance"  class="form-control m-wrap span6"><br>
                         </div>
                     </div>
 
                     <div class="form-group col-sm-12">
                         <label for="focusedinput" class="col-sm-4 control-label">AMOUNT</label>
                         <div class="col-sm-8">
-                            <input value="<?php echo $data->Amount; ?>" type="text" name="amount" id="amount"  class="form-control m-wrap span6"><br>
+                            <input value="" type="text" name="amount" id="amount"  class="form-control m-wrap span6"><br>
                         </div>
                     </div>
                     <div class="modal-footer">

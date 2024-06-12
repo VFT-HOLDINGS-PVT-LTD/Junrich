@@ -63,10 +63,10 @@ class Deduction_Types extends CI_Controller {
 
 //                    echo "OkM " . $id;
 
-        $whereArray = array('Alw_ID' => $id);
+        $whereArray = array('Ded_ID' => $id);
 
         $this->Db_model->setWhere($whereArray);
-        $dataObject = $this->Db_model->getData('Alw_ID,Allowance_name,IsActive,isFixed', 'tbl_allowance_type');
+        $dataObject = $this->Db_model->getData('Ded_ID,Deduction_name,isFixed', 'tbl_deduction_types');
 
 
 
@@ -101,6 +101,28 @@ class Deduction_Types extends CI_Controller {
         $where = 'Alw_ID';
         $this->Db_model->delete_by_id($id, $where, $table);
         echo json_encode(array("status" => TRUE));
+    }
+    public function update_Data() {
+        
+        $BF=$this->input->post('leavebf');
+        if ($BF == null) {
+            $BF = 0;
+        } elseif ($BF == 'on') {
+            $BF=1;
+        }
+        
+        $data = array(
+           
+            'Deduction_name' => $this->input->post('leave_name'),
+            
+            'isFixed' => $BF,
+            'IsActive' => 1,
+        );
+        // $result = $this->Db_model->insertData("tbl_leave_types", $data);
+        $whereArr = array("Ded_ID" => $this->input->post('id'));
+            $this->Db_model->updateData("tbl_deduction_types", $data, $whereArr);
+            redirect(base_url() . "Master/Deduction_Types/");
+        
     }
 
 }

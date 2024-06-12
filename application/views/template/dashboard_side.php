@@ -95,9 +95,18 @@ $User_Name = $currentUser[0]->Emp_Full_Name;
                                 <?php if ($currentUser[0]->allowance_types == 1): ?>
                                     <li><a href="<?php echo base_url(); ?>Master/Allowance_Types/">ALLOWANCE TYPES</a></li>
                                 <?php endif; ?>
+                                <?php if ($currentUser[0]->allowance_types == 1): ?>
+                                    <li><a href="<?php echo base_url(); ?>Master/Br_types/">BUDGET RELEVANCE TYPES</a></li>
+                                <?php endif; ?>
+                                <?php if ($currentUser[0]->allowance_types == 1): ?>
+                                    <li><a href="<?php echo base_url(); ?>Master/Welfair_type/">WELFAIR TYPE</a></li>
+                                <?php endif; ?>
 
                                 <?php if ($currentUser[0]->deduction_types == 1): ?>
                                     <li><a href="<?php echo base_url(); ?>Master/Deduction_Types/">DEDUCTION TYPES</a></li>
+                                <?php endif; ?>
+                                <?php if ($currentUser[0]->allowance_types == 1): ?>
+                                    <li><a href="<?php echo base_url(); ?>Master/Stamp_duty/">STAMP DUTY TYPE</a></li>
                                 <?php endif; ?>
 
                                 <?php if ($currentUser[0]->branches == 1): ?>
@@ -241,6 +250,12 @@ $User_Name = $currentUser[0]->Emp_Full_Name;
                                 <?php endif; ?>
                                 <?php if ($currentUser[0]->allowance == 1): ?>
                                     <li><a href="<?php echo base_url(); ?>Pay/Budget_Relevance">BUDGET RELEVANCE</a></li>
+                                <?php endif; ?>
+                                <?php if ($currentUser[0]->allowance == 1): ?>
+                                    <li><a href="<?php echo base_url(); ?>Pay/Stamp_duty">STAMP DUTY</a></li>
+                                <?php endif; ?>
+                                <?php if ($currentUser[0]->allowance == 1): ?>
+                                    <li><a href="<?php echo base_url(); ?>Pay/Welfair">WELFAIR</a></li>
                                 <?php endif; ?>
 
                                 <?php if ($currentUser[0]->request_advance == 1): ?>

@@ -760,6 +760,7 @@ class Payroll_Process extends CI_Controller
 
                 //**** Get Allowance Details
                 $budget_relevance = $this->Db_model->getfilteredData("select Br_ID, Amount from tbl_varialble_br where EmpNo=$EmpNo and Month=$month and Year=$year");
+                $welfair = $this->Db_model->getfilteredData("select welfair_id, Amount from tbl_variable_welfair where EmpNo=$EmpNo and Month=$month and Year=$year");
 
                 //**** Get Allowance Details
                 // $Allowancescount = $this->Db_model->getfilteredData("select count(Alw_ID) as HasRow from tbl_varialble_allowance where EmpNo=$EmpNo and Month=$month and Year=$year");
@@ -769,6 +770,11 @@ class Payroll_Process extends CI_Controller
                 $tbprodinc2 = 0;
                 $tbspc1 = 0;
                 $tbspc2 = 0;
+                $welfair_1 = 0;
+
+                if (!empty($Allowances)) {
+                    $welfair_1 = $welfair[0]->Amount;
+                }
 
                 /*
                  * Allowence special types
@@ -855,10 +861,56 @@ class Payroll_Process extends CI_Controller
                 //**** Get deduction Details
                 $Deductions = $this->Db_model->getfilteredData("select Ded_ID,Amount from tbl_variable_deduction where EmpNo=$EmpNo and Month=$month and Year=$year");
                 $payee = $this->Db_model->getfilteredData("SELECT * FROM tbl_payee");
+                $stamp_Duty = $this->Db_model->getfilteredData("select ID, Amount from tbl_variable_stamp where EmpNo=$EmpNo and Month=$month and Year=$year");
                 //**** Get salary advance
                 $Sal_Advance = $this->Db_model->getfilteredData("select Amount from tbl_salary_advance where Is_Approve=1 and EmpNo=$EmpNo and month=$month and year = $year");
 
                 $Fest_Advance = $this->Db_model->getfilteredData("SELECT Amount from tbl_festivel_advance where EmpNo=$EmpNo and Month=$month and Year = $year");
+
+                $stamp_Duty1 = 0;
+                if (!empty($stamp_Duty)) {
+                    $stamp_Duty1 =  $stamp_Duty[0]->Amount;
+                }
+
+                // if (!empty($Allowances)) {
+                //     if ($Allowances[0]->Alw_ID == 1) {
+                //         $tbattendencebonus = $Allowances[0]->Amount;
+                //     } else if ($Allowances[0]->Alw_ID == 2) {
+                //         $tbprodinc1 = $Allowances[0]->Amount;
+                //     } else if ($Allowances[0]->Alw_ID == 3) {
+                //         $tbprodinc2 = $Allowances[0]->Amount;
+                //     } else if ($Allowances[0]->Alw_ID == 4) {
+                //         $tbspc1 = $Allowances[0]->Amount;
+                //     } else if ($Allowances[0]->Alw_ID == 5) {
+                //         $tbspc2 = $Allowances[0]->Amount;
+                //     }
+
+                //     if ($Allowances[1]->Alw_ID == 1) {
+                //         $tbattendencebonus = $Allowances[1]->Amount;
+                //     } else if ($Allowances[1]->Alw_ID == 2) {
+                //         $tbprodinc1 = $Allowances[1]->Amount;
+                //     } else if ($Allowances[1]->Alw_ID == 3) {
+                //         $tbprodinc2 = $Allowances[1]->Amount;
+                //     } else if ($Allowances[1]->Alw_ID == 4) {
+                //         $tbspc1 = $Allowances[1]->Amount;
+                //     } else if ($Allowances[1]->Alw_ID == 5) {
+                //         $tbspc2 = $Allowances[1]->Amount;
+                //     }
+
+                //     if ($Allowances[2]->Alw_ID == 1) {
+                //         $tbattendencebonus = $Allowances[2]->Amount;
+                //     } else if ($Allowances[2]->Alw_ID == 2) {
+                //         $tbprodinc1 = $Allowances[2]->Amount;
+                //     } else if ($Allowances[2]->Alw_ID == 3) {
+                //         $tbprodinc2 = $Allowances[2]->Amount;
+                //     } else if ($Allowances[2]->Alw_ID == 4) {
+                //         $tbspc1 = $Allowances[2]->Amount;
+                //     } else if ($Allowances[2]->Alw_ID == 5) {
+                //         $tbspc2 = $Allowances[2]->Amount;
+                //     }
+
+                    
+                // }
 
                 if ($Fest_Advance == null) {
                     $Festivel_Advance = 0;

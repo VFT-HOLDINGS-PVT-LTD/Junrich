@@ -67,17 +67,17 @@ class Report_Leave_summery extends CI_Controller {
         
         if (($this->input->post("txt_emp"))) {
             if ($filter == null) {
-                $filter = " where tbl_empmaster.EmpNo, ='$emp' and Emp.`Status` = 1 ";
+                $filter = " where tbl_empmaster.EmpNo ='$emp' and Emp.`Status` = 1 ";
             } else {
-                $filter .= " AND tbl_empmaster.EmpNo, ='$emp' and Emp.`Status` = 1 ";
+                $filter .= " AND tbl_empmaster.EmpNo ='$emp' and Emp.`Status` = 1 ";
             }
         }
 
         if (($this->input->post("txt_emp_name"))) {
             if ($filter == null) {
-                $filter = " where tbl_empmaster.Emp_Full_Name, ='$emp_name'";
+                $filter = " where tbl_empmaster.Emp_Full_Name ='$emp_name'";
             } else {
-                $filter .= " AND tbl_empmaster.Emp_Full_Name, ='$emp_name'";
+                $filter .= " AND tbl_empmaster.Emp_Full_Name ='$emp_name'";
             }
         }
         if (($this->input->post("cmb_desig"))) {
