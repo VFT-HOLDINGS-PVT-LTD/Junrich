@@ -207,6 +207,7 @@ class Attendance_Process extends CI_Controller
 
                             $OutTimeSrt = strtotime($OutTime);
                             $SHEndTime = strtotime($SHTT);
+                            $SHEndTime += 30 * 60 ;
                             // $GraseP = "00:30:00";
                             // $GrasePNew =  strtotime($GraseP);
 
@@ -220,6 +221,7 @@ class Attendance_Process extends CI_Controller
                         //morning shift eka ilaga dawase thibboth thibboth ot
                         if (!empty($InmoTime) && !empty($OutDate) && $OutDate > $FromDate) {
                             $date1 = new DateTime($SHTT);
+                            $date1->add(new DateInterval('PT30M'));
                             $date2 = new DateTime($OutTime);
 
                             // Subtract 24 hours from $date1
@@ -432,6 +434,7 @@ class Attendance_Process extends CI_Controller
                                 $OutTimeSrt = strtotime($OutTime);
                                 $nxtchecksat = strtotime('23:59:59');
                                 $SHEndTime = strtotime($SHTT);
+                                $SHEndTime += 30 * 60 ;
 
 
                                 //*******Get Minutes
@@ -441,6 +444,7 @@ class Attendance_Process extends CI_Controller
                                 $dayconcatprday = $FromDate . " " . $SHTT;
                                 $dayconcattodaystrtotime = strtotime($dayconcattoday);
                                 $dayconcatprdaystrtotime = strtotime($dayconcatprday);
+                                $dayconcatprdaystrtotime += 30 * 60;
                                 if ($Shift_Day == 'SAT' && $OutTimeSrt < $nxtchecksat) {
                                     $iCalc = round(($dayconcattodaystrtotime - $dayconcatprdaystrtotime) / 60);
                                     $Allnomalotmin = $iCalc;
