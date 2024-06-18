@@ -488,7 +488,7 @@
 
                 $("#search").click(function () {
                     $('#search_body').html('<center><p><img style="width: 50;height: 50;" src="<?php echo base_url(); ?>assets/images/icon-loading.gif" /></p><center>');
-                    $('#search_body').load("<?php echo base_url(); ?>Pay/Stamp_duty/getAllowances", {'txt_emp': $('#txt_emp').val(), 'txt_emp_name': $('#txt_emp_name').val(), 'cmb_desig': $('#cmb_desig').val(), 'cmb_dep': $('#cmb_dep').val(), 'cmb_month': $('#cmb_month').val(),'cmb_years': $('#cmb_years').val(),'cmb_allowances': $('#cmb_allowances').val()});
+                    $('#search_body').load("<?php echo base_url(); ?>Pay/Welfair/getAllowances", {'txt_emp': $('#txt_emp').val(), 'txt_emp_name': $('#txt_emp_name').val(), 'cmb_desig': $('#cmb_desig').val(), 'cmb_dep': $('#cmb_dep').val(), 'cmb_month': $('#cmb_month').val(),'cmb_years': $('#cmb_years').val(),'cmb_allowances': $('#cmb_allowances').val()});
                 });
 
 

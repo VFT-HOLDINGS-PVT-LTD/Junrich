@@ -16,8 +16,8 @@
                         <th>EMP NO</th>
                         <th>NAME</th>
                         <th>DATE</th>
-                        <th>IN TIME</th>
-                        <th>OUT TIME</th>
+                        <th>TIME</th>
+                        <!--<th>OUT TIME</th>-->
                         <th>REASON</th>
                        
 
@@ -25,14 +25,18 @@
                         <th>STATUS</th>
                         <!--<th>EDIT</th>-->
                         <th>APPROVE</th>
-                        <!--<th>REJECT</th>-->
+                        <th>REJECT</th>
 
                     </tr>
                 </thead>
                 <tbody>
                     <?php
                     foreach ($data_set as $data) {
-
+                        if ($data->Status == 0) {
+                            $dataV = "Check IN";
+                        }elseif ($data->Status == 1){
+                            $dataV = "Check OUT";
+                        }
 
 
                         echo "<tr class='odd gradeX'>";
@@ -41,8 +45,7 @@
                         echo "<td width='100'>" . $data->Emp_Full_Name . "</td>";
                         
                         echo "<td width='100'>" . $data->Att_Date . "</td>";
-                        echo "<td width='100'>" . $data->In_Time . "</td>";
-                        echo "<td width='100'>" . $data->Out_Time . "</td>";
+                        echo "<td width='100'>" . $data->In_Time . " - ".$dataV."</td>";
                         echo "<td width='100'>" . $data->Reason . "</td>";
                      
 
@@ -60,9 +63,9 @@
                         echo "<a class='get_data btn btn-primary' href='" . base_url() . "Attendance/Attendance_Manual_Entry_ADMIN/approve/" . $data->M_ID . "'>APPROVE<i class=''></i> </a>";
                         echo "</td>";
 
-//                        echo "<td width='15'>";
-//                        echo "<a class='get_data btn btn-danger' href='" . base_url() . "Leave_Transaction/Leave_Approve/reject/" . $data->M_ID . "'>REJECT<i class=''></i> </a>";
-//                        echo "</td>";
+                       echo "<td width='15'>";
+                       echo "<a class='get_data btn btn-danger' href='" . base_url() . "Attendance/Attendance_Manual_Entry_ADMIN/ajax_StatusReject/" . $data->M_ID . "'>REJECT<i class=''></i> </a>";
+                       echo "</td>";
 
                         echo "</tr>";
                     }

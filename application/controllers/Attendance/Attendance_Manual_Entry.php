@@ -27,9 +27,8 @@ class Attendance_Manual_Entry extends CI_Controller {
         $data['data_desig'] = $this->Db_model->getData('Des_ID,Desig_Name', 'tbl_designations');
         $data['data_grp'] = $this->Db_model->getData('Grp_ID,EmpGroupName', 'tbl_emp_group');
         $data['data_cmp'] = $this->Db_model->getData('Cmp_ID,Company_Name', 'tbl_companyprofile');
-        $data['data_set_att'] = $this->Db_model->getfilteredData("select * from tbl_manual_entry
-inner join tbl_empmaster
-on tbl_empmaster.EmpNo = tbl_manual_entry.Enroll_No order by M_ID desc");
+        $data['data_set_att'] = $this->Db_model->getfilteredData("SELECT `M_ID`,`EmpNo`,`Emp_Full_Name`,`Att_Date`,`In_Time`,`tbl_manual_entry`.`Status`,`Reason` from tbl_manual_entry inner join tbl_empmaster
+        on tbl_empmaster.EmpNo = tbl_manual_entry.Enroll_No order by M_ID desc");
 
 
         $this->load->view('Attendance/Attendance_Manual_Entry/index', $data);
@@ -94,29 +93,49 @@ on tbl_empmaster.EmpNo = tbl_manual_entry.Enroll_No order by M_ID desc");
 
         $att_date = $this->input->post("att_date");
         $in_time = $this->input->post("in_time");
-        $out_time = $this->input->post("out_time");
+        // $out_time = $this->input->post("out_time");
+        $out_time = "00:00:00";
         $reason = $this->input->post("txt_reason");
+        $satus = $this->input->post('employee_status');
 
 
+        if($satus== 'Active'){
+            $st = "0";
+        }
+        // else{
+        //     $st = "1";
+        // }
+        if($satus== 'Inactive'){
+            $st = "1";
+        }
         $EmpData = $this->Db_model->getfilteredData("select EmpNo,Enroll_No from tbl_empmaster where EmpNo ='$emp' or Emp_Full_Name='$emp_name' ");
 
-
-
         $EnrollNo = $EmpData[0]->Enroll_No;
-
-
-
-
 
         $data = array(
             'Att_Date' => $att_date,
             'In_Time' => $in_time,
             'Out_Time' => $out_time,
             'Enroll_No' => $EnrollNo,
-            'Reason' => $reason
+            'Reason' => $reason,
+            'Status' => $st,
         );
 
         $this->Db_model->insertData('tbl_manual_entry', $data);
+
+
+        // $data = array(
+        //     'AttDate' => $att_date,
+        //     'AttTime' => $in_time,
+        //     'AttDateTimeStr' => "0000-00-00 00:00:00",
+        //     'Enroll_No' => $EnrollNo,
+        //     'AttPlace' => "null",
+        //     'Status' => $st,
+        //     'verify_type' => "0",
+        //     'EventName' => "null",
+        // );
+
+        // $this->Db_model->insertData('tbl_u_attendancedata', $data);
         $this->session->set_flashdata('success_message', 'Manual Entry added successfully');
 
         redirect(base_url() . "Attendance/Attendance_Manual_Entry");

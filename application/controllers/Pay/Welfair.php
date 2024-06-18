@@ -214,16 +214,16 @@ class Welfair extends CI_Controller {
         $data['data_set'] = $this->Db_model->getfilteredData("SELECT 
                                                                     v_alw.ID,
                                                                     v_alw.EmpNo,
-                                                                    v_alw.Stamp_Id,
+                                                                    v_alw.welfair_id,
                                                                     v_alw.Amount,
                                                                     v_alw.Year,
                                                                     v_alw.Month,
                                                                     Emp.Emp_Full_Name,
                                                                     dsg.Desig_Name,
                                                                     dep.Dep_Name,
-                                                                    alw_typ.Name
+                                                                    alw_typ.Welfair_name
                                                                 FROM
-                                                                tbl_variable_stamp v_alw
+                                                                tbl_variable_welfair v_alw
                                                                         INNER JOIN
                                                                     tbl_empmaster Emp ON Emp.EmpNo = v_alw.EmpNo
                                                                         LEFT JOIN
@@ -231,12 +231,12 @@ class Welfair extends CI_Controller {
                                                                         LEFT JOIN
                                                                     tbl_departments dep ON dep.Dep_id = Emp.Dep_id
                                                                         LEFT JOIN
-                                                                        tbl_stamp_duty alw_typ ON alw_typ.ID = v_alw.Stamp_Id
+                                                                        tbl_welfair alw_typ ON alw_typ.ID = v_alw.welfair_id
                                                                     {$filter}");
 
 
 
-        $this->load->view('Payroll/Stamp_duty/search_data', $data);
+        $this->load->view('Payroll/Welfair/search_data', $data);
     }
 
     /*

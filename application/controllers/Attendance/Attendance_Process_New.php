@@ -125,7 +125,7 @@ class Attendance_Process_New extends CI_Controller
                     
 
                     if ($Day != "OFF") {
-
+                        $Day_Type = 1;
                         // Get the CheckOut 
                         $dt_out_Records['dt_out_Records'] = $this->Db_model->getfilteredData("select max(AttTime) as OutTime,Enroll_No,AttDate,EventID from tbl_u_attendancedata where Enroll_No='$EmpNo' and AttDate='" . $FromDate . "' AND Status='1' ");
 
@@ -205,6 +205,7 @@ class Attendance_Process_New extends CI_Controller
 
                                         if ($OutTime == null) {
                                             $DayStatus = 'MS';
+                                            $Day_Type = 0.5;
                                             $Late_Status = 0;
                                             $Nopay = 0;
                                             $OutTime = "00:00:00";
@@ -346,6 +347,7 @@ class Attendance_Process_New extends CI_Controller
                             $Late_Status = 0;
                             $Nopay = 0;
                             $Nopay_Hrs = 0;
+                            $Day_Type = 0.5;
                         }
 
                         /*
@@ -356,6 +358,7 @@ class Attendance_Process_New extends CI_Controller
                             $Late_Status = 0;
                             $Nopay = 0;
                             $Nopay_Hrs = 0;
+                            $Day_Type = 0.5;
                         }
 
                         // If Out Available & In Missing
@@ -364,6 +367,7 @@ class Attendance_Process_New extends CI_Controller
                             $Late_Status = 0;
                             $Nopay = 0;
                             $Nopay_Hrs = 0;
+                            $Day_Type = 0.5;
                         }
 
                         // If In Available & Out Missing
@@ -372,6 +376,7 @@ class Attendance_Process_New extends CI_Controller
                             $Late_Status = 0;
                             $Nopay = 0;
                             $Nopay_Hrs = 0;
+                            $Day_Type = 0.5;
                         }
 
                         // If Out Available & In Missing
@@ -380,6 +385,7 @@ class Attendance_Process_New extends CI_Controller
                             $Late_Status = 0;
                             $Nopay = 0;
                             $Nopay_Hrs = 0;
+                            $Day_Type = 0.5;
                         }
                         // **************************************************************************************//
 
@@ -429,6 +435,7 @@ class Attendance_Process_New extends CI_Controller
                         // Nopay
                         if ($InTime == '' && $OutTime == '' && $Day == 'DU') {
                             $DayStatus = 'AB';
+                            $Day_Type = 1;
                             $Nopay = 1;
                             $Nopay_Hrs = (((strtotime($SHTT) - strtotime($SHFT))) / 60);
 
@@ -442,6 +449,7 @@ class Attendance_Process_New extends CI_Controller
                                 $Nopay = 0;
                                 $Nopay_Hrs = 0;
                                 $DayStatus = 'EX';
+                                $Day_Type = 1;
                             }
                         }
 
@@ -901,6 +909,7 @@ class Attendance_Process_New extends CI_Controller
                         $Nopay = 0;
                         $Nopay_Hrs = 0;
                         $Att_Allowance = 0;
+                        $Day_Type = 1;
                     }
                     $Leave = $this->Db_model->getfilteredData("SELECT * FROM tbl_leave_entry where EmpNo = $EmpNo and Leave_Date = '$FromDate' AND Leave_Count='1' ");
                     if (!empty($Leave[0]->Is_Approve)) {
@@ -908,6 +917,7 @@ class Attendance_Process_New extends CI_Controller
                         $DayStatus = 'LV';
                         $Nopay_Hrs = 0;
                         $Att_Allowance = 0;
+                        $Day_Type = 1;
                     }
                     $Alldoubleotmin = 0;
                     if ($Day == "OFF" || $Day == "EX") {

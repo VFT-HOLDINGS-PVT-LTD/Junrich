@@ -475,6 +475,7 @@
                                 "autoclose": true,
                                 "todayHighlight": true,
                                 format: 'yyyy/mm/dd'});
+                                
 
                     $('#to_date').datepicker(
                             {"setDate": new Date(),

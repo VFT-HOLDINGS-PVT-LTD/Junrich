@@ -15,7 +15,7 @@
                         <th>NAME</th>
                         <th>DESIGNATION</th>
                         <th>DEPARTMENT</th>
-                        <th>STAMP DUTY</th>
+                        <th>WELFAIR</th>
                         <th>AMOUNT</th>
                         <th>MONTH</th>
 
@@ -37,7 +37,7 @@
                         echo "<td width='100'>" . $data->Emp_Full_Name . "</td>";
                         echo "<td width='100'>" . $data->Desig_Name . "</td>";
                         echo "<td width='100'>" . $data->Dep_Name . "</td>";
-                        echo "<td width='100'>" . $data->Name . "</td>";
+                        echo "<td width='100'>" . $data->Welfair_name . "</td>";
                         echo "<td width='100'>" . $data->Amount . "</td>";
                         echo "<td width='100'>" . $data->Month . "</td>";
 

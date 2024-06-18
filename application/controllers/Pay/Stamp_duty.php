@@ -136,7 +136,7 @@ class Stamp_duty extends CI_Controller {
         }
         
         
-        redirect(base_url() . "Pay/Budget_Relevance");
+        redirect(base_url() . "Pay/Stamp_duty");
     }
 
     /*

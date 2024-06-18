@@ -73,9 +73,9 @@ class Attendance_Manual_Entry_ADMIN extends CI_Controller {
         $currentUser = $this->session->userdata('login_user');
         $Emp = $currentUser[0]->EmpNo;
 
-        $data['data_set'] = $this->Db_model->getfilteredData("select * from tbl_manual_entry
+        $data['data_set'] = $this->Db_model->getfilteredData("select  `M_ID`,`EmpNo`,`Emp_Full_Name`,`Att_Date`,`In_Time`,`tbl_manual_entry`.`Status`,`Reason` from tbl_manual_entry
 inner join tbl_empmaster
-on tbl_empmaster.EmpNo = tbl_manual_entry.Enroll_No where Is_App_Sup_User =1 and Is_Admin_App_ID=0
+on tbl_empmaster.EmpNo = tbl_manual_entry.Enroll_No where Is_App_Sup_User =1 and Is_Admin_App_ID=0 and Is_Cancel=0
   {$filter}");
 
         $this->load->view('Attendance/Attendance_Manual_View_Admin/search_data', $data);
@@ -95,9 +95,39 @@ on tbl_empmaster.EmpNo = tbl_manual_entry.Enroll_No where Is_App_Sup_User =1 and
         $whereArr = array("M_ID" => $ID);
         $result = $this->Db_model->updateData("tbl_manual_entry", $data, $whereArr);
 
+        $data  = $this->Db_model->getfilteredData("SELECT * FROM tbl_manual_entry WHERE `M_ID`=$ID");
+        $EnrollNo =  $data[0]->Enroll_No;
+        $in_time =  $data[0]->In_Time;
+        $att_date =  $data[0]->Att_Date;
+        $st =  $data[0]->Status;
 
+        $data = array(
+            'AttDate' => $att_date,
+            'AttTime' => $in_time,
+            'AttDateTimeStr' => "0000-00-00 00:00:00",
+            'Enroll_No' => $EnrollNo,
+            'AttPlace' => "null",
+            'Status' => $st,
+            'verify_type' => "0",
+            'EventName' => "null",
+        );
+
+        // echo json_encode($data);
+
+        $this->Db_model->insertData('tbl_u_attendancedata', $data);
 
         $this->session->set_flashdata('success_message', 'Leave Approved successfully');
+        redirect(base_url() . "Attendance/Attendance_Manual_Entry_ADMIN");
+    }
+
+    public function ajax_StatusReject($id)
+    {
+        // echo $id;
+        $data_arr = array("App_Sup_User" => 0, "Is_App_Sup_User" => 0, "Admin_App_ID" => 0, "Is_Admin_App_ID" => 0, "Is_Cancel" => 1);
+        $whereArray = array("M_ID" => $id);
+        $result = $this->Db_model->updateData("tbl_manual_entry", $data_arr, $whereArray);
+
+        $this->session->set_flashdata('success_message', 'Leave Rejected successfully');
         redirect(base_url() . "Attendance/Attendance_Manual_Entry_ADMIN");
     }
 
@@ -166,13 +196,7 @@ on tbl_empmaster.EmpNo = tbl_manual_entry.Enroll_No where Is_App_Sup_User =1 and
 
         $EmpData = $this->Db_model->getfilteredData("select EmpNo,Enroll_No from tbl_empmaster where EmpNo ='$emp' or Emp_Full_Name='$emp_name' ");
 
-
-
         $EnrollNo = $EmpData[0]->Enroll_No;
-
-
-
-
 
         $data = array(
             'Att_Date' => $att_date,

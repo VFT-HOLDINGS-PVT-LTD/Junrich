@@ -77,13 +77,12 @@ class Payroll_Process extends CI_Controller
                 $is_no_pay = $SalData[0]->is_nopay_calc;
 
 
-                //Get Nopay days in Individual Roster table
+                //**** Get Nopay days
                 $Nopay = $this->Db_model->getfilteredData("select sum(nopay) as nopay, sum(nopay_hrs) nopay_hrs,sum(Att_Allow) as Att_Allow from tbl_individual_roster where EmpNo=$EmpNo and EXTRACT(MONTH FROM FDate)=$month and EXTRACT(YEAR FROM FDate)=$year");
                 $NopayDays = $Nopay[0]->nopay;
 
-                $Nopay_Hrs = $Nopay[0]->nopay_hrs;
+                // var_dump($NopayDays);
 
-                // var_dump($NopayDays . '------------');
 
                 if ($NopayDays == 0) {
                     $NopayDays = 0;
@@ -104,29 +103,26 @@ class Payroll_Process extends CI_Controller
                 }
 
 
-
-                //Calculate Nopay deduction
-                $NopayRate = ($BasicSal + $Fixed_Allowance) / 30;
-
-
-                if ($Emp_ST == 2) {
-                    $NopayRate = ($BasicSal + $Fixed_Allowance) / 25;
+                if ($NopayDays == null) {
+                    $NopayDays = 0;
                 }
 
-                // echo $Emp_ST . "______" . $NopayRate;
-                //                die;
+
+
+                //**** Calculate no pay amount
+                $NopayRate = ($BasicSal + $Incentive) / 30;
 
 
                 if ($is_no_pay == 1) {
                     $NopayDays = 0;
                 }
 
-
                 $Nopay_Deduction = $NopayRate * $NopayDays;
 
 
                 //**** Get Allowance Details
                 $budget_relevance = $this->Db_model->getfilteredData("select Br_ID, Amount from tbl_varialble_br where EmpNo=$EmpNo and Month=$month and Year=$year");
+                $welfair = $this->Db_model->getfilteredData("select welfair_id, Amount from tbl_variable_welfair where EmpNo=$EmpNo and Month=$month and Year=$year");
 
                 // var_dump($Nopay_Deduction . 'no pay days' . $NopayDays);
 
@@ -137,12 +133,14 @@ class Payroll_Process extends CI_Controller
                 $tbprodinc2 = 0;
                 $tbspc1 = 0;
                 $tbspc2 = 0;
-
+                if (!empty($welfair)) {
+                    $welfair_1 = $welfair[0]->Amount;
+                }
                 /*
                  * Allowence special types
                  */
 
-                if (!empty($Allowances)) {
+                 if (!empty($Allowances[0]->Alw_ID)) {
                     if ($Allowances[0]->Alw_ID == 1) {
                         $tbattendencebonus = $Allowances[0]->Amount;
                     } else if ($Allowances[0]->Alw_ID == 2) {
@@ -154,7 +152,9 @@ class Payroll_Process extends CI_Controller
                     } else if ($Allowances[0]->Alw_ID == 5) {
                         $tbspc2 = $Allowances[0]->Amount;
                     }
-
+                }
+                    
+                if (!empty($Allowances[1]->Alw_ID)) {
                     if ($Allowances[1]->Alw_ID == 1) {
                         $tbattendencebonus = $Allowances[1]->Amount;
                     } else if ($Allowances[1]->Alw_ID == 2) {
@@ -166,7 +166,9 @@ class Payroll_Process extends CI_Controller
                     } else if ($Allowances[1]->Alw_ID == 5) {
                         $tbspc2 = $Allowances[1]->Amount;
                     }
-
+                }
+                    
+                if (!empty($Allowances[2]->Alw_ID)) {
                     if ($Allowances[2]->Alw_ID == 1) {
                         $tbattendencebonus = $Allowances[2]->Amount;
                     } else if ($Allowances[2]->Alw_ID == 2) {
@@ -178,7 +180,9 @@ class Payroll_Process extends CI_Controller
                     } else if ($Allowances[2]->Alw_ID == 5) {
                         $tbspc2 = $Allowances[2]->Amount;
                     }
-
+                }
+                   
+                if (!empty($Allowances[3]->Alw_ID)) {
                     if ($Allowances[3]->Alw_ID == 1) {
                         $tbattendencebonus = $Allowances[3]->Amount;
                     } else if ($Allowances[3]->Alw_ID == 2) {
@@ -190,7 +194,9 @@ class Payroll_Process extends CI_Controller
                     } else if ($Allowances[3]->Alw_ID == 5) {
                         $tbspc2 = $Allowances[3]->Amount;
                     }
-
+                }
+                    
+                if (!empty($Allowances[4]->Alw_ID)) {
                     if ($Allowances[4]->Alw_ID == 1) {
                         $tbattendencebonus = $Allowances[4]->Amount;
                     } else if ($Allowances[4]->Alw_ID == 2) {
@@ -207,10 +213,34 @@ class Payroll_Process extends CI_Controller
                 //Get Variable Deductions details
                 $Deductions = $this->Db_model->getfilteredData("select Ded_ID,Amount from tbl_variable_deduction where EmpNo=$EmpNo and Month=$month and Year=$year");
                 $payee = $this->Db_model->getfilteredData("SELECT * FROM tbl_payee");
+                $stamp_Duty = $this->Db_model->getfilteredData("select ID, Amount from tbl_variable_stamp where EmpNo=$EmpNo and Month=$month and Year=$year");
+
                 //Get Salary Advance details
                 $Sal_Advance = $this->Db_model->getfilteredData("select Amount from tbl_salary_advance where Is_Approve=1 and EmpNo=$EmpNo and month=$month and year = $year");
 
                 $Fest_Advance = $this->Db_model->getfilteredData("SELECT Amount from tbl_festivel_advance where EmpNo=$EmpNo and Month=$month and Year = $year");
+                $uniform = 0;
+                $other = 0;
+
+                $stamp_Duty1 = 0;
+                if (!empty($stamp_Duty)) {
+                    $stamp_Duty1 =  $stamp_Duty[0]->Amount;
+                }
+
+                if (!empty($Deductions[0]->Ded_ID)) {
+                    if ($Deductions[0]->Ded_ID == 1) {
+                        $uniform = $Deductions[0]->Amount;
+                    }  if ($Deductions[0]->Ded_ID == 2) {
+                        $other = $Deductions[0]->Amount;
+                    }                                                          
+                }
+                if (!empty($Deductions[1]->Ded_ID)) {
+                    if ($Deductions[1]->Ded_ID == 1) {
+                        $uniform = $Deductions[1]->Amount;
+                    }  if ($Deductions[1]->Ded_ID == 2) {
+                        $other = $Deductions[1]->Amount;
+                    } 
+                }
 
                 if ($Fest_Advance == null) {
                     $Festivel_Advance = 0;
@@ -618,8 +648,9 @@ class Payroll_Process extends CI_Controller
                     'Deduct_2' => $Deduction_2,
                     'Ded_ID_3' => $Deduction_ID_3,
                     'Deduct_3' => $Deduction_3,
-                    'Wellfare' => 0,
+                    'Wellfare' => $welfair_1,
                     'Payee_amount' => $payee_now_amount,
+                    'Stamp_duty' => $stamp_Duty1,
                     'tot_deduction' => $Tot_deductions,
                     'Gross_pay' => $grosspay,
                     'Gross_sal' => $Gross_sal,
@@ -770,9 +801,13 @@ class Payroll_Process extends CI_Controller
                 $tbprodinc2 = 0;
                 $tbspc1 = 0;
                 $tbspc2 = 0;
+                $Allowance_1 = 0;
+                $Allowance_2 = 0;
+                $Allowance_3 = 0;
                 $welfair_1 = 0;
 
-                if (!empty($Allowances)) {
+
+                if (!empty($welfair)) {
                     $welfair_1 = $welfair[0]->Amount;
                 }
 
@@ -780,7 +815,7 @@ class Payroll_Process extends CI_Controller
                  * Allowence special types
                  */
 
-                if (!empty($Allowances)) {
+                if (!empty($Allowances[0]->Alw_ID)) {
                     if ($Allowances[0]->Alw_ID == 1) {
                         $tbattendencebonus = $Allowances[0]->Amount;
                     } else if ($Allowances[0]->Alw_ID == 2) {
@@ -791,8 +826,16 @@ class Payroll_Process extends CI_Controller
                         $tbspc1 = $Allowances[0]->Amount;
                     } else if ($Allowances[0]->Alw_ID == 5) {
                         $tbspc2 = $Allowances[0]->Amount;
+                    }else if ($Allowances[0]->Alw_ID == 6) {
+                        $Allowance_1 = $Allowances[0]->Amount;
+                    }else if ($Allowances[0]->Alw_ID == 7) {
+                        $Allowance_2 = $Allowances[0]->Amount;
+                    }else if ($Allowances[0]->Alw_ID == 8) {
+                        $Allowance_3 = $Allowances[0]->Amount;
                     }
-
+                }
+                    
+                if (!empty($Allowances[1]->Alw_ID)) {
                     if ($Allowances[1]->Alw_ID == 1) {
                         $tbattendencebonus = $Allowances[1]->Amount;
                     } else if ($Allowances[1]->Alw_ID == 2) {
@@ -803,8 +846,16 @@ class Payroll_Process extends CI_Controller
                         $tbspc1 = $Allowances[1]->Amount;
                     } else if ($Allowances[1]->Alw_ID == 5) {
                         $tbspc2 = $Allowances[1]->Amount;
+                    }else if ($Allowances[1]->Alw_ID == 6) {
+                        $Allowance_1 = $Allowances[1]->Amount;
+                    }else if ($Allowances[1]->Alw_ID == 7) {
+                        $Allowance_2 = $Allowances[1]->Amount;
+                    }else if ($Allowances[1]->Alw_ID == 8) {
+                        $Allowance_3 = $Allowances[1]->Amount;
                     }
-
+                }
+                    
+                if (!empty($Allowances[2]->Alw_ID)) {
                     if ($Allowances[2]->Alw_ID == 1) {
                         $tbattendencebonus = $Allowances[2]->Amount;
                     } else if ($Allowances[2]->Alw_ID == 2) {
@@ -815,8 +866,16 @@ class Payroll_Process extends CI_Controller
                         $tbspc1 = $Allowances[2]->Amount;
                     } else if ($Allowances[2]->Alw_ID == 5) {
                         $tbspc2 = $Allowances[2]->Amount;
+                    }else if ($Allowances[2]->Alw_ID == 6) {
+                        $Allowance_1 = $Allowances[2]->Amount;
+                    }else if ($Allowances[2]->Alw_ID == 7) {
+                        $Allowance_2 = $Allowances[2]->Amount;
+                    }else if ($Allowances[2]->Alw_ID == 8) {
+                        $Allowance_3 = $Allowances[2]->Amount;
                     }
-
+                }
+                   
+                if (!empty($Allowances[3]->Alw_ID)) {
                     if ($Allowances[3]->Alw_ID == 1) {
                         $tbattendencebonus = $Allowances[3]->Amount;
                     } else if ($Allowances[3]->Alw_ID == 2) {
@@ -827,8 +886,16 @@ class Payroll_Process extends CI_Controller
                         $tbspc1 = $Allowances[3]->Amount;
                     } else if ($Allowances[3]->Alw_ID == 5) {
                         $tbspc2 = $Allowances[3]->Amount;
+                    }else if ($Allowances[3]->Alw_ID == 6) {
+                        $Allowance_1 = $Allowances[3]->Amount;
+                    }else if ($Allowances[3]->Alw_ID == 7) {
+                        $Allowance_2 = $Allowances[3]->Amount;
+                    }else if ($Allowances[3]->Alw_ID == 8) {
+                        $Allowance_3 = $Allowances[3]->Amount;
                     }
-
+                }
+                    
+                if (!empty($Allowances[4]->Alw_ID)) {
                     if ($Allowances[4]->Alw_ID == 1) {
                         $tbattendencebonus = $Allowances[4]->Amount;
                     } else if ($Allowances[4]->Alw_ID == 2) {
@@ -839,8 +906,54 @@ class Payroll_Process extends CI_Controller
                         $tbspc1 = $Allowances[4]->Amount;
                     } else if ($Allowances[4]->Alw_ID == 5) {
                         $tbspc2 = $Allowances[4]->Amount;
+                    }else if ($Allowances[4]->Alw_ID == 6) {
+                        $Allowance_1 = $Allowances[4]->Amount;
+                    }else if ($Allowances[4]->Alw_ID == 7) {
+                        $Allowance_2 = $Allowances[4]->Amount;
+                    }else if ($Allowances[4]->Alw_ID == 8) {
+                        $Allowance_3 = $Allowances[4]->Amount;
                     }
                 }
+
+                if (!empty($Allowances[5]->Alw_ID)) {
+                    if ($Allowances[5]->Alw_ID == 1) {
+                        $tbattendencebonus = $Allowances[5]->Amount;
+                    } else if ($Allowances[5]->Alw_ID == 2) {
+                        $tbprodinc1 = $Allowances[5]->Amount;
+                    } else if ($Allowances[5]->Alw_ID == 3) {
+                        $tbprodinc2 = $Allowances[5]->Amount;
+                    } else if ($Allowances[5]->Alw_ID == 4) {
+                        $tbspc1 = $Allowances[5]->Amount;
+                    } else if ($Allowances[5]->Alw_ID == 5) {
+                        $tbspc2 = $Allowances[5]->Amount;
+                    }else if ($Allowances[5]->Alw_ID == 6) {
+                        $Allowance_1 = $Allowances[5]->Amount;
+                    }else if ($Allowances[5]->Alw_ID == 7) {
+                        $Allowance_2 = $Allowances[5]->Amount;
+                    }else if ($Allowances[5]->Alw_ID == 8) {
+                        $Allowance_3 = $Allowances[5]->Amount;
+                    }
+                }
+                if (!empty($Allowances[6]->Alw_ID)) {
+                    if ($Allowances[6]->Alw_ID == 1) {
+                        $tbattendencebonus = $Allowances[6]->Amount;
+                    } else if ($Allowances[6]->Alw_ID == 2) {
+                        $tbprodinc1 = $Allowances[6]->Amount;
+                    } else if ($Allowances[6]->Alw_ID == 3) {
+                        $tbprodinc2 = $Allowances[6]->Amount;
+                    } else if ($Allowances[6]->Alw_ID == 4) {
+                        $tbspc1 = $Allowances[6]->Amount;
+                    } else if ($Allowances[6]->Alw_ID == 5) {
+                        $tbspc2 = $Allowances[6]->Amount;
+                    }else if ($Allowances[6]->Alw_ID == 6) {
+                        $Allowance_1 = $Allowances[6]->Amount;
+                    }else if ($Allowances[6]->Alw_ID == 7) {
+                        $Allowance_2 = $Allowances[6]->Amount;
+                    }else if ($Allowances[6]->Alw_ID == 8) {
+                        $Allowance_3 = $Allowances[6]->Amount;
+                    }
+                }
+                    
 
 
 
@@ -866,51 +979,29 @@ class Payroll_Process extends CI_Controller
                 $Sal_Advance = $this->Db_model->getfilteredData("select Amount from tbl_salary_advance where Is_Approve=1 and EmpNo=$EmpNo and month=$month and year = $year");
 
                 $Fest_Advance = $this->Db_model->getfilteredData("SELECT Amount from tbl_festivel_advance where EmpNo=$EmpNo and Month=$month and Year = $year");
-
+                $uniform = 0;
+                $other = 0;
+               
                 $stamp_Duty1 = 0;
                 if (!empty($stamp_Duty)) {
                     $stamp_Duty1 =  $stamp_Duty[0]->Amount;
                 }
 
-                // if (!empty($Allowances)) {
-                //     if ($Allowances[0]->Alw_ID == 1) {
-                //         $tbattendencebonus = $Allowances[0]->Amount;
-                //     } else if ($Allowances[0]->Alw_ID == 2) {
-                //         $tbprodinc1 = $Allowances[0]->Amount;
-                //     } else if ($Allowances[0]->Alw_ID == 3) {
-                //         $tbprodinc2 = $Allowances[0]->Amount;
-                //     } else if ($Allowances[0]->Alw_ID == 4) {
-                //         $tbspc1 = $Allowances[0]->Amount;
-                //     } else if ($Allowances[0]->Alw_ID == 5) {
-                //         $tbspc2 = $Allowances[0]->Amount;
-                //     }
-
-                //     if ($Allowances[1]->Alw_ID == 1) {
-                //         $tbattendencebonus = $Allowances[1]->Amount;
-                //     } else if ($Allowances[1]->Alw_ID == 2) {
-                //         $tbprodinc1 = $Allowances[1]->Amount;
-                //     } else if ($Allowances[1]->Alw_ID == 3) {
-                //         $tbprodinc2 = $Allowances[1]->Amount;
-                //     } else if ($Allowances[1]->Alw_ID == 4) {
-                //         $tbspc1 = $Allowances[1]->Amount;
-                //     } else if ($Allowances[1]->Alw_ID == 5) {
-                //         $tbspc2 = $Allowances[1]->Amount;
-                //     }
-
-                //     if ($Allowances[2]->Alw_ID == 1) {
-                //         $tbattendencebonus = $Allowances[2]->Amount;
-                //     } else if ($Allowances[2]->Alw_ID == 2) {
-                //         $tbprodinc1 = $Allowances[2]->Amount;
-                //     } else if ($Allowances[2]->Alw_ID == 3) {
-                //         $tbprodinc2 = $Allowances[2]->Amount;
-                //     } else if ($Allowances[2]->Alw_ID == 4) {
-                //         $tbspc1 = $Allowances[2]->Amount;
-                //     } else if ($Allowances[2]->Alw_ID == 5) {
-                //         $tbspc2 = $Allowances[2]->Amount;
-                //     }
-
-                    
-                // }
+                if (!empty($Deductions[0]->Ded_ID)) {
+                    if ($Deductions[0]->Ded_ID == 1) {
+                        $uniform = $Deductions[0]->Amount;
+                    }  if ($Deductions[0]->Ded_ID == 2) {
+                        $other = $Deductions[0]->Amount;
+                    }                                                          
+                }
+                if (!empty($Deductions[1]->Ded_ID)) {
+                    if ($Deductions[1]->Ded_ID == 1) {
+                        $uniform = $Deductions[1]->Amount;
+                    }  if ($Deductions[1]->Ded_ID == 2) {
+                        $other = $Deductions[1]->Amount;
+                    } 
+                }
+                
 
                 if ($Fest_Advance == null) {
                     $Festivel_Advance = 0;
@@ -987,11 +1078,7 @@ class Payroll_Process extends CI_Controller
                     $Allowance_ID_1 = $Allowances[0]->Alw_ID;
                 }
 
-                if (empty($Allowances[6]->Amount)) {
-                    $Allowance_1 = 0;
-                } else {
-                    $Allowance_1 = $Allowances[0]->Amount;
-                }
+               
 
                 if (empty($Allowances[7]->Alw_ID)) {
                     $Allowance_ID_2 = 0;
@@ -999,11 +1086,7 @@ class Payroll_Process extends CI_Controller
                     $Allowance_ID_2 = $Allowances[1]->Alw_ID;
                 }
 
-                if (empty($Allowances[7]->Amount)) {
-                    $Allowance_2 = 0;
-                } else {
-                    $Allowance_2 = $Allowances[1]->Amount;
-                }
+               
 
                 if (empty($Allowances[8]->Alw_ID)) {
                     $Allowance_ID_3 = 0;
@@ -1011,23 +1094,14 @@ class Payroll_Process extends CI_Controller
                     $Allowance_ID_3 = $Allowances[2]->Alw_ID;
                 }
 
-                if (empty($Allowances[8]->Amount)) {
-                    $Allowance_3 = 0;
-                } else {
-                    $Allowance_3 = $Allowances[2]->Amount;
-                }
-
+               
                 if (empty($Allowances[9]->Alw_ID)) {
                     $Allowance_ID_4 = 0;
                 } else {
                     $Allowance_ID_4 = $Allowances[3]->Alw_ID;
                 }
 
-                if (empty($Allowances[9]->Amount)) {
-                    $Allowance_4 = 0;
-                } else {
-                    $Allowance_4 = $Allowances[3]->Amount;
-                }
+              
 
                 if (empty($Allowances[10]->Alw_ID)) {
                     $Allowance_ID_5 = 0;
@@ -1035,11 +1109,6 @@ class Payroll_Process extends CI_Controller
                     $Allowance_ID_5 = $Allowances[4]->Alw_ID;
                 }
 
-                if (empty($Allowances[10]->Amount)) {
-                    $Allowance_5 = 0;
-                } else {
-                    $Allowance_5 = $Allowances[4]->Amount;
-                }
 
 
 
@@ -1143,7 +1212,7 @@ class Payroll_Process extends CI_Controller
                 //All budgetrelevances
                 $budgetrelevances = $budgetrelevance1 + $budgetrelevance2;
                 //All Allowances
-                $Allowances = $Allowance_1 + $Allowance_2 + $Allowance_3 + $Allowance_4 + $Allowance_5;
+                $Allowances = $Allowance_1 + $Allowance_2 + $Allowance_3 ;
 
                 //Calculate Gross salary
                 $Gross_sal = ($BasicSal + $Fixed_Allowance + $Incentive + $budgetrelevances);
@@ -1286,9 +1355,9 @@ class Payroll_Process extends CI_Controller
                         'Alw_ID_3' => $Allowance_ID_3,
                         'Allowance_3' => $Allowance_3,
                         'Alw_ID_4' => $Allowance_ID_4,
-                        'Allowance_4' => $Allowance_4,
+                        'Allowance_4' => 0,
                         'Alw_ID_5' => $Allowance_ID_5,
-                        'Allowance_5' => $Allowance_5,
+                        'Allowance_5' => 0,
                         'Att_Allowance' => $Att_Allowance,
                         'Fixed' => $tbattendencebonus,
                         'Prod_inc1' => $tbprodinc1,
@@ -1305,8 +1374,9 @@ class Payroll_Process extends CI_Controller
                         'Deduct_2' => $Deduction_2,
                         'Ded_ID_3' => $Deduction_ID_3,
                         'Deduct_3' => $Deduction_3,
-                        'Wellfare' => 0,
+                        'Wellfare' => $welfair_1,
                         'Payee_amount' => $payee_now_amount,
+                        'Stamp_duty' => $stamp_Duty1,
                         'tot_deduction' => $Tot_deductions,
                         'Gross_pay' => $grosspay,
                         'Gross_sal' => $Gross_sal,

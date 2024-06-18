@@ -118,6 +118,7 @@ class Attendance_Process extends CI_Controller
                         $InTime = 0;
                         $ID_Roster = 0;
                         $Shift_Day = 0;
+                        $Day_Type = 1;
 
 
                         // Get the CheckIN morning shift ////////////////////////////////////////////////
@@ -183,65 +184,6 @@ class Attendance_Process extends CI_Controller
                                     $OutDate = null;
                                 }
                             }
-                        } else if ($InRecords == null) {
-                            $Manual = $this->Db_model->getfilteredData("select * from tbl_manual_entry where Att_Date='" . $FromDate . "' and Enroll_No='$EmpNo' and Is_Admin_App_ID=1 ");
-                            if (!empty($Manual)) {
-                                $SH['SH'] = $this->Db_model->getfilteredData("select ID_roster,EmpNo,ShiftCode,ShType,ShiftDay,Day_Type,FDate,FTime,TDate,TTime,ShType,GracePrd from tbl_individual_roster where Is_processed=0 and EmpNo='$EmpNo' and FDate='$FromDate' ");
-                                $Shift_Day = $SH['SH'][0]->ShiftDay;
-
-                                //****Shift Type DU| EX
-                                $ShiftType = $SH['SH'][0]->ShType;
-                                //****Individual Roster ID
-                                $ID_Roster = $SH['SH'][0]->ID_roster;
-                                //****Shift from time
-                                $SHFT = '08:05:00';
-                                //****Shift to time
-                                $SHTT = '17:00:00';
-                                if ($Shift_Day == 'SAT') {
-                                    $SHFT = '08:05:00';
-                                    //****Shift to time
-                                    $SHTT = '13:30:00';
-                                }
-                                $InmoDate = $Manual[0]->Att_Date;
-                                //**** In Time
-                                $InmoTime = $Manual[0]->In_Time;
-                                $OutTime = $Manual[0]->Out_Time;
-                                $OutDate = $Manual[0]->Att_Date;
-                                $checkmanual1 = strtotime($OutTime);
-                                $checkmanual2 = strtotime('00:00:00');
-                                $checkmanual3 = strtotime('15:00:00');
-                                if ($checkmanual2 <= $checkmanual1 && $checkmanual1 <= $checkmanual3) {
-                                    $OutDate = date('Y-m-d', strtotime($FromDate . ' +1 day'));
-                                }
-                            } else if (empty($Manual)) {
-                                $noIN['dt_Records'] = $this->Db_model->getfilteredData("select min(AttTime) as INTime,Enroll_No,AttDate,EventID from tbl_u_attendancedata where Enroll_No='$EmpNo' and AttDate='" . $FromDate . "' AND Status='1' and AttTime BETWEEN '15:00:00' AND '22:00:00'  ");
-                                if (!empty($noIN['dt_Records'][0]->INTime)) {
-                                    $SH['SH'] = $this->Db_model->getfilteredData("select ID_roster,EmpNo,ShiftCode,ShType,ShiftDay,Day_Type,FDate,FTime,TDate,TTime,ShType,GracePrd from tbl_individual_roster where Is_processed=0 and EmpNo='$EmpNo' and FDate='$FromDate' ");
-                                    $Shift_Day = $SH['SH'][0]->ShiftDay;
-
-                                    //****Shift Type DU| EX
-                                    $ShiftType = $SH['SH'][0]->ShType;
-                                    //****Individual Roster ID
-                                    $ID_Roster = $SH['SH'][0]->ID_roster;
-                                    //****Shift from time
-                                    $SHFT = '08:05:00';
-                                    //****Shift to time
-                                    $SHTT = '17:00:00';
-                                    if ($Shift_Day == 'SAT') {
-                                        $SHFT = '08:05:00';
-                                        //****Shift to time
-                                        $SHTT = '13:30:00';
-                                    }
-                                    $InmoTime = '08:00:00';
-                                    $InmoDate = $FromDate;
-                                    // Get the CheckOut 
-                                    $dt_out_Records_mo_sh['dt_out_Records'] = $this->Db_model->getfilteredData("select max(AttTime) as OutTime,Enroll_No,AttDate,EventID from tbl_u_attendancedata where Enroll_No='$EmpNo' and AttDate='" . $FromDate . "' AND Status='1' AND AttTime > '" . $InmoTime . "' ");
-                                    //**** Out Date
-                                    $OutDate = $dt_out_Records_mo_sh['dt_out_Records'][0]->AttDate;
-                                    //**** Out Time
-                                    $OutTime = $dt_out_Records_mo_sh['dt_out_Records'][0]->OutTime;
-                                }
-                            }
                         }
                         // if (empty($OutDate) || $OutDate == 0) {
                         //     //day status eka ganna widiya
@@ -270,7 +212,7 @@ class Attendance_Process extends CI_Controller
 
                             //*******Get Minutes
                             $iCalcOut = round(($OutTimeSrt - $SHEndTime) / 60);
-                            $Allnomalotmin = $iCalcOut - 15;
+                            $Allnomalotmin = $iCalcOut ;
                             if ($Allnomalotmin < 0) {
                                 $Allnomalotmin = 0;
                             }
@@ -288,7 +230,7 @@ class Attendance_Process extends CI_Controller
                             $totalMinutes = round($interval / 60); // Convert seconds to minutes
 
                             // Subtract 30 minutes
-                            $totalMinutes -= 15;
+                            $totalMinutes;
 
                             // Store the result in $icalData
                             $Allnomalotmin = $totalMinutes;
@@ -368,71 +310,49 @@ class Attendance_Process extends CI_Controller
                         //     //     $lateM = 0;
                         //     // }
                         // }
+                         //shift eka athule podi welawak wada kaloth
+                         $shiftincheck = strtotime($InmoTime);
+                         $shiftincheck2 = strtotime('06:00:00');
+                         $shiftincheck3 = strtotime('15:00:00');
+                         if ($shiftincheck > $shiftincheck2 && $shiftincheck < $shiftincheck3) {
+                             $InTime = $InmoTime;
+                             $InDate = $InmoDate;
+                         }
+
+                        if (empty($InmoTime)&&empty($InmoDate)) {
+                            // Get the CheckIN night shift /////////////////////////////////////////////////////
+                            $dt_in_Records_ni_sh['dt_Records'] = $this->Db_model->getfilteredData("select min(AttTime) as INTime,Enroll_No,AttDate,EventID from tbl_u_attendancedata where Enroll_No='$EmpNo' and AttDate='" . $FromDate . "' AND Status='0' and AttTime BETWEEN '15:00:00' AND '22:00:00'  ");
+                            $InRecords = $dt_in_Records_ni_sh['dt_Records'][0]->AttDate;
+                            //**** In Date
+                            $InDate = $dt_in_Records_ni_sh['dt_Records'][0]->AttDate;
+                            //**** In Time
+                            $InTime = $dt_in_Records_ni_sh['dt_Records'][0]->INTime;
 
 
-                        // Get the CheckIN night shift /////////////////////////////////////////////////////
-                        $dt_in_Records_ni_sh['dt_Records'] = $this->Db_model->getfilteredData("select min(AttTime) as INTime,Enroll_No,AttDate,EventID from tbl_u_attendancedata where Enroll_No='$EmpNo' and AttDate='" . $FromDate . "' AND Status='0' and AttTime BETWEEN '15:00:00' AND '22:00:00'  ");
-                        $InRecords = $dt_in_Records_ni_sh['dt_Records'][0]->AttDate;
-                        //**** In Date
-                        $InDate = $dt_in_Records_ni_sh['dt_Records'][0]->AttDate;
-                        //**** In Time
-                        $InTime = $dt_in_Records_ni_sh['dt_Records'][0]->INTime;
 
+                            //night shift ekeda balanawa 
+                            if (!empty($InTime)) {
+                                // Get the CheckOut 
+                                // Use Carbon to add one day to the date
+                                $newDate = date('Y-m-d', strtotime($FromDate . ' +1 day'));
 
+                                // Get the CheckOut in the nextDay (before 8am)
+                                $dt_out_Records_ni['dt_out_Records'] = $this->Db_model->getfilteredData("select min(AttTime) as OutTime,Enroll_No,AttDate,EventID from tbl_u_attendancedata where Enroll_No='$EmpNo' and AttDate='$newDate' AND Status='1' and AttTime BETWEEN '06:00:00' AND '13:00:00'");
 
-                        //night shift ekeda balanawa 
-                        if (!empty($InTime)) {
-                            // Get the CheckOut 
-                            // Use Carbon to add one day to the date
-                            $newDate = date('Y-m-d', strtotime($FromDate . ' +1 day'));
+                                //**** Out Date
+                                $OutDate = $dt_out_Records_ni['dt_out_Records'][0]->AttDate;
+                                //**** Out Time
+                                $OutTime = $dt_out_Records_ni['dt_out_Records'][0]->OutTime;
 
-                            // Get the CheckOut in the nextDay (before 8am)
-                            $dt_out_Records_ni['dt_out_Records'] = $this->Db_model->getfilteredData("select min(AttTime) as OutTime,Enroll_No,AttDate,EventID from tbl_u_attendancedata where Enroll_No='$EmpNo' and AttDate='$newDate' AND Status='1' and AttTime BETWEEN '06:00:00' AND '13:00:00'");
-
-                            //**** Out Date
-                            $OutDate = $dt_out_Records_ni['dt_out_Records'][0]->AttDate;
-                            //**** Out Time
-                            $OutTime = $dt_out_Records_ni['dt_out_Records'][0]->OutTime;
-
-                            //shift eke details hada gannawa
-                            $SH['SH'] = $this->Db_model->getfilteredData("select ID_roster,EmpNo,ShiftCode,ShType,ShiftDay,Day_Type,FDate,FTime,TDate,TTime,ShType,GracePrd from tbl_individual_roster where Is_processed=0 and EmpNo='$EmpNo' and FDate='$FromDate'");
-                            $Shift_Day = $SH['SH'][0]->ShiftDay;
-                            //****Shift Type DU| EX
-                            $ShiftType = $SH['SH'][0]->ShType;
-                            //****Individual Roster ID
-                            $ID_Roster = $SH['SH'][0]->ID_roster;
-
-                            //****Shift from time
-                            if ($Shift_Day == 'SAT') {
-                                $SHFT = '17:05:00';
-                                //****Shift to time
-                                $SHTT = '22:30:00';
-                            } else {
-                                //****Shift from time
-                                $SHFT = '17:05:00';
-                                //****Shift to time
-                                $SHTT = '02:00:00';
-                            }
-                            //****Day Type Full day or Half day (1)or 0.5
-                            $DayType = $SH['SH'][0]->Day_Type;
-
-                            $GracePrd = $SH['SH'][0]->GracePrd;
-                        } else if ($InRecords == null) {
-                            $Manual = $this->Db_model->getfilteredData("select * from tbl_manual_entry where Att_Date='" . $FromDate . "' and Enroll_No='$EmpNo' and Is_Admin_App_ID=1 and In_Time > '15:00:00' AND In_Time < '22:00:00' ");
-                            if (!empty($Manual)) {
-
-                                $InDate = $Manual[0]->Att_Date;
-                                //**** In Time
-                                $InTime = $Manual[0]->In_Time;
-                                $OutTime = $Manual[0]->Out_Time;
-                                $OutDate = date('Y-m-d', strtotime($FromDate . ' +1 day'));
-                                $SH['SH'] = $this->Db_model->getfilteredData("select ID_roster,EmpNo,ShiftCode,ShType,ShiftDay,Day_Type,FDate,FTime,TDate,TTime,ShType,GracePrd from tbl_individual_roster where Is_processed=0 and EmpNo='$EmpNo'");
+                                //shift eke details hada gannawa
+                                $SH['SH'] = $this->Db_model->getfilteredData("select ID_roster,EmpNo,ShiftCode,ShType,ShiftDay,Day_Type,FDate,FTime,TDate,TTime,ShType,GracePrd from tbl_individual_roster where Is_processed=0 and EmpNo='$EmpNo' and FDate='$FromDate'");
                                 $Shift_Day = $SH['SH'][0]->ShiftDay;
                                 //****Shift Type DU| EX
                                 $ShiftType = $SH['SH'][0]->ShType;
                                 //****Individual Roster ID
                                 $ID_Roster = $SH['SH'][0]->ID_roster;
 
+                                //****Shift from time
                                 if ($Shift_Day == 'SAT') {
                                     $SHFT = '17:05:00';
                                     //****Shift to time
@@ -443,80 +363,105 @@ class Attendance_Process extends CI_Controller
                                     //****Shift to time
                                     $SHTT = '02:00:00';
                                 }
-                            } else if (empty($Manual)) {
+                                //****Day Type Full day or Half day (1)or 0.5
+                                $DayType = $SH['SH'][0]->Day_Type;
+
+                                $GracePrd = $SH['SH'][0]->GracePrd;
+                            } else if ($InRecords == null) {
+                                $Manual = $this->Db_model->getfilteredData("select * from tbl_manual_entry where Att_Date='" . $FromDate . "' and Enroll_No='$EmpNo' and Is_Admin_App_ID=1 and In_Time > '15:00:00' AND In_Time < '22:00:00' ");
+                                if (!empty($Manual)) {
+
+                                    $InDate = $Manual[0]->Att_Date;
+                                    //**** In Time
+                                    $InTime = $Manual[0]->In_Time;
+                                    $OutTime = $Manual[0]->Out_Time;
+                                    $OutDate = date('Y-m-d', strtotime($FromDate . ' +1 day'));
+                                    $SH['SH'] = $this->Db_model->getfilteredData("select ID_roster,EmpNo,ShiftCode,ShType,ShiftDay,Day_Type,FDate,FTime,TDate,TTime,ShType,GracePrd from tbl_individual_roster where Is_processed=0 and EmpNo='$EmpNo'");
+                                    $Shift_Day = $SH['SH'][0]->ShiftDay;
+                                    //****Shift Type DU| EX
+                                    $ShiftType = $SH['SH'][0]->ShType;
+                                    //****Individual Roster ID
+                                    $ID_Roster = $SH['SH'][0]->ID_roster;
+
+                                    if ($Shift_Day == 'SAT') {
+                                        $SHFT = '17:05:00';
+                                        //****Shift to time
+                                        $SHTT = '22:30:00';
+                                    } else {
+                                        //****Shift from time
+                                        $SHFT = '17:05:00';
+                                        //****Shift to time
+                                        $SHTT = '02:00:00';
+                                    }
+                                } else if (empty($Manual)) {
+                                }
                             }
-                        }
-                        // if (empty($OutDate) || $OutDate == 0) {
-                        //     //day status eka ganna widiya
-                        //     $fromnewdate = date('Y-m-d', strtotime($FromDate . ' +1 day'));
-                        //     $dt_in_Records_mo_sh['dt_Records'] = $this->Db_model->getfilteredData("select min(AttTime) as INTime,Enroll_No,AttDate,EventID from tbl_u_attendancedata where Enroll_No='$EmpNo' and AttDate='" . $fromnewdate . "' AND Status='0' and AttTime BETWEEN '06:00:00' AND '15:00:00'  ");
-                        //     $dt_in_Records_ni_sh['dt_Records'] = $this->Db_model->getfilteredData("select min(AttTime) as INTime,Enroll_No,AttDate,EventID from tbl_u_attendancedata where Enroll_No='$EmpNo' and AttDate='" . $fromnewdate . "' AND Status='0' and AttTime BETWEEN '15:00:00' AND '22:00:00'  ");
-                        //     if (!empty($dt_in_Records_mo_sh['dt_Records'][0]->INTime) && !empty($InTime)) {
-                        //         $OutTime = $dt_in_Records_mo_sh['dt_Records'][0]->INTime;
-                        //         $OutDate = $fromnewdate;
-                        //     } else if (empty($dt_in_Records_mo_sh['dt_Records'][0]->INTime)) {
-                        //         $OutTime = '08:00:00';
-                        //         $OutDate = $fromnewdate;
-                        //     }
-                        // }
+                            // if (empty($OutDate) || $OutDate == 0) {
+                            //     //day status eka ganna widiya
+                            //     $fromnewdate = date('Y-m-d', strtotime($FromDate . ' +1 day'));
+                            //     $dt_in_Records_mo_sh['dt_Records'] = $this->Db_model->getfilteredData("select min(AttTime) as INTime,Enroll_No,AttDate,EventID from tbl_u_attendancedata where Enroll_No='$EmpNo' and AttDate='" . $fromnewdate . "' AND Status='0' and AttTime BETWEEN '06:00:00' AND '15:00:00'  ");
+                            //     $dt_in_Records_ni_sh['dt_Records'] = $this->Db_model->getfilteredData("select min(AttTime) as INTime,Enroll_No,AttDate,EventID from tbl_u_attendancedata where Enroll_No='$EmpNo' and AttDate='" . $fromnewdate . "' AND Status='0' and AttTime BETWEEN '15:00:00' AND '22:00:00'  ");
+                            //     if (!empty($dt_in_Records_mo_sh['dt_Records'][0]->INTime) && !empty($InTime)) {
+                            //         $OutTime = $dt_in_Records_mo_sh['dt_Records'][0]->INTime;
+                            //         $OutDate = $fromnewdate;
+                            //     } else if (empty($dt_in_Records_mo_sh['dt_Records'][0]->INTime)) {
+                            //         $OutTime = '08:00:00';
+                            //         $OutDate = $fromnewdate;
+                            //     }
+                            // }
 
 
-                        if ($InTime != '' || $InTime != 0 && $InTime != $OutTime && $Day == 'DU') {
-                            $SHStartTime = strtotime($SHFT);
+                            if ($InTime != '' || $InTime != 0 && $InTime != $OutTime && $Day == 'DU') {
+                                $SHStartTime = strtotime($SHFT);
+                                $InTimeSrt = strtotime($InTime);
+                                $iCalc = ($InTimeSrt - $SHStartTime) / 60;
+                                $lateM = $iCalc;
+                                if ($lateM < 0) {
+                                    $lateM = 0;
+                                }
+                                $satnightincheck = strtotime('13:30:00');
+                                $satniintimeckeck['dt_Records'] = $this->Db_model->getfilteredData("select min(AttTime) as InTime,Enroll_No,AttDate,EventID from tbl_u_attendancedata where Enroll_No='$EmpNo' and AttDate='" . $FromDate . "' AND Status='1' and AttTime BETWEEN '06:00:00' AND '15:00:00' ");
+                                $satintime = $satniintimeckeck['dt_Records'][0]->InTime;
+                                if (!empty($satintime) && $InTimeSrt > $satnightincheck) {
+                                    $lateM = 0;
+                                }
+                            }
+
+                            //night shift eka ot thibboth
+                            if (!empty($InTime) && !empty($OutDate) && $OutDate > $FromDate) {
+                                $OutTimeSrt = strtotime($OutTime);
+                                $nxtchecksat = strtotime('23:59:59');
+                                $SHEndTime = strtotime($SHTT);
+
+
+                                //*******Get Minutes
+                                $iCalcOut = round(($OutTimeSrt - $SHEndTime) / 60);
+                                $Allnomalotmin = $iCalcOut;
+                                $dayconcattoday = $OutDate . " " . $OutTime;
+                                $dayconcatprday = $FromDate . " " . $SHTT;
+                                $dayconcattodaystrtotime = strtotime($dayconcattoday);
+                                $dayconcatprdaystrtotime = strtotime($dayconcatprday);
+                                if ($Shift_Day == 'SAT' && $OutTimeSrt < $nxtchecksat) {
+                                    $iCalc = round(($dayconcattodaystrtotime - $dayconcatprdaystrtotime) / 60);
+                                    $Allnomalotmin = $iCalc;
+                                }
+                                if ($Allnomalotmin < 0) {
+                                    $Allnomalotmin = 0;
+                                }
+                            }
+                            //shift eka athule podi welawak wada kaloth
                             $InTimeSrt = strtotime($InTime);
-                            $iCalc = ($InTimeSrt - $SHStartTime) / 60;
-                            $lateM = $iCalc;
-                            if ($lateM < 0) {
-                                $lateM = 0;
-                            }
-                            $satnightincheck = strtotime('13:30:00');
-                            $satniintimeckeck['dt_Records'] = $this->Db_model->getfilteredData("select min(AttTime) as InTime,Enroll_No,AttDate,EventID from tbl_u_attendancedata where Enroll_No='$EmpNo' and AttDate='" . $FromDate . "' AND Status='1' and AttTime BETWEEN '06:00:00' AND '15:00:00' ");
-                            $satintime = $satniintimeckeck['dt_Records'][0]->InTime;
-                            if (!empty($satintime) && $InTimeSrt > $satnightincheck) {
-                                $lateM = 0;
-                            }
-                        }
-
-                        //night shift eka ot thibboth
-                        if (!empty($InTime) && !empty($OutDate) && $OutDate > $FromDate) {
                             $OutTimeSrt = strtotime($OutTime);
-                            $nxtchecksat = strtotime('23:59:59');
-                            $SHEndTime = strtotime($SHTT);
+                            $cal = round((($OutTimeSrt - $InTimeSrt) / 60) / 60);
+                            if (!empty($InmoTime) && !empty($OutTime) && $cal < 4 && $InmoDate == $OutDate) {
+                                $OutTime = null;
+                                $InmoTime = null;
+                                $lateM = 0;
+                                $ED = 0;
+                            }
+                        }
 
-                            
-                            //*******Get Minutes
-                            $iCalcOut = round(($OutTimeSrt - $SHEndTime) / 60);
-                            $Allnomalotmin = $iCalcOut - 15;
-                            $dayconcattoday = $OutDate." ".$OutTime;
-                            $dayconcatprday = $FromDate." ".$SHTT;
-                            $dayconcattodaystrtotime = strtotime($dayconcattoday);
-                            $dayconcatprdaystrtotime = strtotime($dayconcatprday);
-                            if ($Shift_Day == 'SAT'&&$OutTimeSrt<$nxtchecksat) {
-                                $iCalc = round(($dayconcattodaystrtotime - $dayconcatprdaystrtotime) / 60);
-                                $Allnomalotmin = $iCalc - 15;
-                            }
-                            if ($Allnomalotmin < 0) {
-                                $Allnomalotmin = 0;
-                            }
-                        }
-                        //shift eka athule podi welawak wada kaloth
-                        $InTimeSrt = strtotime($InTime);
-                        $OutTimeSrt = strtotime($OutTime);
-                        $cal = round((($OutTimeSrt - $InTimeSrt) / 60) / 60);
-                        if (!empty($InmoTime) && !empty($OutTime) && $cal < 4 && $InmoDate == $OutDate) {
-                            $OutTime = null;
-                            $InmoTime = null;
-                            $lateM = 0;
-                            $ED = 0;
-                        }
-                        //shift eka athule podi welawak wada kaloth
-                        $shiftincheck = strtotime($InmoTime);
-                        $shiftincheck2 = strtotime('06:00:00');
-                        $shiftincheck3 = strtotime('15:00:00');
-                        if ($shiftincheck > $shiftincheck2 && $shiftincheck < $shiftincheck3) {
-                            $InTime = $InmoTime;
-                            $InDate = $InmoDate;
-                        }
+                       
                         // //ED
                         $ED = 0;
                         // // ED
@@ -558,6 +503,7 @@ class Attendance_Process extends CI_Controller
                             $Nopay_Hrs = 0;
                             $Allnomalotmin = 0;
                             $Alldoubleotmin = 0;
+                            $Day_Type = 0.5;
                         }
 
                         /*
@@ -570,6 +516,7 @@ class Attendance_Process extends CI_Controller
                             $Nopay_Hrs = 0;
                             $Allnomalotmin = 0;
                             $Alldoubleotmin = 0;
+                            $Day_Type = 0.5;
                         }
 
                         // If Out Available & In Missing
@@ -580,6 +527,7 @@ class Attendance_Process extends CI_Controller
                             $Nopay_Hrs = 0;
                             $Allnomalotmin = 0;
                             $Alldoubleotmin = 0;
+                            $Day_Type = 0.5;
                         }
 
                         // If In Available & Out Missing
@@ -590,6 +538,7 @@ class Attendance_Process extends CI_Controller
                             $Nopay_Hrs = 0;
                             $Allnomalotmin = 0;
                             $Alldoubleotmin = 0;
+                            $Day_Type = 0.5;
                         }
 
                         // If Out Available & In Missing
@@ -600,6 +549,7 @@ class Attendance_Process extends CI_Controller
                             $Nopay_Hrs = 0;
                             $Allnomalotmin = 0;
                             $Alldoubleotmin = 0;
+                            $Day_Type = 0.5;
                         }
                         // **************************************************************************************//
 
@@ -607,12 +557,14 @@ class Attendance_Process extends CI_Controller
                             $Nopay = 0;
                             $DayStatus = 'PR';
                             $Nopay_Hrs = 0;
+                            $Day_Type = 1;
                         }
                         if ($InTime == '' && $OutTime == '' && $Day == 'DU' || $InTime == 0 && $OutTime == 0) {
                             $DayStatus = 'AB';
                             $Nopay = 1;
                             $Nopay_Hrs = (((strtotime($SHTT) - strtotime($SHFT))) / 60);
                             $Allnomalotmin = 0;
+                            $Day_Type = 1;
 
                             // if ($DayType == 0.5) {
                             //     $Nopay = 0.5;
@@ -1272,8 +1224,8 @@ class Attendance_Process extends CI_Controller
                         $ShiftType = $SH['SH'][0]->ShType;
                         //****Individual Roster ID
                         $ID_Roster = $SH['SH'][0]->ID_roster;
-                        $dt_in_Records['dt_in_Records'] = $this->Db_model->getfilteredData("select min(AttTime) as INTime,Enroll_No,AttDate,EventID from tbl_u_attendancedata where Enroll_No='$EmpNo' and AttDate='" . $FromDate . "' and AttTime BETWEEN '06:00:00' AND '13:00:00' ");
-                        $dt_in_Records['dt_out_Records'] = $this->Db_model->getfilteredData("select max(AttTime) as OUTTime,Enroll_No,AttDate,EventID from tbl_u_attendancedata where Enroll_No='$EmpNo' and AttDate='" . $FromDate . "' and AttTime BETWEEN '13:00:00' AND '22:00:00' ");
+                        $dt_in_Records['dt_in_Records'] = $this->Db_model->getfilteredData("select min(AttTime) as INTime,Enroll_No,AttDate,EventID from tbl_u_attendancedata where Enroll_No='$EmpNo' and AttDate='" . $FromDate . "' and AttTime BETWEEN '06:00:00' AND '10:00:00' AND Status='0' ");
+                        $dt_in_Records['dt_out_Records'] = $this->Db_model->getfilteredData("select max(AttTime) as OUTTime,Enroll_No,AttDate,EventID from tbl_u_attendancedata where Enroll_No='$EmpNo' and AttDate='" . $FromDate . "' and AttTime BETWEEN '10:00:00' AND '22:00:00' AND Status='1' ");
                         $InsunIN = $dt_in_Records['dt_in_Records'][0]->INTime;
                         $OutsunOUT = $dt_in_Records['dt_out_Records'][0]->OUTTime;
                         if (!empty($OutsunOUT)) {
@@ -1321,7 +1273,7 @@ class Attendance_Process extends CI_Controller
                     // echo "<br/>";
                     // echo "<br/>";
                     // echo "<br/>";
-                    $data_arr = array("InRec" => 1, "InDate" => $InDate, "InTime" => $InTime, "FTime" => $SHFT, "TTime" => $SHTT, "OutRec" => 1, "OutDate" => $OutDate, "OutTime" => $OutTime, "nopay" => $Nopay, "Is_processed" => 1, "DayStatus" => $DayStatus, "BeforeExH" => 0, "AfterExH" => $Allnomalotmin, "LateSt" => $Late_Status, "LateM" => $lateM, "EarlyDepMin" => $ED, "NetLateM" => $NetLateM, "ApprovedExH" => $ApprovedExH, "nopay_hrs" => $Nopay_Hrs, "Att_Allow" => $Att_Allowance, "DOT" => $Alldoubleotmin);
+                    $data_arr = array("InRec" => 1, "InDate" => $InDate, "InTime" => $InTime, "FTime" => $SHFT, "TTime" => $SHTT, "OutRec" => 1, "OutDate" => $OutDate, "OutTime" => $OutTime, "nopay" => $Nopay, "Is_processed" => 1, "Day_Type" => $Day_Type, "DayStatus" => $DayStatus, "BeforeExH" => 0, "AfterExH" => $Allnomalotmin, "LateSt" => $Late_Status, "LateM" => $lateM, "EarlyDepMin" => $ED, "NetLateM" => $NetLateM, "ApprovedExH" => $ApprovedExH, "nopay_hrs" => $Nopay_Hrs, "Att_Allow" => $Att_Allowance, "DOT" => $Alldoubleotmin);
                     $whereArray = array("ID_roster" => $ID_Roster);
                     $result = $this->Db_model->updateData("tbl_individual_roster", $data_arr, $whereArray);
                 }
