@@ -687,7 +687,7 @@ class Payroll_Process extends CI_Controller
                 $PaidAmount_to = $PaidAmount + $LoanMonth;
                 $BalanceAmount = $Full_Amount - $PaidAmount_to;
 
-                if ($BalanceAmount == 0) {
+                if ($BalanceAmount <= 0) {
                     $Is_Settele = 1;
                 } else {
                     $Is_Settele = 0;

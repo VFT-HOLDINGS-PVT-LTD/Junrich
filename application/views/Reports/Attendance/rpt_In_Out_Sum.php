@@ -30,8 +30,8 @@ $pdf->SetHeaderData($PDF_HEADER_LOGO, $PDF_HEADER_LOGO_WIDTH, $PDF_HEADER_TITLE 
 $pdf->setFooterData(array(0, 64, 0), array(0, 64, 128));
 
 // set header and footer fonts
-$pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
-$pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
+$pdf->setHeaderFont(array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
+$pdf->setFooterFont(array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
 
 // set default monospaced font
 $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
@@ -101,9 +101,12 @@ $html = '
                     </tr>
                 </thead>
              <tbody>';
-             
-$emtnocheck = "";
-$datenocheck = "";
+
+$totalOvertimeMinutes = 0;
+$totaldoteMinutes = 0;
+$totaledMinutes = 0;
+$totallateMinutes = 0;
+$emtnocheck = '';
 
 foreach ($data_set2 as $data) {
     $Mint1 = $data->AfterExH;
@@ -113,57 +116,148 @@ foreach ($data_set2 as $data) {
     $EDMint = $data->EarlyDepMin;
     $EDhours = floor($EDMint / 60);
     $EDmin = $EDMint - ($EDhours * 60);
-   
+
     $dot = $data->DOT;
     $dhours = floor($dot / 60);
     $dmin = $dot - ($dhours * 60);
 
-    
+    $totalOvertimeMinutes += $data->AfterExH;
+    $totaldoteMinutes += $data->DOT;
+    $totaledMinutes += $data->EarlyDepMin;
+
+    $totalothours = floor($totalOvertimeMinutes / 60);
+    $totalotmunit = $totalOvertimeMinutes - ($totalothours * 60);
+
+    $totaldothours = floor($totaldoteMinutes / 60);
+    $totaldotmunit = $totaldoteMinutes - ($totaldothours * 60);
+
+    $totaledhours = floor($totaledMinutes / 60);
+    $totaledmunit = $totaledMinutes - ($totaledhours * 60);
 
     if ($emtnocheck != $data->EmpNo) {
+        if ($emtnocheck != '') {
+            $html .= ' <tr>
+                                     <td style="font-size:10px;border-top: 1px solid black;  width:60px;"></td>
+                                     <td style="font-size:12px;border-top: 1px solid black; width:120px;">' . "Total :" . '</td>
+                                     <td style="font-size:10px;border-top: 1px solid black;width:30px;"></td>
+                                     <td style="font-size:10px;border-top: 1px solid black; width:60px;"></td> 
+                                     <td style="font-size:10px;border-top: 1px solid black;"></td>    
+                                     <td style="font-size:10px;border-top: 1px solid black; width:60px;"></td>
+                                     <td style="font-size:10px;border-top: 1px solid black;"></td>
+                                     <td style="font-size:10px;border-top: 1px solid black;width:25px;"></td>
+                                     <td style="font-size:10px;border-top: 1px solid black;width:40px;"></td>
+                                     <td style="font-size:12px;border-top: 1px solid black;width:28px;">' . $totaledhours . ':' . $totaledmunit . '</td>
+                                     <td style="font-size:12px;border-top: 1px solid black;width:45px;">' . $totalothours . ':' . $totalotmunit . '</td>
+                                     <td style="font-size:12px;border-top: 1px solid black;width:45px;">' . $totaldothours . ':' . $totaldotmunit . '</td>
+                                 </tr>';
+            $html .= ' <tr>
+                                     <td style="font-size:10px;border-top: 1px solid black;border-bottom: 1px solid black; width:60px;"></td>
+                                     <td style="font-size:12px;border-top: 1px solid black;border-bottom: 1px solid black; width:120px;"></td>
+                                     <td style="font-size:10px;border-top: 1px solid black;border-bottom: 1px solid black;width:30px;"></td>
+                                     <td style="font-size:10px;border-top: 1px solid black;border-bottom: 1px solid black; width:60px;"></td> 
+                                     <td style="font-size:10px;border-top: 1px solid black;border-bottom: 1px solid black;"></td>    
+                                     <td style="font-size:10px;border-top: 1px solid black;border-bottom: 1px solid black; width:60px;"></td>
+                                     <td style="font-size:10px;border-top: 1px solid black;border-bottom: 1px solid black;"></td>
+                                     <td style="font-size:10px;border-top: 1px solid black;border-bottom: 1px solid black;width:25px;"></td>
+                                     <td style="font-size:10px;border-top: 1px solid black;border-bottom: 1px solid black;width:40px;"></td>
+                                     <td style="font-size:12px;border-top: 1px solid black;border-bottom: 1px solid black;width:28px;"></td>
+                                     <td style="font-size:12px;border-top: 1px solid black;border-bottom: 1px solid black;width:45px;"></td>
+                                     <td style="font-size:12px;border-top: 1px solid black;border-bottom: 1px solid black;width:45px;"></td>
+                                 </tr>';
+        }
+        
         $html .= '<div class="page-break"></div>';
+        
+        $totalOvertimeMinutes = 0;
+        $totaldoteMinutes = 0;
+        $totaledMinutes = 0;
+        $totallateMinutes = 0;
         $html .= ' <tr>
-                        <td  style="font-size:10px;  width:60px;">' . $data->EmpNo . '</td>
-                        <td  style="font-size:10px; width:120px;">' . $data->Emp_Full_Name . '</td>
-                        <td style="font-size:10px;width:30px;">' . $data->ShiftDay . '</td>
-                        <td style="font-size:10px; width:60px;">' . $data->FDate . '</td> 
-                        <td style="font-size:10px;">' . $data->InTime . '</td>    
-                        <td style="font-size:10px; width:60px;">' . $data->OutDate . '</td>
-                        <td style="font-size:10px;">' . $data->OutTime . '</td>
-                        
-                        <td style="font-size:10px;width:30px;">' . $data->DayStatus . '</td>
-                        <td style="font-size:10px;width:40px;">' . $data->LateM . '</td>
-                        <td style="font-size:10px;width:30px;">' . $data->EarlyDepMin . '</td>
-                        <td style="font-size:10px;width:40px;">' . $hours1 . ':' . $min1 . '</td>
-                        <td style="font-size:10px;width:40px;">' . $dhours . ':' . $dmin . '</td>
-                    </tr>';
-                    
+                                     <td  style="font-size:10px;  width:60px;">' . $data->EmpNo . '</td>
+                                     <td  style="font-size:10px; width:120px;">' . $data->Emp_Full_Name . '</td>
+                                     <td style="font-size:10px;width:30px;">' . $data->ShiftDay . '</td>
+                                     <td style="font-size:10px; width:60px;">' . $data->FDate . '</td> 
+                                     <td style="font-size:10px;">' . $data->InTime . '</td>    
+                                     <td style="font-size:10px; width:60px;">' . $data->OutDate . '</td>
+                                     <td style="font-size:10px;">' . $data->OutTime . '</td>
+                                     <td style="font-size:10px;width:30px;">' . $data->DayStatus . '</td>
+                                     <td style="font-size:10px;width:40px;">' . $data->LateM . '</td>
+                                     <td style="font-size:10px;width:30px;">' . $data->EarlyDepMin . '</td>
+                                     <td style="font-size:10px;width:40px;">' . $hours1 . ':' . $min1 . '</td>
+                                     <td style="font-size:10px;width:40px;">' . $dhours . ':' . $dmin . '</td>
+                                 </tr>';
+
+
+        $totalOvertimeMinutes = $Mint1;
         $emtnocheck = $data->EmpNo;
-        $datenocheck = $data->InDate;
     } else {
         $html .= ' <tr>
-        <td  style="font-size:10px;  width:60px;"></td>
-        <td  style="font-size:10px; width:120px;"></td>
-        <td style="font-size:10px;width:30px;">' . $data->ShiftDay . '</td>
-        <td style="font-size:10px; width:60px;">' . $data->FDate . '</td> 
-        <td style="font-size:10px;">' . $data->InTime . '</td>    
-        <td style="font-size:10px; width:60px;">' . $data->OutDate . '</td>
-        <td style="font-size:10px;">' . $data->OutTime . '</td>
-        
-        <td style="font-size:10px;width:30px;">' . $data->DayStatus . '</td>
-        <td style="font-size:10px;width:40px;">' . $data->LateM . '</td>
-        <td style="font-size:10px;width:30px;">' . $data->EarlyDepMin . '</td>
-        <td style="font-size:10px;width:40px;">' . $hours1 . ':' . $min1 . '</td>
-        <td style="font-size:10px;width:40px;">' . $dhours . ':' . $dmin . '</td>
-    </tr>';
-        $emtnocheck = $data->EmpNo;
-        $datenocheck = $data->InDate;
+                                 <td  style="font-size:10px;  width:60px;"></td>
+                                 <td  style="font-size:10px; width:120px;"></td>
+                                 <td style="font-size:10px;width:30px;">' . $data->ShiftDay . '</td>
+                                 <td style="font-size:10px; width:60px;">' . $data->FDate . '</td> 
+                                 <td style="font-size:10px;">' . $data->InTime . '</td>    
+                                 <td style="font-size:10px; width:60px;">' . $data->OutDate . '</td>
+                                 <td style="font-size:10px;">' . $data->OutTime . '</td>
+                                 <td style="font-size:10px;width:30px;">' . $data->DayStatus . '</td>
+                                 <td style="font-size:10px;width:40px;">' . $data->LateM . '</td>
+                                 <td style="font-size:10px;width:30px;">' . $data->EarlyDepMin . '</td>
+                                 <td style="font-size:10px;width:40px;">' . $hours1 . ':' . $min1 . '</td>
+                                 <td style="font-size:10px;width:40px;">' . $dhours . ':' . $dmin . '</td>
+                             </tr>';
     }
 }
+
+
+if ($emtnocheck != '') {
+    $totalOvertimeMinutes += $data->AfterExH;
+    $totaldoteMinutes += $data->DOT;
+    $totaledMinutes += $data->EarlyDepMin;
+
+
+    $totalothours = floor($totalOvertimeMinutes / 60);
+    $totalotmunit = $totalOvertimeMinutes - ($totalothours * 60);
+
+    $totaldothours = floor($totaldoteMinutes / 60);
+    $totaldotmunit = $totaldoteMinutes - ($totaldothours * 60);
+
+    $totaledhours = floor($totaledMinutes / 60);
+    $totaledmunit = $totaledMinutes - ($totaledhours * 60);
+    $html .= ' <tr>
+                <td style="font-size:10px;border-top: 1px solid black;  width:60px;"></td>
+                <td style="font-size:12px;border-top: 1px solid black; width:120px;">' . "Total :" . '</td>
+                <td style="font-size:10px;border-top: 1px solid black;width:30px;"></td>
+                <td style="font-size:10px;border-top: 1px solid black; width:60px;"></td> 
+                <td style="font-size:10px;border-top: 1px solid black;"></td>    
+                <td style="font-size:10px;border-top: 1px solid black; width:60px;"></td>
+                <td style="font-size:10px;border-top: 1px solid black;"></td>
+                <td style="font-size:10px;border-top: 1px solid black;width:28px;"></td>
+                <td style="font-size:10px;border-top: 1px solid black;width:40px;"></td>
+                <td style="font-size:12px;border-top: 1px solid black;width:28px;">' . $totaledhours . ':' . $totaledmunit . '</td>
+                <td style="font-size:12px;border-top: 1px solid black;width:45px;">' . $totalothours . ':' . $totalotmunit . '</td>
+                <td style="font-size:12px;border-top: 1px solid black;width:45px;">' . $totaldothours . ':' . $totaldotmunit . '</td>
+            </tr>';
+    $html .= ' <tr>
+                <td style="font-size:10px;border-top: 1px solid black;border-bottom: 1px solid black; width:60px;"></td>
+                <td style="font-size:12px;border-top: 1px solid black;border-bottom: 1px solid black; width:120px;"></td>
+                <td style="font-size:10px;border-top: 1px solid black;border-bottom: 1px solid black;width:30px;"></td>
+                <td style="font-size:10px;border-top: 1px solid black;border-bottom: 1px solid black; width:60px;"></td> 
+                <td style="font-size:10px;border-top: 1px solid black;border-bottom: 1px solid black;"></td>    
+                <td style="font-size:10px;border-top: 1px solid black;border-bottom: 1px solid black; width:60px;"></td>
+                <td style="font-size:10px;border-top: 1px solid black;border-bottom: 1px solid black;"></td>
+                <td style="font-size:10px;border-top: 1px solid black;border-bottom: 1px solid black;width:28px;"></td>
+                <td style="font-size:10px;border-top: 1px solid black;border-bottom: 1px solid black;width:40px;"></td>
+                <td style="font-size:12px;border-top: 1px solid black;border-bottom: 1px solid black;width:28px;"></td>
+                <td style="font-size:12px;border-top: 1px solid black;border-bottom: 1px solid black;width:45px;"></td>
+                <td style="font-size:12px;border-top: 1px solid black;border-bottom: 1px solid black;width:45px;"></td>
+            </tr>';
+}
+
+
 $html .= '</tbody>
                   
           </table>
-        <br>
+        
 
 
 
@@ -181,4 +275,3 @@ $pdf->Output('IN OUT Report' . $f_date . ' to ' . $t_date . '.pdf', 'I');
 //============================================================+
     // END OF FILE
     //============================================================+
-    

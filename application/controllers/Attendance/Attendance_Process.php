@@ -207,13 +207,13 @@ class Attendance_Process extends CI_Controller
 
                             $OutTimeSrt = strtotime($OutTime);
                             $SHEndTime = strtotime($SHTT);
-                            $SHEndTime += 30 * 60 ;
+                            $SHEndTime += 30 * 60;
                             // $GraseP = "00:30:00";
                             // $GrasePNew =  strtotime($GraseP);
 
                             //*******Get Minutes
                             $iCalcOut = round(($OutTimeSrt - $SHEndTime) / 60);
-                            $Allnomalotmin = $iCalcOut ;
+                            $Allnomalotmin = $iCalcOut;
                             if ($Allnomalotmin < 0) {
                                 $Allnomalotmin = 0;
                             }
@@ -312,16 +312,16 @@ class Attendance_Process extends CI_Controller
                         //     //     $lateM = 0;
                         //     // }
                         // }
-                         //shift eka athule podi welawak wada kaloth
-                         $shiftincheck = strtotime($InmoTime);
-                         $shiftincheck2 = strtotime('06:00:00');
-                         $shiftincheck3 = strtotime('15:00:00');
-                         if ($shiftincheck > $shiftincheck2 && $shiftincheck < $shiftincheck3) {
-                             $InTime = $InmoTime;
-                             $InDate = $InmoDate;
-                         }
+                        //shift eka athule podi welawak wada kaloth
+                        $shiftincheck = strtotime($InmoTime);
+                        $shiftincheck2 = strtotime('06:00:00');
+                        $shiftincheck3 = strtotime('15:00:00');
+                        if ($shiftincheck > $shiftincheck2 && $shiftincheck < $shiftincheck3) {
+                            $InTime = $InmoTime;
+                            $InDate = $InmoDate;
+                        }
 
-                        if (empty($InmoTime)&&empty($InmoDate)) {
+                        if (empty($InmoTime) && empty($InmoDate)) {
                             // Get the CheckIN night shift /////////////////////////////////////////////////////
                             $dt_in_Records_ni_sh['dt_Records'] = $this->Db_model->getfilteredData("select min(AttTime) as INTime,Enroll_No,AttDate,EventID from tbl_u_attendancedata where Enroll_No='$EmpNo' and AttDate='" . $FromDate . "' AND Status='0' and AttTime BETWEEN '15:00:00' AND '22:00:00'  ");
                             $InRecords = $dt_in_Records_ni_sh['dt_Records'][0]->AttDate;
@@ -434,7 +434,7 @@ class Attendance_Process extends CI_Controller
                                 $OutTimeSrt = strtotime($OutTime);
                                 $nxtchecksat = strtotime('23:59:59');
                                 $SHEndTime = strtotime($SHTT);
-                                $SHEndTime += 30 * 60 ;
+                                $SHEndTime += 30 * 60;
 
 
                                 //*******Get Minutes
@@ -465,7 +465,7 @@ class Attendance_Process extends CI_Controller
                             }
                         }
 
-                       
+
                         // //ED
                         $ED = 0;
                         // // ED
@@ -1229,7 +1229,7 @@ class Attendance_Process extends CI_Controller
                         //****Individual Roster ID
                         $ID_Roster = $SH['SH'][0]->ID_roster;
                         $dt_in_Records['dt_in_Records'] = $this->Db_model->getfilteredData("select min(AttTime) as INTime,Enroll_No,AttDate,EventID from tbl_u_attendancedata where Enroll_No='$EmpNo' and AttDate='" . $FromDate . "' and AttTime BETWEEN '06:00:00' AND '10:00:00' AND Status='0' ");
-                        $dt_in_Records['dt_out_Records'] = $this->Db_model->getfilteredData("select max(AttTime) as OUTTime,Enroll_No,AttDate,EventID from tbl_u_attendancedata where Enroll_No='$EmpNo' and AttDate='" . $FromDate . "' and AttTime BETWEEN '10:00:00' AND '22:00:00' AND Status='1' ");
+                        $dt_in_Records['dt_out_Records'] = $this->Db_model->getfilteredData("select max(AttTime) as OUTTime,Enroll_No,AttDate,EventID from tbl_u_attendancedata where Enroll_No='$EmpNo' and AttDate='" . $FromDate . "' and AttTime BETWEEN '10:00:00' AND '23:59:59' AND Status='1' ");
                         $InsunIN = $dt_in_Records['dt_in_Records'][0]->INTime;
                         $OutsunOUT = $dt_in_Records['dt_out_Records'][0]->OUTTime;
                         if (!empty($OutsunOUT)) {
@@ -1246,6 +1246,26 @@ class Attendance_Process extends CI_Controller
                             $OutTime = $OutsunOUT;
                             $InDate = $FromDate;
                             $OutDate = $FromDate;
+                        }  if (empty($OutsunOUT)) {                          
+                            $OutDate2 = date('Y-m-d', strtotime($FromDate . ' +1 day'));                            
+                            $dt_in_Records['dt_out_sun_next_Records'] = $this->Db_model->getfilteredData("select min(AttTime) as OUTTime,Enroll_No,AttDate,EventID from tbl_u_attendancedata where Enroll_No='$EmpNo' and AttDate='" . $OutDate2 . "' and AttTime BETWEEN '00:00:01' AND '06:59:00' AND Status='1' ");
+                            $OutsunOUT2 = $dt_in_Records['dt_out_sun_next_Records'][0]->OUTTime;                           
+                            if (empty($InsunIN)) {
+                                $InsunIN = '08:00:00';
+                                // $DaysunOUT = date('Y-m-d', strtotime($FromDate . ' +1 day'));
+                            }
+                            $dayconcattoday = $FromDate . " " . $InsunIN;
+                            $dayconcatprday = $OutDate2 . " " . $OutsunOUT2;
+                            $OutTimeSrt = strtotime($dayconcatprday);
+                            $InndTime = strtotime($dayconcattoday);
+                            $iCalcOut = round(($OutTimeSrt - $InndTime) / 60);
+                            $Alldoubleotmin = $iCalcOut;
+                            $DayStatus = 'EX';
+                            $InTime = $InsunIN;
+                            $OutTime = $OutsunOUT2;
+                            $InDate = $FromDate;
+                            $OutDate = $OutDate2;
+                            
                         }
                     }
                     // echo $FromDate;

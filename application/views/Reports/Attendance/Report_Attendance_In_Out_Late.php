@@ -236,7 +236,7 @@
         </script>
 
         <!--Date Format-->
-        <script>
+        <!-- <script>
 
             $('#dpd1').datepicker({
                 format: "dd/mm/yyyy",
@@ -256,7 +256,7 @@
             });
 
 
-        </script>
+        </script> -->
 
         <!--JQuary Validation-->
         <script type="text/javascript">
